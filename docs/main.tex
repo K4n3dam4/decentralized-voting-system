@@ -1,0 +1,36 @@
+% Preamble
+\documentclass[11pt, american, oneside]{report}
+
+% Meta
+\edef\mytitle{Electronic Voting and Web3}
+\edef\mysubtitle{Developing an electronic voting system using blockchain technology}
+\edef\me{Nils Boehm}
+\edef\publishedon{22.09.2022}
+
+% Load config
+\usepackage{preamble}
+
+% References
+\addbibresource{main.bib}
+
+% Document
+\begin{document}
+
+    \include{title}
+    \include{chapters/abstract}
+
+    \tableofcontents
+
+    \printglossary[title=Abbreviations]\newpage
+
+    \addcontentsline{toc}{chapter}{Figures}
+    \listoffigures\newpage
+
+    \addcontentsline{toc}{chapter}{Tables}
+    \listoftables\newpage
+
+    \include{chapters/intro}
+
+    \printbibliography
+
+\end{document}

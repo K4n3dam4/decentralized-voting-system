@@ -1,0 +1,88 @@
+%! suppress = UsePackageInPackage
+% Compiler
+\usepackage{babel, csquotes}
+
+% Colors
+\usepackage{xcolor}
+
+% Links
+\usepackage[
+    colorlinks=true, % colored links
+    allcolors=gray, % color gray
+    breaklinks, % line break
+    linktocpage % table of contents links to pages
+]{hyperref}
+
+% Abbreviations and glosaries
+\usepackage{parskip}
+\usepackage[toc]{glossaries}
+
+% make glossaries
+\makeglossaries
+% add entries
+\include{glossaries}
+
+% Bibliograpyhy
+\usepackage[
+    style=authoryear-icomp,
+    maxbibnames=9,
+    maxcitenames=3,
+    mincitenames=1,
+    backend=biber,
+]{biblatex}
+
+\usepackage{fontspec}
+\usepackage[pagestyles]{titlesec}
+\usepackage[T1]{fontenc}
+\usepackage{titling}
+
+% TODO only for development
+\usepackage{lipsum}
+
+% Document layout
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    bottom=1.5cm,
+    top=1.5cm,
+    left=2.5cm,
+    right=2.5cm,
+    includeheadfoot,
+}
+
+% font declaration and title settings
+% Style
+\setmainfont[Ligatures=TeX]{Montserrat}
+\setsansfont[Ligatures=TeX]{Montserrat}
+\renewcommand{\baselinestretch}{1.5}
+
+\newfontfamily\headingfont[]{Helvetica}
+\newfontfamily\titlefont[]{Helvetica}
+\newcommand{\hsp}{\hspace{10pt}}
+\definecolor{gray75}{gray}{0.75}
+
+\titleformat{\chapter}[hang]{\Huge\headingfont}{\chaptertitlename\ \thechapter\hspace{10pt}\textcolor{gray75}{|}\hspace{10pt}}{0pt}{\Huge\headingfont}
+\titleformat*{\section}{\LARGE\headingfont}
+\titleformat*{\subsection}{\Large\headingfont}
+\renewcommand{\maketitlehooka}{\headingfont}
+\titlespacing{\chapter}{0pt}{0pt}{*4}
+\titlespacing*{\chapter}{0pt}{0pt}{*4}
+\titlespacing{\section}{0pt}{*2}{*2}
+\titlespacing*{\section}{0pt}{*2}{*2}
+\titlespacing{\subsection}{0pt}{*2}{*1.5}
+\titlespacing*{\subsection}{0pt}{*2}{*1.5}
+\titlespacing{\subsubsection}{0pt}{*1}{*1}
+\titlespacing*{\subsubsection}{0pt}{*1}{*1}
+
+% Set header and footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}                           % clear all header and footer fields
+\fancyhead[L]{\raisebox{2mm}{\small\me}}
+\fancyhead[C]{\raisebox{2mm}{\large\mytitle}}
+\fancyhead[R]{\raisebox{2mm}{\small\publishedon}}
+\cfoot{\thepage}                     % add page number
+\renewcommand{\headrulewidth}{0.4pt} % add horizontal line of 0.4pt thick
+% apply header to chapter pages
+\usepackage{etoolbox}                % patch cmd
+\patchcmd{\chapter}{\thispagestyle{plain}}{\thispagestyle{fancy}}{}{} % patch chapter page
