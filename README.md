@@ -1,19 +1,32 @@
-# Electronic Voting and Web3
-## Developing a decentralized e-voting system using blockchain technology
+<html lang="eng">
+<div>
+    <h1 style="line-height: 2px">Electronic Voting and Web3</h1>
+    <h2>Developing a decentralized e-voting system using blockchain technology</h2>
+    <h5>by Nils Boehm</h5>
+</div>
+</html>
 
 ### Thesis
 
 ```shell
 # project root
 cd docs
+
+# use the xml files in ./idea/runConfiguration to compile the document
+
+# alternatively, you can compile it yourself via the terminal
 # use lualatex
-lualatex main.tex
-# or
-xelatex main.tex
+lualatex --output-dir=out main.tex 
+# or xelatex
+xelatex -output-directory=out main.tex
+
 # to compile main document
 # compile bibliography and glossaries
-biber main.bib
-makeglossaries main.tex
+biber --output-directory out main
+makeglossaries -d out main
 
-# alternatively, you can use the xml files in ./idea/runConfiguration
+# rerun latex compiler
+lualatex --output-dir=out main.tex 
+# or 
+xelatex -output-directory=out main.tex
 ```

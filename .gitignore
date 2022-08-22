@@ -103,6 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
+# Docs
+docs/out/*
+!docs/out/.gitkeep
+
 # IDEs
-/.idea
-/.code
+.code/
