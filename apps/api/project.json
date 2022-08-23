@@ -1,0 +1,94 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/api/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/api",
+        "main": "apps/api/src/main.ts",
+        "tsConfig": "apps/api/tsconfig.app.json",
+        "assets": ["apps/api/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/api/src/environments/environment.ts",
+              "with": "apps/api/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "base-serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "api:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "api:build:production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx add-db api", "nx base-serve api"],
+        "cwd": "apps/api"
+      },
+      "parallel": false
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/api"],
+      "options": {
+        "jestConfig": "apps/api/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "add-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["yarn db:dev:restart"],
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "remove-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["yarn db:dev:rm"],
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "add-db-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["yarn db:test:restart"],
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "remove-db-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["yarn db:test:rm"],
+        "cwd": "libs/api/prisma"
+      }
+    }
+  },
+  "tags": ["scope:api"],
+  "implicitDependencies": ["api-core", "api-prisma"]
+}
