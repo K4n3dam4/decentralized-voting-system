@@ -13,10 +13,12 @@
 cd docs
 
 # use the xml files in ./idea/runConfiguration to compile the document
+# 1. run Initial_Document.xml
+# 2. run Document.xml
 
 # alternatively, you can compile it yourself via the terminal
 # use lualatex
-lualatex --output-dir=out main.tex 
+lualatex --output-dir=out main.tex
 # or xelatex
 xelatex -output-directory=out main.tex
 
@@ -26,7 +28,7 @@ biber --output-directory out main
 makeglossaries -d out main
 
 # rerun latex compiler
-lualatex --output-dir=out main.tex 
-# or 
+lualatex --output-dir=out main.tex
+# or
 xelatex -output-directory=out main.tex
 ```
