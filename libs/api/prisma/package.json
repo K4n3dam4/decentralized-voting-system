@@ -3,16 +3,13 @@
   "author": "Nils Boehm",
   "license": "MIT",
   "scripts": {
-    "prisma:dev:migrate": "prisma migrate dev",
-    "prisma:dev:deploy": "prisma migrate deploy",
-    "prisma:dev:studio": "prisma studio",
-    "db:dev:rm": "docker compose rm dvs-dev-db -s -f -v",
-    "db:dev:up": "docker compose up dvs-dev-db -d",
-    "db:dev:restart": "yarn db:dev:rm && yarn db:dev:up && sleep 1 && yarn prisma:dev:deploy && yarn prisma:dev:studio",
-    "prisma:test:deploy": "prisma migrate deploy",
-    "prisma:test:studio": "prisma studio",
-    "db:test:rm": "docker compose rm dvs-test-db -s -f -v",
-    "db:test:up": "docker compose up dvs-test-db -d",
-    "db:test:restart": "yarn db:test:rm && yarn db:test:up && sleep 1 && yarn prisma:test:deploy"
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:studio": "prisma studio",
+    "db:rm": "docker compose rm dvs-db-dev -s -f -v",
+    "db:up": "docker compose up dvs-db-dev -d",
+    "db:restart": "yarn db:rm && yarn db:up && sleep 1 && yarn prisma:deploy && yarn prisma:studio",
+    "db:test:rm": "docker compose rm dvs-db-test -s -f -v",
+    "db:test:up": "docker compose up dvs-db-test -d",
+    "db:test:restart": "yarn db:test:rm && yarn db:test:up && sleep 1 && yarn prisma:deploy"
   }
 }

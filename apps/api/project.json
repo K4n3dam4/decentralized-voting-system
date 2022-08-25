@@ -2,6 +2,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/api/src",
   "projectType": "application",
+  "name": "dvs-app",
   "targets": {
     "build": {
       "executor": "@nrwl/node:webpack",
@@ -26,7 +27,7 @@
         }
       }
     },
-    "base-serve": {
+    "serve": {
       "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "api:build"
@@ -36,14 +37,6 @@
           "buildTarget": "api:build:production"
         }
       }
-    },
-    "serve": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx add-db api", "nx base-serve api"],
-        "cwd": "apps/api"
-      },
-      "parallel": false
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -58,34 +51,6 @@
       "options": {
         "jestConfig": "apps/api/jest.config.ts",
         "passWithNoTests": true
-      }
-    },
-    "add-db": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["yarn db:dev:restart"],
-        "cwd": "libs/api/prisma"
-      }
-    },
-    "remove-db": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["yarn db:dev:rm"],
-        "cwd": "libs/api/prisma"
-      }
-    },
-    "add-db-test": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["yarn db:test:restart"],
-        "cwd": "libs/api/prisma"
-      }
-    },
-    "remove-db-test": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["yarn db:test:rm"],
-        "cwd": "libs/api/prisma"
       }
     }
   },
