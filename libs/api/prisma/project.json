@@ -17,6 +17,82 @@
         "jestConfig": "libs/api/prisma/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "prisma-migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma migrate dev",
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "prisma-deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma migrate deploy",
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "prisma-studio": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma studio",
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "remove-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose rm dvs-db-dev -s -f -v",
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "serve-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose up dvs-db-dev -d",
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "restart-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx remove-db api-prisma",
+          "nx serve-db api-prisma",
+          "sleep 1",
+          "nx prisma-deploy api-prisma",
+          "nx prisma-studio api-prisma"
+        ],
+        "parallel": false,
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "remove-db-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose rm dvs-db-test -s -f -v",
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "serve-db-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose up dvs-db-test -d",
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "restart-db-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx remove-db-test api-prisma",
+          "nx serve-db-test api-prisma",
+          "sleep 1",
+          "nx prisma-deploy api-prisma"
+        ],
+        "parallel": false,
+        "cwd": "libs/api/prisma"
+      }
     }
   },
   "tags": ["scope:shared"]

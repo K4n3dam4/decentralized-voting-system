@@ -10,17 +10,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model RegisteredVoter {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email String @unique
+  firstName String
+  lastName String
+  street String
+  postalCode String
+  city String
+
+  hasRegistred Boolean
+
+  @@map("resgisteredVoters")
+}
+
+model Voters {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userName String @unique
   hash String
 
-  firstName String?
-  lastName String?
+  publicKey String
+  privateKey String
 
-  @@map("users")
+  @@map("voters")
 }
 
