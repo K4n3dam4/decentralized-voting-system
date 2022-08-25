@@ -4,6 +4,7 @@
   "license": "MIT",
   "author": "Nils Boehm",
   "scripts": {
+    "module:nest": "nx g @nrwl/nest:lib",
     "prepare": "husky install",
     "build:client": "nx build client",
     "build:api": "nx build api",

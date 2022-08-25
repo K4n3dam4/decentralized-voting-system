@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "decentralized-voting-system",
+  "npmScope": "dvs",
   "affected": {
     "defaultBase": "main"
   },
