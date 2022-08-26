@@ -15,6 +15,7 @@ model RegisteredVoter {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  socialSecurity Int
   firstName String
   lastName String
   street String
@@ -31,7 +32,7 @@ model Voters {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userName String @unique
+  username String @unique
   hash String
 
   publicKey String
