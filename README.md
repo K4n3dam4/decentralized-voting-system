@@ -17,7 +17,7 @@
 
 The main goal of this project is the development of a decentralized electronic voting system to
 further the research into voting systems based on blockchain technology, which nations could ultimately refer to should they
-want to explore possibilities to ensure elections more secure, transparent, and cost-efficient elections without having to sacrifice the anonymity of voters.
+want to explore possibilities to ensure more secure, transparent, and cost-efficient elections without having to sacrifice the anonymity of voters.
 The research is carried out within the scope of a bachelor's dissertation.
 
 ## Thesis
