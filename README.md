@@ -32,7 +32,7 @@ A [TeX](https://tug.org/begin.html) distribution needs to be installed on your s
 # project root
 cd docs
 
-# use the xml files in ./idea/runConfiguration to compile the document
+# use the xml files located in .run/ to compile the document
 # 1. run Initial_Document.xml
 # 2. run Document.xml
 
