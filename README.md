@@ -6,7 +6,27 @@
 </div>
 </html>
 
-### Thesis
+## Contents
+
+- **[Introduction](#introduction)**
+- **[Thesis](#thesis)**
+  - [Compiling](#compiling)
+- **[Application](#application)**
+
+## Introduction
+
+The main goal of this project is the development of a decentralized electronic voting system to
+further the research into voting systems based on blockchain technology, which nations could ultimately refer to should they
+want to explore possibilities to ensure elections more secure, transparent, and cost-efficient elections without having to sacrifice the anonymity of voters.
+The research is carried out within the scope of a bachelor's dissertation.
+
+## Thesis
+
+The `docs/` directory contains all research and the thesis derived from it. The thesis is written in
+[TeX](https://tug.org/begin.html) format and can be compiled by following the setup instructions below.
+A [TeX](https://tug.org/begin.html) distribution needs to be installed on your system.
+
+### Compiling
 
 ```shell
 # project root
@@ -32,3 +52,5 @@ lualatex --output-dir=out main.tex
 # or
 xelatex -output-directory=out main.tex
 ```
+
+## Application
