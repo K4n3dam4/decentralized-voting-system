@@ -80,7 +80,7 @@ The dependency graph can be called with `nx graph` in the project root and provi
 
 ### Frontend
 
-[Next.js](https://nextjs.org) was chosen as a frontend framework mainly for its hybrid static & server rendering capabilities.
+[Next.js](https://nextjs.org) was chosen as a frontend framework mainly for its hybrid static and server rendering capabilities.
 Since this means that only static html is being served to the client, a Next.js frontend is one part of ensuring the security of elections carried out using this application.
 
 #### Next.js Documentation
