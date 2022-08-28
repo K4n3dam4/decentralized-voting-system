@@ -21,11 +21,20 @@
 
     \tableofcontents
 
-    \printglossary[title=Abbreviations]\newpage
+    % add glossaries
+    \include{glossaries}
+    \printglossary\newpage
 
+    % add abbreviations
+    \include{abbreviations}
+    \printglossary[type=\acronymtype, title=Abbreviations]
+
+    % Tables and figures
+    \renewcommand{\listfigurename}{Figures}
     \addcontentsline{toc}{chapter}{Figures}
     \listoffigures\newpage
 
+    \renewcommand{\listtablename}{Tables}
     \addcontentsline{toc}{chapter}{Tables}
     \listoftables\newpage
 
