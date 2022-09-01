@@ -9,7 +9,17 @@ export class VoterSignup {
   @IsString()
   username: string;
 
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  password: string;
+}
+
+export class VoterSignin {
+  @IsNotEmpty()
+  @IsString()
+  username: string;
+
+  @IsNotEmpty()
+  @IsString()
   password: string;
 }

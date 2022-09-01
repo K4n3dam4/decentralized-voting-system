@@ -14,6 +14,8 @@
     "migrate:db": "nx prisma-migrate api-prisma",
     "generate:db": "nx prisma-generate api-prisma",
     "serve:db": "nx restart-db api-prisma",
+    "export:db": "nx export-db api-prisma",
+    "import:db": "nx import-db api-prisma",
     "serve:db:test": "dotenv -e .env.test -- nx restart-db-test api-prisma",
     "serve:api": "yarn serve:db & nx serve api",
     "test:api": "nx test api",

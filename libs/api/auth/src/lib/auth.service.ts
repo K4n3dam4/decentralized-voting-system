@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@dvs/api/prisma';
-import { VoterSignup } from './auth.dto';
+import { VoterSignin, VoterSignup } from './auth.dto';
 import * as argon from 'argon2';
 
 @Injectable()
@@ -10,17 +10,18 @@ export class AuthService {
     // hash password
     const hash = await argon.hash(dto.password);
     // add voter
+
     const voter = await this.prisma.voters.create({
       data: {
         username: dto.username,
         hash,
-        privateKey: 'wijweid923',
-        publicKey: 'ewdewiojie',
+        privateKey: 'myPrivateKey',
+        publicKey: 'myPublicKey',
       },
     });
     return voter;
   }
-  signin() {
-    return { msg: 'I have signed in' };
+  signin(dto: VoterSignin) {
+    return dto;
   }
 }
