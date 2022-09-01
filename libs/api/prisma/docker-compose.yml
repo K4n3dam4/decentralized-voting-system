@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   dvs-db-prod:
+    container_name: dvs-db-prod
     image: postgres:13
     ports:
       - '5433:5432'
@@ -11,6 +12,7 @@ services:
     networks:
       - dvs-app
   dvs-db-dev:
+    container_name: dvs-db-dev
     image: postgres:13
     ports:
       - '5434:5432'
@@ -21,6 +23,7 @@ services:
     networks:
       - dvs-app
   dvs-db-test:
+    container_name: dvs-dv-test
     image: postgres:13
     ports:
       - '5435:5432'

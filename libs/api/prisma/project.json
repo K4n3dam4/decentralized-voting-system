@@ -60,6 +60,20 @@
         "cwd": "libs/api/prisma"
       }
     },
+    "export-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker exec -i dvs-db-dev pg_dump dvs -U admin --column-inserts --data-only > prisma/dumps/db-dev-dump.sql",
+        "cwd": "libs/api/prisma"
+      }
+    },
+    "import-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker exec -i dvs-db-dev psql -U admin -d dvs < prisma/dumps/db-dev-dump.sql",
+        "cwd": "libs/api/prisma"
+      }
+    },
     "restart-db": {
       "executor": "nx:run-commands",
       "options": {

@@ -1,1 +1,4 @@
 migrations/
+
+# dumps
+dumps/**
