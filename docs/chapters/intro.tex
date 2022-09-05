@@ -17,26 +17,56 @@ even though the Mueller investigation has found no evidence of Russian interfere
 Similarly, many Republicans still believe widespread voter fraud is the reason, Donald.\ J. Trump lost the 2020 election.
 However, statistical analysis of voter ballots does not confirm that hypothesis~\autocite{eggers_no_2021}.
 
-A \Gls{Web3} application using blockchain technology could solve those problems while at the same time being considerably less vulnerable to cyberattacks than centralized e-voting systems currently in use.
-According to~\textcite{yaga_blockchain_2018}, blockchains are immutable and decentralized digital ledgers that enable a community of users to record transactions publicly while preventing data tampering by bad actors.
-This makes blockchain technology an ideal candidate for electronic voting systems as transactions will be stored securely on the public ledger, making them unalterable and auditable.
+A \Gls{Web3} application using blockchain technology could solve those problems while at the same time being considerably less vulnerable to cyberattacks than currently employed centralized e-voting systems.
+According to~\textcite{yaga_blockchain_2018}, blockchains are decentralized digital ledgers that enable a community of users to record transactions publicly.
+This makes blockchain technology an ideal candidate for electronic voting systems as transaction records are immutable and auditable.
 Furthermore, the decentralized manner in which blockchain ledgers are distributed means no single point of attack exists.
-Provided governments either run their respective voting systems on their blockchains with a high enough number of nodes or an existing and widely distributed blockchain network, e.g., Ethereum.
+Provided governments will either run a potential voting systems on their own blockchains with a high enough number of nodes or an existing and widely distributed blockchain network, e.g., Ethereum.
 
 \section{Objectives}\label{sec:objectives}
 
-This thesis will discuss the operational features of blockchain technology and describe the development process of a decentralized electronic voting system with this technology at its core.
-The resulting product will then be evaluated, and its feasibility discussed following the implementation section.
+This thesis will discuss the operational features of blockchain technology and describe the development process of a decentralized electronic voting system that has this technology at its core.
+The resulting prototype will then be evaluated, and its feasibility discussed following implementation in chapter~\ref{ch:implementation}.
+
+\subsection{Qualitative objectives}\label{subsec:qualitative-objectives}
+
+Among others, \textcites{lowry_desirable_2009}[5]{agora_agora_nodate}[9-11]{jafar_blockchain_2021} name security, anonymity, transparency, and scalability as the most important qualitative features of a voting system.
+Consequently, they will be critical qualitative considerations during implementation and evaluation.
+
+\subsection{Quantitative objectives}\label{subsec:quantitative-objectives}
+
+\subsection{Out-of-scope objectives}\label{subsec:out-of-scope-objectives}
+
+%\begin{table}[h!]
+%    \center
+%    \begin{tabular}{ |p{3.5cm}||p{3cm}|p{3cm}|p{3cm}| }
+%        \hline
+%        \multicolumn{4}{|c|}{Country List} \\
+%        \hline
+%        Country Name or Area Name & ISO ALPHA 2 Code & ISO ALPHA 3 Code & ISO numeric Code\\
+%        \hline
+%        Afghanistan   & AF    &AFG&   004\\
+%        Aland Islands&   AX  & ALA   &248\\
+%        Albania &AL & ALB&  008\\
+%        Algeria    & DZ & DZA &  012\\
+%        American Samoa & AS  & ASM &016\\
+%        Andorra& AD  & AND   &020\\
+%        Angola& AO  & AGO&024\\
+%        \hline
+%    \end{tabular}
+%    \caption{Qualitative development goals}
+%    \label{tab:qualitative-objectives}
+%\end{table}
 
 \section{Relevance}\label{sec:relevance}
 
 Decentralized autonomy, specifically decentralized voting, is not an entirely new idea.
-The concept was first introduced by members of the Ethereum community in 2016 when they created \emph{The DAO} \autocites[3.1]{el_faqir_overview_2020}{falkon_story_2018}, which would become the first \gls{DAO}.
-\emph{The DAO} effectively enabled its users to crowdfund community project by investing Ethereum in exchange for DAO tokens and then using them to vote on the most promising proposals.
+The concept was first introduced by members of the Ethereum community in 2016 when they created \emph{The DAO} \autocites[section 3.1]{el_faqir_overview_2020}{falkon_story_2018}, which would become the first \gls{DAO}.
+\emph{The DAO} effectively enabled its users to crowdfund community projects by investing Ethereum in exchange for DAO tokens and then using those tokens to vote on the most promising proposals~\autocite{falkon_story_2018}.
 
 In the years since, \glspl{DAO} have become an essential part of the cryptocurrency market’s ecosystem;
 however, the concept of decentralized voting has thus mainly been studied by private individuals rather than governments.
 Furthermore, most companies that work on decentralized voting systems made for nations are profit-oriented and therefore do not have an open-source code base.
-Hence, an open-source project like this could provide new actionable insights for governments wishing to research this topic further.
+Hence, an open-source project like this could provide new actionable insights for governments wishing to research this topic to facilitate progress.
 
 
