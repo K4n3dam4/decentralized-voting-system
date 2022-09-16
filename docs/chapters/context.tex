@@ -1,7 +1,5 @@
 \chapter{Context}\label{ch:context}
 
-\section{Voting systems}\label{sec:voting-systems}
-
 \section{Blockchain}\label{sec:blockchain}
 
 Even though the first blockchain-like protocol was proposed by \textcite{chaum_computer_1982}, the concept of modern \gls{Blockchain} technology was first introduced in 2008 by \textcite{nakamoto_bitcoin_2008} and with the subsequent launch of Bitcoin in 2009.
@@ -46,12 +44,12 @@ Depending on the \gls{Blockchain}, block structures might vary, though, accordin
 
 The block header contains metadata about the block itself and a reference to the previous block hash (see~\cref{fig:prev-block-hash}), establishing a chain link~\autocites[160]{antonopoulos_mastering_2017}[3]{nakamoto_bitcoin_2008}[15]{yaga_blockchain_2018}.
 Nodes always work on bundling transactions in a new block using the latest accepted block's hash value in the block header~\autocite[3]{nakamoto_bitcoin_2008}.
-Aside from the previous block's hash value, a block header contains the current timestamp, \gls{POW} difficulty target for the current block and the nonce (see~\cref{subsec:hash-algorithms}), as well as the \gls{MerkleTree} root, a data structure summarizing all transactions in the block~\autocites[160-161]{antonopoulos_mastering_2017}[15-16]{yaga_blockchain_2018}.
+Aside from the previous block's hash value, a block header contains the current timestamp, \gls{POW} difficulty target for the current block and the nonce (see~\cref{subsec:pow}), as well as the \gls{MerkleTree} root, a data structure summarizing all transactions in the block~\autocites[160-161]{antonopoulos_mastering_2017}[15-16]{yaga_blockchain_2018}.
 
 \begin{figure}[h]
-    \label{fig:prev-block-hash}
     \includegraphics{nakamoto-2008-blocks}
     \caption[Linked blocks]{Linked blocks~\autocite{nakamoto_bitcoin_2008}}
+    \label{fig:prev-block-hash}
 \end{figure}
 
 As \textcite[2-3]{nakamoto_bitcoin_2008} states, the inclusion of the previous block hash and the timestamp in a block's header serve a security purpose where protection grows stronger with every subsequent block added to the chain.
@@ -163,10 +161,6 @@ it can be any number between $1$ and $n-1$, where $n$ is a constant that defines
 As stated above, the \gls{PBK} is generated from the \gls{PK} with elliptic curve multiplication.
 The relationship between the pair is fixed and can only be calculated in one direction (see \cref{fig:elliptic-curve-trapdoor}).
 
-
-%\codeFromFile{python}{code_snippets/pow_hash.py}{Simplified proof-of-work implementation~\autocite[191-192]{antonopoulos_mastering_2017}}{Simplified proof-of-work implementation}{lst:simplified-proof-of-work}
-%\codeFromFile{bash}{code_snippets/hash_output.sh}{Output of nonce iterating hashing script}{Output of nonce iterating hashing script}{lst:output-of-hashing-script}
-
 \subsection{Proof-of-Work}\label{subsec:pow}
 
 Nodes in the network are only allowed to add a new block to the chain when they have solved a computing problem, i.e., they have to provide \glsfirst{POW}.
@@ -189,7 +183,7 @@ Hence, the act of finding the winning \gls{Nonce} would be \gls{POW} equivalent 
 \codeFromFile{text}{code_snippets/hash_output.sh}{Output of nonce iterating hashing script}{Output of nonce iterating hashing script}{lst:output-of-hashing-script}
 
 Clearly, \gls{POW} hashing algorithms employed by \gls{Blockchain} protocols are considerably more complex but in principle this is how they work.
-Consequently, once a node has provided the \gls{POW} required by the network to add a new block to the chain an attacker would need to redo the work for that block and all blocks after it.
+Consequently, once a node has provided the \gls{POW} required by the network to add a new block to the chain an attacker would need to redo the work for that block and all subsequent blocks in order to manipulate data.
 
 \section{Web3}\label{sec:web3}
 
@@ -202,12 +196,44 @@ Consequently, once a node has provided the \gls{POW} required by the network to 
 \subsection{Node.js}\label{subsec:node.js}
 
 Node.js is a JavaScript runtime environment that enables the execution of JavaScript code outside a web browser.
+It is designed to build scalable network applications solely relying on JavaScript.
 
-\subsection{NX Monorepo}\label{subsec:nx-monorepo}
+Node.js achieves high scalability by utilizing non-blocking asynchronous \gls{IO} with event loops~\autocites{nodejs_about_nodate}[74]{shah_nodejs_2017}, enabling it to handle thousands of requests concurrently.
+In contrast, conventional web servers, which handle multiple concurrent requests by creating new threads, might quickly max out the memory available to the system~\autocite[7-8]{chhetri_comparative_2016}.
+In this regard, Node.js is similar to event machines built for other languages like \emph{Twisted} for Python, Ruby's \emph{Event Machine}, or \emph{MINA}, Apache's network framework library.
+However, it utilizes the concept of an event loop as a runtime construct rather than a library~\autocite{nodejs_about_nodate}.
+
+\subsection{Nx}\label{subsec:nx}
+
+Nx is a build system that provides monorepo support, thus making it possible to manage code bases for several projects in a single repository.
+According to~\autocite[80]{potvin_why_2016}, this is a concept Google, whose monolith repository contains over two billion lines of code, has been embracing for over two decades.
+In doing so, Google has been able to unify versioning and simplify dependency management for its developers while encouraging code sharing across multiple applications and teams~\autocite[84]{potvin_why_2016}.
+
+However, whereas Google has developed its own tools for managing code bases of that size in one repository, smaller companies, and freelance developers can still leverage the advantages of monorepos while alleviating disadvantages with build systems like Nx or Turborepo.
+
+\codeFromFile[breakable=false]{text}{code_snippets/nx_workspace.txt}{Creating a nx workspace with a React application}{Creating a nx workspace with a React application}{lst:nx-workspace}
+
+As seen in listing~\ref{lst:nx-workspace}, the folder structure of a nx workspace initiated with \emph{npx create-nx-workspace@latest} looks very similar to a single project repository.
+A noteworthy difference is the fact that applications and libraries have their respective roots subdirectories of the \emph{libs/} and \emph{apps/} folders while still maintaining shared dependency information in the root directory's package.json.
+Accordingly, node modules are also installed in the root directory but nx makes them accessible across all applications and libraries in the repository.
+
+
 \subsection{Next.js}\label{subsec:next.js}
-\subsection{Nest.js}\label{subsec:nest.js}
-\subsection{Prisma}\label{subsec:prisma}
-\subsection{PostgresSQL}\label{subsec:postgressql}
 
-\section{References}\label{sec:references}
+Next.js is a frontend framework that utilizes React.js with added capabilities for server-side rendering of static web applications.
+This means developers can write React components in Java- or TypeScript without exposing their code to the client.
+Instead, all React components are executed on the server, which then serves the resulting \gls{HTML} documents to the client.
+
+\subsubsection{JSX}\label{subsubsec:jsx}
+
+As opposed to other frontend frameworks such as Vue.js, React does not rely on traditional \gls{HTML} syntax for the creation of elements in the document.
+Instead, it uses a syntax extension called \gls{JSX}.
+\gls{JSX} provides element attributes that map to those of \gls{HTML} elements (see figure~\ref{lst:jsx}).
+
+\codeFromFile{jsx}{code_snippets/jsx.tsx}{h1 element written in JSX}{h1 element written in JSX}{lst:jsx}
+
+
+
+\subsection{Nest.js}\label{subsec:nest.js}
+\subsection{PostgresSQL}\label{subsec:postgressql}
 

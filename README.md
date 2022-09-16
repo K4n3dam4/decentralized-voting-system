@@ -75,7 +75,7 @@ This chapter provides a quick overview over the projects architecture.
 
 The workspace is a [nx monorepo](https://nx.dev/), which means that the project is split into modular applications that share code
 among themselves. This approach was chosen in order to make this project easily extendable in the future.
-Nx provides a growing ecosystem of plugins and its cli makes creating new applications within the repo due to its vast
+Nx provides a growing ecosystem of plugins and its cli makes creating new applications within the repo easy due to its vast
 collection of boilerplate code.
 
 #### Dependency Graph
