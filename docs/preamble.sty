@@ -96,12 +96,12 @@
 
 % Captions
 \usepackage{caption}
-\captionsetup{position=above, skip=10px, justification=centering, singlelinecheck=false}
+\captionsetup{position=below, font=small, skip=10px,  justification=justified}
 
 % Notes
 \newcommand{\addtablenote}[3]{
     \small
-    Note. Reproduced from~#1, by~#2. #3
+    Note. Based on~#1, by~#2. #3
 }
 
 \newcommand{\addfigurenote}[3]{
@@ -193,11 +193,13 @@
     minted style=material,
     minted options={
         fontsize=\scriptsize,
+        formatcom=\color{white},
         linenos,
         breaklines,
         numbersep=1mm,
         framesep=3mm,
     },
+    top=20px,
     colback=CodeBG,
     breakable,
     enhanced,
