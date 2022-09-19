@@ -2,9 +2,13 @@
 
 \section{Blockchain}\label{sec:blockchain}
 
+
+
 Even though the first blockchain-like protocol was proposed by \textcite{chaum_computer_1982}, the concept of modern \gls{Blockchain} technology was first introduced in 2008 by \textcite{nakamoto_bitcoin_2008} and with the subsequent launch of Bitcoin in 2009.
 Although Satoshi Nakamoto's real identity remains a mistery to this day, he alluded to his motivations with a message left in Bitcoin's \gls{GenesisBlock}.
-It reads \enquote{The Times 03/Jan/2009 Chancellor on brink of second bailout for banks} and is a reference to the headline of an article that appeared in \emph{The Times} on January 3, 2009 in the midst of the \gls{GFC}.
+It reads \enquote{The Times 03/Jan/2009 Chancellor on brink of second bailout for banks}~\autocite{nakamoto_bitcoin_2009} and is a reference to the headline of an article that appeared in \emph{The Times} on January 3, 2009 in the midst of the \gls{GFC} (see listing~\ref{lst:genesis-block-message}).
+
+\codeFromFile{text}{code_snippets/genesis_block_message.sh}{Nakamoto's message in the Genesis Block}{Nakamoto's message in the Genesis Block}{lst:genesis-block-message}
 
 A \gls{Blockchain} is a distributed ledger, meaning a decentrally updated data structure maintained by a \gls{P2P} network~\autocites[3]{crosby_blockchain_2015}[1]{nakamoto_bitcoin_2008}.
 \Gls{Blockchain} protocols secure data immutability in a trustless network without the need for a central authority~\autocites[3]{crosby_blockchain_2015}[4]{jafar_blockchain_2021}.
@@ -231,8 +235,6 @@ Instead, it uses a syntax extension called \gls{JSX}.
 \gls{JSX} provides element attributes that map to those of \gls{HTML} elements (see figure~\ref{lst:jsx}).
 
 \codeFromFile{jsx}{code_snippets/jsx.tsx}{h1 element written in JSX}{h1 element written in JSX}{lst:jsx}
-
-
 
 \subsection{Nest.js}\label{subsec:nest.js}
 \subsection{PostgresSQL}\label{subsec:postgressql}
