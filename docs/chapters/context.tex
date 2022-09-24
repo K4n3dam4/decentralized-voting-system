@@ -40,7 +40,7 @@ Depending on the \gls{Blockchain}, block structures might vary, though, accordin
         Variable & Transactions & The transactions submitted with this block \\
         \hline
     \end{tabularx}
-    \caption[Block structure]{Block structure. Please note that block sizes may also vary between different \glspl{Blockchain}. Based on \textcite[160]{antonopoulos_mastering_2017}}
+    \caption[Block structure]{Block structure. Note that block sizes may also vary between different \glspl{Blockchain}. Based on \textcite[160]{antonopoulos_mastering_2017}}
     \label{tab:block-structure}
 \end{table}
 
@@ -180,11 +180,11 @@ For instance, if the difficulty target is given as
 \begingroup\small\emph{0x0010000000000000000000000000000000000000000000000000000000000000}\endgroup
 \smallskip
 
-a smaller hash would need to start with three zero bits.
+a smaller hash would need to start with three zero bytes.
 The winning \gls{Nonce} in this example would then be 11 (see listing~\ref{lst:output-of-hashing-script}).
 Hence, the act of finding the winning \gls{Nonce} would be \gls{POW} equivalent to the computing power needed to run this script 12 times.
 
-\codeFromFile{text}{code_snippets/hash_output.sh}{Output of nonce iterating hashing script}{Output of nonce iterating hashing script}{lst:output-of-hashing-script}
+\codeFromFile{text}{code_snippets/hash_output.sh}{Output of hashing script iterating on a nonce}{Output of hashing script iterating on a nonce}{lst:output-of-hashing-script}
 
 Clearly, \gls{POW} hashing algorithms employed by \gls{Blockchain} protocols are considerably more complex but in principle this is how they work.
 Consequently, once a node has provided the \gls{POW} required by the network to add a new block to the chain an attacker would need to redo the work for that block and all subsequent blocks in order to manipulate data.
@@ -202,10 +202,10 @@ Consequently, once a node has provided the \gls{POW} required by the network to 
 Node.js is a JavaScript runtime environment that enables the execution of JavaScript code outside a web browser.
 It is designed to build scalable network applications solely relying on JavaScript.
 
-Node.js achieves high scalability by utilizing non-blocking asynchronous \gls{IO} with event loops~\autocites{nodejs_about_nodate}[74]{shah_nodejs_2017}, enabling it to handle thousands of requests concurrently.
+Node.js achieves high scalability by utilizing non-blocking asynchronous \gls{IO} with event loops~\autocites{openjs_foundation_about_nodate}[74]{shah_nodejs_2017}, enabling it to handle thousands of requests concurrently.
 In contrast, conventional web servers, which handle multiple concurrent requests by creating new threads, might quickly max out the memory available to the system~\autocite[7-8]{chhetri_comparative_2016}.
 In this regard, Node.js is similar to event machines built for other languages like \emph{Twisted} for Python, Ruby's \emph{Event Machine}, or \emph{MINA}, Apache's network framework library.
-However, it utilizes the concept of an event loop as a runtime construct rather than a library~\autocite{nodejs_about_nodate}.
+However, it utilizes the concept of an event loop as a runtime construct rather than a library~\autocite{openjs_foundation_about_nodate}.
 
 \subsection{Nx}\label{subsec:nx}
 
@@ -226,16 +226,41 @@ Accordingly, node modules are also installed in the root directory but nx makes 
 
 Next.js is a frontend framework that utilizes React.js with added capabilities for server-side rendering of static web applications.
 This means developers can write React components in Java- or TypeScript without exposing their code to the client.
-Instead, all React components are executed on the server, which then serves the resulting \gls{HTML} documents to the client.
+Instead, all React components are executed on the server, which then serves ready \gls{HTML} documents to the client.
 
 \subsubsection{JSX}\label{subsubsec:jsx}
 
-As opposed to other frontend frameworks such as Vue.js, React does not rely on traditional \gls{HTML} syntax for the creation of elements in the document.
-Instead, it uses a syntax extension called \gls{JSX}.
-\gls{JSX} provides element attributes that map to those of \gls{HTML} elements (see figure~\ref{lst:jsx}).
+In contrast to other frontend frameworks such as Vue.js, React does not rely on traditional \gls{HTML} syntax for the creation of elements in the document.
+Instead, it uses a syntax extension called \gls{JSX}~\autocite{meta_platforms_inc_react_2022}.
+\gls{JSX} provides element attributes that map to those of \gls{HTML} elements (see listing~\ref{lst:jsx}).
 
 \codeFromFile{jsx}{code_snippets/jsx.tsx}{h1 element written in JSX}{h1 element written in JSX}{lst:jsx}
 
+\subsubsection{States}\label{subsubsec:states}
+
+React component states are JavaScript objects that hold data developers ultimately wish to display on the screen.
+Their most important feature is that updated states trigger re-renders in the application, making the webpage dynamic~\autocite{meta_platforms_inc_react_2022}.
+In modern React applications component states can be defined with the \emph{useState} hook (see listing~\ref{lst:states}).
+
+\codeFromFile{jsx}{code_snippets/states.tsx}{Defining a React state}{Defining a React state}{lst:states}
+
+\subsubsection{Props}\label{subsubsec:props}
+
+Modern React applications usually embrace the concept of splitting up code by utilizing functional components.
+Functional components accept \glspl{prop} as parameters, making them dynamic and reusable in other components.
+This way, developers can import components in other react components, make logic decisions in the parent component and parse mutated data to the child component or vice versa.
+Listing~\ref{lst:props} shows a simplified example of this where a state defined in the \emph{App} component is rendered with an initial value while a \emph{setState} function is parsed to an input element in the child component as a \gls{prop}.
+
+\codeFromFile{jsx}{code_snippets/props.tsx}{Parsing props to subcomponents}{Parsing props to subcomponents}{lst:props}
+
 \subsection{Nest.js}\label{subsec:nest.js}
-\subsection{PostgresSQL}\label{subsec:postgressql}
+
+Nest.js is regularly mentioned among the best Node.js backend frameworks~\autocites{clever_solution_9_2020}{labay_10_2020}{patel_top_2022} due to its many development features and under-the-hood usage of Express.js~\autocite{mysliwiec_documentation_nodate}, which is another highly regarded backend framework known for its speed.
+It is specifically designed for building scalable Node.js backend applications~\autocite{mysliwiec_documentation_nodate} by utilizing design methods common for traditional backends written in languages like Java.
+Accordingly, Nest.js combines elements of \gls{OOP} and \gls{FP}~\autocite{mysliwiec_documentation_nodate}.
+
+\subsection{PostgreSQL}\label{subsec:postgresql}
+
+PostgreSQL is an \gls{ORDBMS} first developed by researchers at the University of California, Berkeley~\autocite[3]{worsley_practical_2002}.
+It is an open source project and thus free to download and use, although there are commercially developed products on the market based on PostgreSQL, such as Red Hat.
 
