@@ -10,7 +10,7 @@
 \usepackage{etoolbox}
 
 % Colors
-\usepackage[rgb]{xcolor}
+\usepackage[rgb, table]{xcolor}
 
 % Links
 \usepackage[
@@ -155,10 +155,18 @@
 
 % define collumn sizes
 \newcolumntype{b}{X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
 \newcolumntype{s}{>{\hsize=.5\hsize}X}
 
 % change note size
 \usepackage[para, flushleft]{threeparttable}
+
+% Symbols
+\usepackage{amssymb}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+% \cmark
 
 % Code
 \usepackage[outputdir=out]{minted}

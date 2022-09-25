@@ -1,8 +1,39 @@
 \chapter{Context}\label{ch:context}
 
+\section{Voting systems}\label{sec:voting-systems}
+
+A qualitative analysis of relevant research data reveals several critical properties of voting systems, specifically electronic ones.
+For example, \textcite[section 2]{lowry_desirable_2009} name auditability, ballot secrecy, usability, incoercibility, and accessibility, while~\autocite[11-12]{jafar_blockchain_2021} add that transparency, data integrity, and participation verifiability are essential features as well.
+
+The properties shown in~\cref{tab:properties-of-voting-systems} are most commonly mentioned in research on electronic voting systems~\autocites{agora_agora_nodate}{diaz-santiso_e-voting_2021}{jafar_blockchain_2021}{lowry_desirable_2009}{committee_of_ministers_council_of_europe_recommendation_2017}{national_democratic_institute_transparency_2013}{tas_systematic_2020}.
+
+\begin{table}[H]
+    \begin{tabularx}{\textwidth}{sCb}
+        \hline
+        \textbf{Property} & \textbf{Times mentioned} & \textbf{Description}  \\
+        \hline
+        Auditability & 4 & Election results are auditable \\
+        \hline
+        Anonymity & 5 & Voters are anonymous \\
+        \hline
+        Usability & 2 & The application is usable for a broad part of the population \\
+        \hline
+        Accessibility & 5 & The application is accessible and does not exclude handicapped citizens \\
+        \hline
+        Security & 4 & The voting process is secure and results are immutable  \\
+        \hline
+        Scalability & 4 & The software can handle millions of requests while also maintaining cost-efficiency \\
+        \hline
+        Transparency & 5 & Election processes are transparent and software is open source  \\
+        \hline
+        Incoercibility & 3 & Voters can not be coerced to vote in a certain manner \\
+        \hline
+    \end{tabularx}
+    \caption[Crucial properties of electronic voting systems]{Crucial properties of electronic voting systems}
+    \label{tab:properties-of-voting-systems}
+\end{table}
+
 \section{Blockchain}\label{sec:blockchain}
-
-
 
 Even though the first blockchain-like protocol was proposed by \textcite{chaum_computer_1982}, the concept of modern \gls{Blockchain} technology was first introduced in 2008 by \textcite{nakamoto_bitcoin_2008} and with the subsequent launch of Bitcoin in 2009.
 Although Satoshi Nakamoto's real identity remains a mistery to this day, he alluded to his motivations with a message left in Bitcoin's \gls{GenesisBlock}.
@@ -31,6 +62,7 @@ Depending on the \gls{Blockchain}, block structures might vary, though, accordin
     \begin{tabularx}{\textwidth}{ssb}
         \hline
         \textbf{Size} & \textbf{Field} & \textbf{Description} \\
+        \hline
         4 bytes & Block size & The block's size in bytes excluding this field \\
         \hline
         80 bytes & Block header & Metadata \\
@@ -135,6 +167,11 @@ In consequence,~\textcites[65,68]{antonopoulos_mastering_2017}[5]{kapoor_ellipti
     K=k \cdot P
 \end{align}
 
+Reversing the multiplication process by solving for $k$ would be an unfeasible operation since the multiplication is nonlinear as the output point can be anywhere on the curve with respect to the input point~\autocite{price_bitcoins_2020}.
+Furthermore, going backward, e.g., solving for $P$ provided $kP$, where $k$ is a random integer, is more difficult due to the symmetry of elliptic curves.
+Meaning, there might exist multiple points $P$ whose tangent lines cross the negation of $kP$ for any number of additive iterations in the multiplication process (see \cref{fig:finding-point-p}).
+Therefore, a sufficiently high curve order exponentially increases the computing power needed to solve for $k$, making $K$ sharable with untrusted third parties without having to sacrifice the privacy of $k$.
+
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.3]{price-2020-inverse-curve-addition}
@@ -143,11 +180,6 @@ In consequence,~\textcites[65,68]{antonopoulos_mastering_2017}[5]{kapoor_ellipti
     Shows the possibility of multiple points whose tangent lines cross the negation of a given point~\autocite{price_bitcoins_2020}}
     \label{fig:finding-point-p}
 \end{figure}
-
-Reversing the multiplication process by solving for $k$ would be an unfeasible operation since the multiplication is nonlinear as the output point can be anywhere on the curve with respect to the input point~\autocite{price_bitcoins_2020}.
-Furthermore, going backward, e.g., solving for $P$ provided $kP$, where $k$ is a random integer, is more difficult due to the symmetry of elliptic curves.
-Meaning, there might exist multiple points $P$ whose tangent lines cross the negation of $kP$ for any number of additive iterations in the multiplication process (see \cref{fig:finding-point-p}).
-Therefore, a sufficiently high curve order exponentially increases the computing power needed to solve for $k$, making $K$ sharable with untrusted third parties without having to sacrifice the privacy of $k$.
 
 \subsubsection{Private key}\label{subsubsec:private-key}
 
@@ -189,11 +221,24 @@ Hence, the act of finding the winning \gls{Nonce} would be \gls{POW} equivalent 
 Clearly, \gls{POW} hashing algorithms employed by \gls{Blockchain} protocols are considerably more complex but in principle this is how they work.
 Consequently, once a node has provided the \gls{POW} required by the network to add a new block to the chain an attacker would need to redo the work for that block and all subsequent blocks in order to manipulate data.
 
+\subsection{Proof-of-Stake}\label{subsec:pos}
+
+\Gls{POS} is another consensus mechanism that moves the decision basis from energy consumption to the possession of funds, i.e., a stake in the network~\autocites[321]{antonopoulos_mastering_2019}[chapter 1]{udokwu_state_2018}[3]{udokwu_evaluation_2020}.
+Similarly to \gls{POW}, anyone can become a validator provided they are willing to make the necessary investment.
+However, while \gls{POW} requires people to invest in energy, \gls{POS} requires them to deposit funds in the network’s native currency by sending a particular type of transaction~\autocites[321]{antonopoulos_mastering_2019}[3]{udokwu_evaluation_2020}.
+A \gls{POS} network utilizes an algorithm that selects validators randomly from a pool of staked deposits~\autocite[3]{udokwu_evaluation_2020}.
+Validators then take turns proposing and voting on the next block while their voting power is determined by the amount of their deposit~\autocite[321]{antonopoulos_mastering_2019}.
+Since validators risk losing their staked deposit if the network rejects their block, they are incentivized to act honestly~\autocite[321]{antonopoulos_mastering_2019}.
+
 \section{Web3}\label{sec:web3}
 
+\Gls{Web3} commonly refers to the third version of the internet, signifying a move away from centralized to decentralized applications~\autocite[xxxv]{antonopoulos_mastering_2019}.
+A push towards decentralization of the internet is seen by many as the solution to problems associated with \gls{Web2}~\autocite{feiner_prominent_nodate}.
+
 \subsection{Ethereum}\label{subsec:ethereum}
+
+
 \subsection{Smart contracts}\label{subsec:smart-contracts}
-\subsection{DApps}\label{subsec:dapps}
 
 \section{Development tools}\label{sec:development-tools}
 
@@ -218,7 +263,7 @@ However, whereas Google has developed its own tools for managing code bases of t
 \codeFromFile[breakable=false]{text}{code_snippets/nx_workspace.txt}{Creating a nx workspace with a React application}{Creating a nx workspace with a React application}{lst:nx-workspace}
 
 As seen in listing~\ref{lst:nx-workspace}, the folder structure of a nx workspace initiated with \emph{npx create-nx-workspace@latest} looks very similar to a single project repository.
-A noteworthy difference is the fact that applications and libraries have their respective roots subdirectories of the \emph{libs/} and \emph{apps/} folders while still maintaining shared dependency information in the root directory's package.json.
+A noteworthy difference is the fact that applications and libraries have their respective root subdirectories in the \emph{libs/} and \emph{apps/} folders while still maintaining shared dependency information in the project root's package.json.
 Accordingly, node modules are also installed in the root directory but nx makes them accessible across all applications and libraries in the repository.
 
 
