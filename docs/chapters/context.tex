@@ -237,8 +237,18 @@ A push towards decentralization of the internet is seen by many as the solution 
 
 \subsection{Ethereum}\label{subsec:ethereum}
 
+Shortly after Nakamoto launched Bitcoin, developers started to realize the potential of Nakamoto's vision and began trying to apply the technology to applications in general.
+However, Bitcoin's constraints meant that applications built on top of its protocol were very limited in what they could do~\autocite[3]{antonopoulos_mastering_2019}.
+Ethereum, as proposed by~\textcite{buterin_ethereum_2014}, combines blockchain technology with a general-purpose computing architecture~\autocite[8]{antonopoulos_mastering_2019}.
+Hence, allowing developers \enquote{to create arbitrary consensus-based applications that have the scalability, standardization, feature-completeness, ease of development and interoperability}~\autocite[13]{buterin_ethereum_2014} of regular scripting environments.
+This means that developers can program contracts, i.e., smart contracts, whose code is immutably stored on the blockchain and executed by the Ethereum network's virtual machine when parameters specified in the code are met.
 
-\subsection{Smart contracts}\label{subsec:smart-contracts}
+Until recently, the Ethereum network was secured by a \gls{POW} consensus mechanism similar to that of Bitcoin.
+However, to address the issue of rising energy consumption and scalability, the Ethereum Foundation has long been planning to migrate the network to a \gls{POS} consensus layer.
+This has been dubbed \emph{The Merge} and was finalized on September 15, 2022~\autocite{ethereum_foundation_merge_nodate}.
+
+Although \emph{The Merge} has reduced Ethereum's energy consumption by ~99.95\%~\autocite{ethereum_foundation_merge_nodate}, transaction speeds have not noticeably improved post-migration.
+Second-layer blockchains running on Ethereum's mainnet like Polygon are still significantly faster, theoretically scaling up to ~65.000 \gls{TPS}.
 
 \section{Development tools}\label{sec:development-tools}
 
