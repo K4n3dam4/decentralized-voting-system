@@ -5,7 +5,7 @@ Following is a short overview of methodologies applied during crucial steps in o
 \begin{enumerate}
     \item Preparation
     \begin{itemize}
-        \item Selection of feasible blockchain network
+        \item Selection of feasible \gls{Blockchain} network
         \item Architectural design
     \end{itemize}
     \item Development
@@ -26,7 +26,7 @@ Following is a short overview of methodologies applied during crucial steps in o
 
 \subsection{Selection of blockchain network}\label{subsec:selection-of-blockchain-network}
 
-As seen in \cref{tab:selection-of-blockchain-network}, the findings in~\cref{sec:voting-systems} can be applied as selection criteria for relevant blockchain networks used to run the voting system.
+As seen in \cref{tab:selection-of-blockchain-network}, the findings in~\cref{sec:voting-systems} can be applied as selection criteria for relevant \gls{Blockchain} networks used to run the voting system.
 However, some properties mentioned in~\cref{sec:voting-systems} are dependent entirely on decisions relating to frontend design and code governance, i.e., whether the software is open source.
 These are displayed in gray in~\cref{tab:properties-of-voting-systems}.
 
@@ -35,9 +35,9 @@ These are displayed in gray in~\cref{tab:properties-of-voting-systems}.
         \hline
         \textbf{Property} & \textbf{Ethereum} & \textbf{Hyperledger Fabric} & \textbf{Polygon} \\
         \hline
-        Auditability & \cmark & \cmark & \cmark  \\
+        Auditability & \dblcmark & \dblcmark & \dblcmark  \\
         \hline
-        Anonymity & \cmark & \cmark & \cmark  \\
+        Anonymity & \dblcmark & \cmark & \dblcmark  \\
         \hline
         \rowcolor{lightgray}
         Usability & - & - & -  \\
@@ -45,9 +45,9 @@ These are displayed in gray in~\cref{tab:properties-of-voting-systems}.
         \rowcolor{lightgray}
         Accessibility & - & - & -  \\
         \hline
-        Security & \cmark & \cmark & \cmark   \\
+        Security & \dblcmark & \cmark & \dblcmark   \\
         \hline
-        Scalability & \xmark & \cmark & \cmark  \\
+        Scalability & \xmark & \dblcmark & \cmark  \\
         \hline
         \rowcolor{lightgray}
         Transparency & - & - & -  \\
@@ -59,7 +59,7 @@ These are displayed in gray in~\cref{tab:properties-of-voting-systems}.
     \label{tab:selection-of-blockchain-network}
 \end{table}
 
-All three blockchain networks seem to possess most of the properties mentioned in~\cref{sec:voting-systems}.
+All three \gls{Blockchain} networks seem to possess most of the properties mentioned in~\cref{sec:voting-systems}.
 However, the Ethereum network does not scale well.
 It neither has sufficient transaction throughput to process potentially millions of transactions per day nor is it cost-efficient.
 Nevertheless, these shortcomings are alleviated by Polygon, which is built on Ethereum's mainnet (see~\cref{subsec:ethereum}).

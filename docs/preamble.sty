@@ -156,9 +156,14 @@
 \usepackage{booktabs, tabularx}
 
 % define collumn sizes
+\renewcommand\tabularxcolumn[1]{m{#1}}
 \newcolumntype{b}{X}
-\newcolumntype{C}{>{\centering\arraybackslash}X}
 \newcolumntype{s}{>{\hsize=.5\hsize}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+% variable width
+\newcolumntype{V}[1]{>{\arraybackslash}p{\dimexpr#1-2\tabcolsep}}
+% example
+%V{.30\textwidth}
 
 % change note size
 \usepackage[para, flushleft]{threeparttable}
@@ -167,6 +172,7 @@
 \usepackage{amssymb}
 \usepackage{pifont}
 \newcommand{\cmark}{\ding{51}}
+\newcommand{\dblcmark}{\cmark\cmark}
 \newcommand{\xmark}{\ding{55}}
 % \cmark
 

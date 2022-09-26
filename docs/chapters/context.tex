@@ -237,18 +237,48 @@ A push towards decentralization of the internet is seen by many as the solution 
 
 \subsection{Ethereum}\label{subsec:ethereum}
 
-Shortly after Nakamoto launched Bitcoin, developers started to realize the potential of Nakamoto's vision and began trying to apply the technology to applications in general.
+Shortly after Nakamoto launched Bitcoin, developers started to realize the potential of the underlying technology and began trying to apply it to applications in general.
 However, Bitcoin's constraints meant that applications built on top of its protocol were very limited in what they could do~\autocite[3]{antonopoulos_mastering_2019}.
-Ethereum, as proposed by~\textcite{buterin_ethereum_2014}, combines blockchain technology with a general-purpose computing architecture~\autocite[8]{antonopoulos_mastering_2019}.
-Hence, allowing developers \enquote{to create arbitrary consensus-based applications that have the scalability, standardization, feature-completeness, ease of development and interoperability}~\autocite[13]{buterin_ethereum_2014} of regular scripting environments.
-This means that developers can program contracts, i.e., smart contracts, whose code is immutably stored on the blockchain and executed by the Ethereum network's virtual machine when parameters specified in the code are met.
+Therefore, the development of a new \gls{Blockchain} that combines Bitcoin's technology with a general-purpose computing architecture seemed to be the only feasible option~\autocite[3]{antonopoulos_mastering_2019}.
+This \gls{Blockchain} was proposed by Vitalik Buterin in~\citeyear{buterin_ethereum_2014} and became known as Ethereum.
+Ethereum was the first \gls{Blockchain} offering a general-purpose computing architecture~\autocite[8]{antonopoulos_mastering_2019} with a built-in Turing-complete programming language~\autocite[13]{buterin_ethereum_2014}.
 
-Until recently, the Ethereum network was secured by a \gls{POW} consensus mechanism similar to that of Bitcoin.
-However, to address the issue of rising energy consumption and scalability, the Ethereum Foundation has long been planning to migrate the network to a \gls{POS} consensus layer.
+\subsection{Turing completeness}\label{subsec:turing-completeness}
+
+The term is a reference to Alan Turing who defined a mathematical model of a computational system that manipulates states by reading and writing on sequential memory.
+In computability theory Turing's model is the basis for answering questions about universal computability, where a system is said to be Turing-complete if it can simulate any Turing machine~\autocite[8]{antonopoulos_mastering_2019}.
+The Ethereum Virtual Machine is such a Turing-complete system, which means smart contracts deployed on Ethereum can solve any computational problem regular computers can, making Ethereum a \enquote{world-computer operating under consensus}~\autocite[6]{antonopoulos_mastering_2019}.
+
+\subsection{Comparison of Turing-complete blockchains}\label{subsec:comparison-of-turing-complete-blockchains}
+
+Until recently, Ethereum applied a \gls{POW} consensus mechanism similar to Bitcoin's.
+However, to address the issue of rising energy consumption and scalability, the Ethereum Foundation has long been planning to migrate the network to a \gls{POS} consensus layer (see~\cref{tab:comparison-of-turing-complete-blockchains}).
 This has been dubbed \emph{The Merge} and was finalized on September 15, 2022~\autocite{ethereum_foundation_merge_nodate}.
-
 Although \emph{The Merge} has reduced Ethereum's energy consumption by ~99.95\%~\autocite{ethereum_foundation_merge_nodate}, transaction speeds have not noticeably improved post-migration.
-Second-layer blockchains running on Ethereum's mainnet like Polygon are still significantly faster, theoretically scaling up to ~65.000 \gls{TPS}.
+
+\begin{table}[H]
+    \begin{tabularx}{\textwidth}{ssssss}
+        \hline
+        \textbf{Blockchain} & \textbf{Consensus} & \textbf{Layer} & \textbf{TPS \newline (recorded)} & \textbf{TPS \newline (theoretical)} & \textbf{Permission} \\
+        \hline
+        Ethereum & \gls{POS} & Layer 1 & ~50 & ~120 & permissionless  \\
+        \hline
+        Hyperledger Fabric & \gls{PBFT} & Layer 1 & ~13,000 & ~100,000 & permissioned \\
+        \hline
+        Polygon & \gls{POS} & Layer 2 & ~7000 & ~65,000 & permissionless \\
+        \hline
+        Solana & \gls{POH} & Layer 1 & ~3000 & ~710,000 & permissionless  \\
+        \hline
+    \end{tabularx}
+    \caption{Comparison of turing-complete blockchains}
+    \label{tab:comparison-of-turing-complete-blockchains}
+\end{table}
+
+As seen in~\cref{tab:comparison-of-turing-complete-blockchains}, Layer 2 \glspl{Blockchain} running on Ethereum's mainnet, like Polygon, are still significantly faster, theoretically scaling up to ~65,000 \gls{TPS}~\autocite{bybit_learn_11_2022}.
+Conversely, Solana has the most significant scaling potential due to its \glsfirst{POH} consensus mechanism~\autocite{yakovenko_proof_2020}.
+Nevertheless, this also means that the network is prone to downtimes and denial of service attacks, as \gls{POH} and Solana's low transaction costs provide no safeguard against spamming by bots or potential attackers.
+Likewise, Hyperledger too compromises on security to achieve higher \gls{TPS} by utilizing another consensus mechanism called \glsfirst{PBFT}.
+More specifically, Hyperledger enables developers to build permissioned \gls{Blockchain} networks where nodes operate under the assumption that less than one-third of their peers are faulty~\autocite[1]{sukhwani_performance_2017}.
 
 \section{Development tools}\label{sec:development-tools}
 
@@ -267,15 +297,13 @@ However, it utilizes the concept of an event loop as a runtime construct rather 
 Nx is a build system that provides monorepo support, thus making it possible to manage code bases for several projects in a single repository.
 According to~\autocite[80]{potvin_why_2016}, this is a concept Google, whose monolith repository contains over two billion lines of code, has been embracing for over two decades.
 In doing so, Google has been able to unify versioning and simplify dependency management for its developers while encouraging code sharing across multiple applications and teams~\autocite[84]{potvin_why_2016}.
-
 However, whereas Google has developed its own tools for managing code bases of that size in one repository, smaller companies, and freelance developers can still leverage the advantages of monorepos while alleviating disadvantages with build systems like Nx or Turborepo.
-
-\codeFromFile[breakable=false]{text}{code_snippets/nx_workspace.txt}{Creating a nx workspace with a React application}{Creating a nx workspace with a React application}{lst:nx-workspace}
 
 As seen in listing~\ref{lst:nx-workspace}, the folder structure of a nx workspace initiated with \emph{npx create-nx-workspace@latest} looks very similar to a single project repository.
 A noteworthy difference is the fact that applications and libraries have their respective root subdirectories in the \emph{libs/} and \emph{apps/} folders while still maintaining shared dependency information in the project root's package.json.
 Accordingly, node modules are also installed in the root directory but nx makes them accessible across all applications and libraries in the repository.
 
+\codeFromFile[breakable=false]{text}{code_snippets/nx_workspace.txt}{Creating a nx workspace with a React application}{Creating a nx workspace with a React application}{lst:nx-workspace}
 
 \subsection{Next.js}\label{subsec:next.js}
 
