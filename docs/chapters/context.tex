@@ -168,7 +168,7 @@ In consequence,~\textcites[65,68]{antonopoulos_mastering_2017}[5]{kapoor_ellipti
 \end{align}
 
 Reversing the multiplication process by solving for $k$ would be an unfeasible operation since the multiplication is nonlinear as the output point can be anywhere on the curve with respect to the input point~\autocite{price_bitcoins_2020}.
-Furthermore, going backward, e.g., solving for $P$ provided $kP$, where $k$ is a random integer, is more difficult due to the symmetry of elliptic curves.
+Furthermore, going backward, i.e., solving for $P$ provided $kP$, where $k$ is a random integer, is more difficult due to the symmetry of elliptic curves.
 Meaning, there might exist multiple points $P$ whose tangent lines cross the negation of $kP$ for any number of additive iterations in the multiplication process (see \cref{fig:finding-point-p}).
 Therefore, a sufficiently high curve order exponentially increases the computing power needed to solve for $k$, making $K$ sharable with untrusted third parties without having to sacrifice the privacy of $k$.
 
@@ -225,7 +225,6 @@ Consequently, once a node has provided the \gls{POW} required by the network to 
 
 \Gls{POS} is another consensus mechanism that moves the decision basis from energy consumption to the possession of funds, i.e., a stake in the network~\autocites[321]{antonopoulos_mastering_2019}[chapter 1]{udokwu_state_2018}[3]{udokwu_evaluation_2020}.
 Similarly to \gls{POW}, anyone can become a validator provided they are willing to make the necessary investment.
-However, while \gls{POW} requires people to invest in energy, \gls{POS} requires them to deposit funds in the network’s native currency by sending a particular type of transaction~\autocites[321]{antonopoulos_mastering_2019}[3]{udokwu_evaluation_2020}.
 A \gls{POS} network utilizes an algorithm that selects validators randomly from a pool of staked deposits~\autocite[3]{udokwu_evaluation_2020}.
 Validators then take turns proposing and voting on the next block while their voting power is determined by the amount of their deposit~\autocite[321]{antonopoulos_mastering_2019}.
 Since validators risk losing their staked deposit if the network rejects their block, they are incentivized to act honestly~\autocite[321]{antonopoulos_mastering_2019}.
@@ -240,8 +239,8 @@ A push towards decentralization of the internet is seen by many as the solution 
 Shortly after Nakamoto launched Bitcoin, developers started to realize the potential of the underlying technology and began trying to apply it to applications in general.
 However, Bitcoin's constraints meant that applications built on top of its protocol were very limited in what they could do~\autocite[3]{antonopoulos_mastering_2019}.
 Therefore, the development of a new \gls{Blockchain} that combines Bitcoin's technology with a general-purpose computing architecture seemed to be the only feasible option~\autocite[3]{antonopoulos_mastering_2019}.
-This \gls{Blockchain} was proposed by Vitalik Buterin in~\citeyear{buterin_ethereum_2014} and became known as Ethereum.
-Ethereum was the first \gls{Blockchain} offering a general-purpose computing architecture~\autocite[8]{antonopoulos_mastering_2019} with a built-in Turing-complete programming language~\autocite[13]{buterin_ethereum_2014}.
+Such a \gls{Blockchain} was proposed by Vitalik Buterin in~\citeyear{buterin_ethereum_2014} and became known as Ethereum.
+It was the first \gls{Blockchain} offering a built-in Turing-complete programming language~\autocite[13]{buterin_ethereum_2014}.
 
 \subsection{Turing completeness}\label{subsec:turing-completeness}
 

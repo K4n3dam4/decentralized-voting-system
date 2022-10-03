@@ -26,33 +26,33 @@ Following is a short overview of methodologies applied during crucial steps in o
 
 \subsection{Selection of blockchain network}\label{subsec:selection-of-blockchain-network}
 
-As seen in \cref{tab:selection-of-blockchain-network}, the findings in~\cref{sec:voting-systems} can be applied as selection criteria for relevant \gls{Blockchain} networks used to run the voting system.
-However, some properties mentioned in~\cref{sec:voting-systems} are dependent entirely on decisions relating to frontend design and code governance, i.e., whether the software is open source.
+As seen in \cref{tab:selection-of-blockchain-network}, the findings in~\cref{sec:voting-systems} can be applied as selection criteria for relevant \gls{Blockchain} networks (see \cref{subsec:comparison-of-turing-complete-blockchains}).
+However, some properties mentioned in~\cref{sec:voting-systems} are dependent entirely on decisions relating to frontend design and code governance, e.g., whether the software is open source, rather than the selected \gls{Blockchain}.
 These are displayed in gray in~\cref{tab:properties-of-voting-systems}.
 
 \begin{table}[t]
-    \begin{tabularx}{\textwidth}{bCCC}
+    \begin{tabularx}{\textwidth}{bCCCC}
         \hline
-        \textbf{Property} & \textbf{Ethereum} & \textbf{Hyperledger Fabric} & \textbf{Polygon} \\
+        \textbf{Property} & \textbf{Ethereum} & \textbf{Hyperledger Fabric} & \textbf{Polygon} & \textbf{Solana} \\
         \hline
-        Auditability & \dblcmark & \dblcmark & \dblcmark  \\
+        Auditability & \dblcmark & \dblcmark & \dblcmark & \dblcmark \\
         \hline
-        Anonymity & \dblcmark & \cmark & \dblcmark  \\
-        \hline
-        \rowcolor{lightgray}
-        Usability & - & - & -  \\
+        Anonymity & \dblcmark & \cmark & \dblcmark & \cmark  \\
         \hline
         \rowcolor{lightgray}
-        Accessibility & - & - & -  \\
-        \hline
-        Security & \dblcmark & \cmark & \dblcmark   \\
-        \hline
-        Scalability & \xmark & \dblcmark & \cmark  \\
+        Usability & - & - & - & -  \\
         \hline
         \rowcolor{lightgray}
-        Transparency & - & - & -  \\
+        Accessibility & - & - & - & - \\
         \hline
-        Incoercibility & \xmark & \xmark & \xmark  \\
+        Security & \dblcmark & \cmark & \dblcmark & \cmark   \\
+        \hline
+        Scalability & \xmark & \cmark & \cmark & \cmark  \\
+        \hline
+        \rowcolor{lightgray}
+        Transparency & - & - & - & - \\
+        \hline
+        Incoercibility & \xmark & \xmark & \xmark & \xmark  \\
         \hline
     \end{tabularx}
     \caption[Potential blockchain networks]{Potential blockchain networks}
@@ -60,10 +60,15 @@ These are displayed in gray in~\cref{tab:properties-of-voting-systems}.
 \end{table}
 
 All three \gls{Blockchain} networks seem to possess most of the properties mentioned in~\cref{sec:voting-systems}.
-However, the Ethereum network does not scale well.
-It neither has sufficient transaction throughput to process potentially millions of transactions per day nor is it cost-efficient.
-Nevertheless, these shortcomings are alleviated by Polygon, which is built on Ethereum's mainnet (see~\cref{subsec:ethereum}).
-By taking advantage of Ethereum’s widely distributed network, smart contracts deployed on the Polygon network are immensely secure without sacrificing scalability features.
+Nevertheless, as shown in \cref{subsec:comparison-of-turing-complete-blockchains}, scalability seems to be a major issue underlying blockchain technology in general.
+For instance, even though the Ethereum Foundation is looking to improve Ethereum's protocol further, theoretically enabling it to process up to 100,000 \gls{TPS} in the future, as of the time of this writing, it is not able to process enough transactions to facilitate national elections.
+Conversely, other \glspl{Blockchain} compromise on similarly essential features like security or network stability, an equally important scalability aspect, to achieve a higher number of \gls{TPS}.
+Unfortunately, in the absence of a \gls{Blockchain} protocol that satisfies all aspects shown in~\cref{sec:voting-systems}, compromises in our selection process are unavoidable.
+With this in mind, looking at \cref{tab:selection-of-blockchain-network}, Polygon seems to be the most logical choice as it runs on top of Ethereum.
+Thus, it automatically benefits from Ethereum's superior security and anonymity, as well as all future improvements made to Ethereum's protocol, while still giving it an edge in terms of scalability due to its Layer 2 protocol (see~\cref{subsec:comparison-of-turing-complete-blockchains}).
+
+\subsection{Architectural design}\label{subsec:architectural-design}
+
 
 \section{Development}\label{sec:development}
 
