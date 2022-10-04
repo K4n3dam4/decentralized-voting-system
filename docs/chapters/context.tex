@@ -197,7 +197,7 @@ it can be any number between $1$ and $n-1$, where $n$ is a constant that defines
 As stated above, the \gls{PBK} is generated from the \gls{PK} with elliptic curve multiplication.
 The relationship between the pair is fixed and can only be calculated in one direction (see \cref{fig:elliptic-curve-trapdoor}).
 
-\subsection{Proof-of-Work}\label{subsec:pow}
+\subsection{Proof of work}\label{subsec:pow}
 
 Nodes in the network are only allowed to add a new block to the chain when they have solved a computing problem, i.e., they have to provide \glsfirst{POW}.
 In the case of Bitcoin, this problem involves scanning for a value whose hashed output begins with a number of zero bits by incrementing on a \gls{Nonce}~\autocite[3]{nakamoto_bitcoin_2008}.
@@ -221,7 +221,7 @@ Hence, the act of finding the winning \gls{Nonce} would be \gls{POW} equivalent 
 Clearly, \gls{POW} hashing algorithms employed by \gls{Blockchain} protocols are considerably more complex but in principle this is how they work.
 Consequently, once a node has provided the \gls{POW} required by the network to add a new block to the chain an attacker would need to redo the work for that block and all subsequent blocks in order to manipulate data.
 
-\subsection{Proof-of-Stake}\label{subsec:pos}
+\subsection{Proof of stake}\label{subsec:pos}
 
 \Gls{POS} is another consensus mechanism that moves the decision basis from energy consumption to the possession of funds, i.e., a stake in the network~\autocites[321]{antonopoulos_mastering_2019}[chapter 1]{udokwu_state_2018}[3]{udokwu_evaluation_2020}.
 Similarly to \gls{POW}, anyone can become a validator provided they are willing to make the necessary investment.
