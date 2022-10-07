@@ -28,7 +28,7 @@ Following is a short overview of methodologies applied during crucial steps in o
 \subsection{Selection of blockchain network}\label{subsec:selection-of-blockchain-network}
 
 As seen in \cref{tab:selection-of-blockchain-network}, the findings in~\cref{sec:voting-systems} can be applied as selection criteria for relevant \gls{Blockchain} networks (see \cref{subsec:comparison-of-turing-complete-blockchains}).
-However, some properties mentioned in~\cref{sec:voting-systems} are depend entirely on decisions relating to frontend design and code governance rather than the selected \gls{Blockchain}, e.g., whether the software is open source.
+However, some properties mentioned in~\cref{sec:voting-systems} depend entirely on decisions relating to frontend design and code governance rather than the selected \gls{Blockchain}, e.g., whether the software is open-source.
 These are displayed in gray in~\cref{tab:selection-of-blockchain-network}.
 
 \begin{table}[t]
@@ -71,19 +71,19 @@ Therefore, it automatically benefits from Ethereum's superior security and anony
 \subsection{Selection of technology stack}\label{subsec:selection-of-tech-stack}
 
 There are certainly many frameworks that could be used to develop the server- and client-side of a decentralized electronic voting system.
-However, I relied on a full Node.js integration due to its non-blocking \gls{IO} to ensure high scalability (see~\cref{subsec:node.js}).
-Similarly, given the scalability advantages of monorepos (see~\cref{subsec:nx}), I utilized nx to manage the project's repository.
-Furthermore, keeping transparency in mind (see~\cref{sec:voting-systems}), an open source project built with nx is more accessible to other developers as a resource for future research.
+However, we relied on a full Node.js integration due to its non-blocking \gls{IO} to ensure high scalability (see~\cref{subsec:node.js}).
+Similarly, given the scalability advantages of monorepos (see~\cref{subsec:nx}), we utilized nx to manage the project's repository.
+Additionally, keeping transparency in mind (see~\cref{sec:voting-systems}), an open-source project built with nx is more accessible to other developers as a resource for future research.
 
-I used Next.js as a framework on the client-side as it allows for server-side rendering, increasing the application's overall security (see~\cref{subsec:next.js}) and making it \glstext{SEO}-friendly.
-Alternatively, I could have developed the client-side with Nuxt.js, which mimics most of Next.js's server-side and static rendering methods while using Vue.js instead of React.js under the hood.
-Yet, Nuxt.js has a smaller community, arguably making React.js the preferable choice.
+We used Next.js as a framework on the client side as it allows for server-side rendering, increasing the application's overall security (see~\cref{subsec:next.js}) and making it \glstext{SEO}-friendly.
+Alternatively, we could have developed the client-side with Nuxt.js, which mimics most of Next.js's server-side and static rendering methods while using Vue.js instead of React.js under the hood.
+Nevertheless, Nuxt.js has a smaller community, arguably making React.js the preferable choice.
 
 Although Next.js comes with its own routing framework for API calls, it is reasonable to use a separate framework for requests that handle database and smart contract actions.
-Therefore, I utilized Nest.js, which eased the process of following best practices for developing backend applications.
+Therefore, we utilized Nest.js, which eased the process of following best practices for developing backend applications.
 As illustrated in~\cref{subsec:nest.js}, Nest.js is specifically designed with scalability in mind;
 moreover, it ensures high readability for developers with either an \gls{OOP} or \gls{FP} background.
-Likewise, I handled database-related aspects of the application using a PostgreSQL database since a broad spectrum of developers should be familiar with a \gls{ORDBMS} and PostgreSQL in particular (see~\cref{subsec:postgresql}).
+Likewise, we handled database-related aspects of the application using a PostgreSQL database since a broad spectrum of developers should be familiar with a \gls{ORDBMS} and PostgreSQL in particular (see~\cref{subsec:postgresql}).
 
 \subsection{Architectural design}\label{subsec:architectural-design}
 
@@ -92,18 +92,17 @@ Likewise, I handled database-related aspects of the application using a PostgreS
 
 \subsection{Versioning}\label{subsec:versioning}
 
-I used Git Workflows to version the project during development, which enabled parallel workflows depending on features and provided greater flexibility.
-Furthermore, it enabled the analysis of code changes during our iterative process and revision of changes.
-Git is well-established in the software industry and does not have serious contenders that are also open source.
+We used Git Workflows to version the project during development, which enabled parallel workflows depending on features and provided greater flexibility.
+Furthermore, it enabled the analysis of code changes during our iterative process and revision of changes and is well-established in the software industry and does not have serious contenders that are also open-source.
 
 \subsection{Agile development}\label{subsec:agile-development}
 
 The development methods displayed in \cref{fig:success-rates-development-methods} are sorted according to their success rates.
 As stated by~\textcite[10-12]{jones_software_2010}, projects with a size of less than 1000 function points are most likely to benefit from agile development methods.
 The median size of function points is defined as 53 lines of JavaScript code by~\textcite{qsm_function_2009}.
-Based on these findings, I applied agile development methods during the development process as the project's size was not anticipated to grow beyond the aforementioned dimensions.
+Based on these findings, we applied agile development methods during the development process as the project's size was not anticipated to grow beyond the aforementioned dimensions.
 
-However, I departed from the recommended defect prevention methods shown in~\cref{fig:success-rates-development-methods} since embedded user reviews mainly test the application’s frontend functionality.
+However, we departed from the recommended defect prevention methods shown in~\cref{fig:success-rates-development-methods} since embedded user reviews mainly test the application’s frontend functionality.
 Instead, the same goal could be achieved by applying Scrum methods and \gls{E2E} tests.
 
 \begin{figure}[t]
@@ -124,18 +123,18 @@ Instead, the same goal could be achieved by applying Scrum methods and \gls{E2E}
 
 \subsection{Personal Scrum}\label{subsec:personal-scrum}
 
-Despite this being a one-person project with different organizational requirements than projects developed by a team, I applied scrum methods during our development process.
+Despite this being a one-person project with different organizational requirements than projects developed by a team, we applied scrum methods during our development process.
 As stated by \textcites{andrews_scrum_2017}{pahuja_scrum_2015}, this meant adapting scrum methods for personal use, enabling us to establish iterative processes to track the development process, evaluate intermediate results and remove defects (see~\cref{fig:scrum-method}).
 
 \subsection{End-to-end tests}\label{subsec:end-to-end-tests}
 
-Since peer reviews are no feasible option for defect removal in a single-person project, I employed E2E tests to check the application’s intended functionality and iteratively remove possible defects.
+Since peer reviews are no feasible option for defect removal in a single-person project, we employed E2E tests to check the application’s intended functionality and iteratively remove possible defects.
 Also, in contrast to unit tests, \gls{E2E} tests provided the possibility to test entire workflows of the application, such as the registration or voting process.
 
 \section{Evaluation}\label{sec:evaluation}
 
 The primary objective of this thesis was the development of a decentralized voting system under the assumption that such a system would dramatically improve upon fundamental properties of voting systems compared to analogous and centralized electronic systems.
-For this, I first identified objectives based on a qualitative analysis of relevant research data (see~\cref{sec:voting-systems}) and quantified established \gls{E2E} election processes of analogous voting systems to convert them into software features mirroring the process.
+For this, we first identified objectives based on a qualitative analysis of relevant research data (see~\cref{sec:voting-systems}) and quantified established \gls{E2E} election processes of analogous voting systems to convert them into software features mirroring the process.
 
 
 \subsection{Tests}\label{subsec:tests}
