@@ -35,9 +35,6 @@ A Tex distribution needs to be installed on your system.
 ### Compiling
 
 ```shell
-# project root
-cd docs
-
 # code snippets are generated with minted, so the following pip packages need to be installed
 # on your system:
 # - jsx-lexer
@@ -51,6 +48,8 @@ pip install jsx-lexer
 # 2. run Document.xml
 
 # alternatively, you can compile it yourself via the terminal
+# navigate to docs directory
+cd docs
 # use lualatex
 lualatex -shell-escape --output-dir=out main.tex
 # or xelatex
