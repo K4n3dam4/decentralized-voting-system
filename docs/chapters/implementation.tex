@@ -66,7 +66,7 @@ Following the installation process, we created a docker-compose.yml, enabling th
 
 \codeFromFile{yaml}{code_snippets/docker-compose.yml}{Docker-compose.yml used in the prisma module}{Docker-compose.yml used in the prisma module}{lst:docker-compose.yml}
 
-Having created a docker-compose file, along with the commands in the prisma module’s project.json and the project’s package.json necessary to run the database, we added a core Nest.js module (see listing~\ref{lst:core-module}) that makes configurations like the database \gls{URL} available throughout the Nest.js application.
+Having created a docker-compose file, along with the commands necessary to run the database in the prisma module’s project.json and the project’s package.json, we added a core Nest.js module (see listing~\ref{lst:core-module}) that makes configurations such as the database \gls{URL} available throughout the Nest.js application.
 Consequently, we could connect the Nest.js application to the database through the prisma service (see listing~\ref{lst:prisma-service}) using the \gls{URL} from the core module.
 
 \codeFromFile{ts}{code_snippets/nest-core-module.ts}{Core module}{Core module}{lst:core-module}
