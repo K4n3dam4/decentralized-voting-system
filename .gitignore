@@ -51,3 +51,4 @@ Thumbs.db
 # Docs
 docs/out/*
 !docs/out/.gitkeep
+docs/_minted-main

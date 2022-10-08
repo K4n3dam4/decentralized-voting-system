@@ -1,0 +1,46 @@
+myorg/
+├── apps/
+│   ├── todos/
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   ├── assets/
+│   │   │   ├── environments/
+│   │   │   ├── favicon.ico
+│   │   │   ├── index.html
+│   │   │   ├── main.tsx
+│   │   │   ├── polyfills.ts
+│   │   │   └── styles.css
+│   │   ├── .babelrc
+│   │   ├── .browserslistrc
+│   │   ├── .eslintrc.json
+│   │   ├── jest.config.ts
+│   │   ├── project.json
+│   │   ├── tsconfig.app.json
+│   │   ├── tsconfig.json
+│   │   └── tsconfig.spec.json
+│   └── todos-e2e/
+│       ├── src/
+│       │   ├── fixtures/
+│       │   │   └── example.json
+│       │   ├── e2e/
+│       │   │   └── app.cy.ts
+│       │   └── support/
+│       │       ├── app.po.ts
+│       │       ├── commands.ts
+│       │       └── e2e.ts
+│       ├── .eslintrc.json
+│       ├── cypress.config.ts
+│       ├── project.json
+│       └── tsconfig.json
+├── libs/
+├── tools/
+├── .eslintrc.json
+├── .prettierrc
+├── babel.config.json
+├── jest.config.ts
+├── jest.preset.js
+├── nx.json
+├── package.json
+├── README.md
+├── tsconfig.base.json
+└── workspace.json

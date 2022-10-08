@@ -38,15 +38,23 @@ A Tex distribution needs to be installed on your system.
 # project root
 cd docs
 
+# code snippets are generated with minted, so the following pip packages need to be installed
+# on your system:
+# - jsx-lexer
+# - Pygments
+pip install jsx-lexer
+
+# pip will install Pygments alongside jsx-lexer if it isn't installed, yet
+
 # use the xml files located in .run/ to compile the document
 # 1. run Initial_Document.xml
 # 2. run Document.xml
 
 # alternatively, you can compile it yourself via the terminal
 # use lualatex
-lualatex --output-dir=out main.tex
+lualatex -shell-escape --output-dir=out main.tex
 # or xelatex
-xelatex -output-directory=out main.tex
+xelatex -shell-escape -output-directory=out main.tex
 
 # to compile main document
 # compile bibliography and glossaries
@@ -54,9 +62,9 @@ biber --output-directory out main
 makeglossaries -d out main
 
 # rerun latex compiler
-lualatex --output-dir=out main.tex
+lualatex -shell-escape --output-dir=out main.tex
 # or
-xelatex -output-directory=out main.tex
+xelatex -shell-escape -output-directory=out main.tex
 ```
 
 ## Architecture
@@ -67,7 +75,7 @@ This chapter provides a quick overview over the projects architecture.
 
 The workspace is a [nx monorepo](https://nx.dev/), which means that the project is split into modular applications that share code
 among themselves. This approach was chosen in order to make this project easily extendable in the future.
-Nx provides a growing ecosystem of plugins and its cli makes creating new applications within the repo due to its vast
+Nx provides a growing ecosystem of plugins and its cli makes creating new applications within the repo easy due to its vast
 collection of boilerplate code.
 
 #### Dependency Graph

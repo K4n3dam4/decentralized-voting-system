@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Glossaries" type="MAKEINDEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory" activateToolWindowBeforeRun="false">
+  <configuration default="false" name="Abbreviations" type="MAKEINDEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory" activateToolWindowBeforeRun="false">
     <texify-makeindex>
       <program>MAKEGLOSSARIES</program>
       <main-file>$PROJECT_DIR$/docs/main.tex</main-file>

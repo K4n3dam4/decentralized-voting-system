@@ -1,9 +1,18 @@
 %! suppress = UsePackageInPackage
 % Compiler
-\usepackage{babel, csquotes}
+\usepackage[american]{babel}
+
+% declare hyphens for non-english words and long family names
+\hyphenation{Na-ka-mo-to}
+\hyphenation{An-ton-opou-los}
+\hyphenation{block-chain}
+\hyphenation{block-chains}
+
+% patch cmd
+\usepackage{etoolbox}
 
 % Colors
-\usepackage{xcolor}
+\usepackage[rgb, table]{xcolor}
 
 % Links
 \usepackage[
@@ -13,33 +22,19 @@
     linktocpage % table of contents links to pages
 ]{hyperref}
 
-% Abbreviations and glosaries
-\usepackage{parskip}
-\usepackage[toc]{glossaries}
+% Refs
+\usepackage{amsmath}
+\usepackage[noabbrev]{cleveref}
 
-% make glossaries
-\makeglossaries
-% add entries
-\include{glossaries}
+% Quotes
+\usepackage{csquotes}
 
-% Bibliograpyhy
-\usepackage[
-    style=authoryear-icomp,
-    maxbibnames=9,
-    maxcitenames=3,
-    mincitenames=1,
-    backend=biber,
-]{biblatex}
 
+% Document layout
 \usepackage{fontspec}
 \usepackage[pagestyles]{titlesec}
 \usepackage[T1]{fontenc}
 \usepackage{titling}
-
-% TODO only for development
-\usepackage{lipsum}
-
-% Document layout
 \usepackage{geometry}
 \geometry{
     a4paper,
@@ -50,10 +45,23 @@
     includeheadfoot,
 }
 
+% microtyping (improves line breaks and hyphens)
+\usepackage[activate={true,nocompatibility},final,tracking=true,factor=1100,stretch=10,shrink=10]{microtype}
+
+% no widows
+\usepackage[all]{nowidow}
+
+% Array package
+\usepackage{array}
+
 % font declaration and title settings
 % Style
-\setmainfont[Ligatures=TeX]{Montserrat}
-\setsansfont[Ligatures=TeX]{Montserrat}
+\setmainfont[
+    Ligatures=TeX,
+    BoldFont={Montserrat Bold},
+    ItalicFont={Montserrat Italic},
+    BoldItalicFont={Montserrat Bold Italic},
+]{Montserrat}
 \renewcommand{\baselinestretch}{1.5}
 
 \newfontfamily\headingfont[]{Helvetica}
@@ -84,5 +92,188 @@
 \cfoot{\thepage}                     % add page number
 \renewcommand{\headrulewidth}{0.4pt} % add horizontal line of 0.4pt thick
 % apply header to chapter pages
-\usepackage{etoolbox}                % patch cmd
 \patchcmd{\chapter}{\thispagestyle{plain}}{\thispagestyle{fancy}}{}{} % patch chapter page
+
+\linespread{1.3}
+
+% Captions
+\usepackage{caption}
+\captionsetup{position=below, font=small, skip=10px,  justification=justified}
+
+% Notes
+\newcommand{\addtablenote}[3]{
+    \small
+    Note. Based on~#1, by~#2. #3
+}
+
+\newcommand{\addfigurenote}[3]{
+    \small
+    Note. Taken from~#1, by~#2. #3
+}
+
+% Subcaptions
+\usepackage{subcaption}
+
+% example two figures side-by-side
+%\begin{figure}[H]
+%    \begin{subfigure}{.5\textwidth}
+%        \centering
+%        \includegraphics[width=.4\linewidth]{chandra-2014-asymmetric_key}
+%        \caption{Asymmetric key pair}
+%        \label{fig:asymmetric-key-pair}
+%    \end{subfigure}
+%    \begin{subfigure}{.5\textwidth}
+%        \centering
+%        \includegraphics[width=.4\linewidth]{chandra-2014-symmetric_key}
+%        \caption{Asymmetric key pair}
+%        \label{fig:asymmetric-key-paisr}
+%    \end{subfigure}
+%    \caption[Cryptographic keys]{Cryptographic keys~\autocite[84]{chandra_comparative_2014}}
+%\end{figure}
+
+% example two figures ordered vertically
+%\begin{figure}[H]
+%    \begin{subfigure}[b]{\textwidth}
+%        \centering
+%        \includegraphics[scale=0.4]{chandra-2014-symmetric_key}
+%        \caption{Symmetric key}
+%        \label{fig:symmetric-key}
+%    \end{subfigure}
+%    \begin{subfigure}[b]{\textwidth}
+%        \centering
+%        \includegraphics[scale=0.4]{chandra-2014-asymmetric_key}
+%        \caption{Asymmetric key}
+%        \label{fig:asymmetric-key}
+%    \end{subfigure}
+%    \caption[Cryptographic keys]{Cryptographic keys~\autocite[84]{chandra_comparative_2014}}
+%\end{figure}
+
+% Figures
+\usepackage{graphicx}
+\graphicspath{{./figures}}
+
+% Tables
+\usepackage{booktabs, tabularx}
+
+% define collumn sizes
+\renewcommand\tabularxcolumn[1]{m{#1}}
+\newcolumntype{b}{X}
+\newcolumntype{s}{>{\hsize=.5\hsize}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+% variable width
+\newcolumntype{V}[1]{>{\arraybackslash}p{\dimexpr#1-2\tabcolsep}}
+% example
+%V{.30\textwidth}
+
+% change note size
+\usepackage[para, flushleft]{threeparttable}
+
+% Symbols
+\usepackage{amssymb}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\dblcmark}{\cmark\cmark}
+\newcommand{\xmark}{\ding{55}}
+% \cmark
+
+% Code
+\usepackage[outputdir=out]{minted}
+
+%% fix the minted@colorbg environment
+\makeatletter
+\renewenvironment{minted@colorbg}[1]
+{\def\minted@bgcol{#1}%
+\noindent
+    \begin{lrbox}{\minted@bgbox}
+        \begin{minipage}{\linewidth-2\fboxsep}}
+        {\end{minipage}%
+    \end{lrbox}%
+    \setlength{\topsep}{\bigskipamount}% set the vertical space
+    \trivlist\item\relax % ensure going to a new line
+    \colorbox{\minted@bgcol}{\usebox{\minted@bgbox}}%
+    \endtrivlist % close the trivlist
+}
+\makeatother
+
+\usepackage{tcolorbox}
+\tcbuselibrary{minted,skins,breakable,most}
+
+% code snippet background color
+\definecolor{CodeBG}{RGB}{30,45,62}
+
+
+\newtcbinputlisting[auto counter,number within=chapter, list inside=listoflistings]{\codeFromFile}[6][]{
+    listing engine=minted,
+    listing file={#3},
+    minted language=#2,
+    minted style=material,
+    minted options={
+        fontsize=\scriptsize,
+        formatcom=\color{white},
+        linenos,
+        breaklines,
+        breakanywhere,
+        numbersep=1mm,
+        framesep=3mm,
+    },
+    colback=CodeBG,
+    breakable,
+    enhanced,
+    halign=center,
+    listing only,
+    title={Listing \thetcbcounter: #4},
+    list entry={\protect\numberline{\thetcbcounter}#5},
+    label=#6,
+    coltitle=black,
+    colbacktitle=white,
+    fonttitle=\small,
+    attach boxed title to bottom center,
+    boxed title style={
+        frame hidden,
+        top=5px,
+        left=0cm,
+    },
+    #1
+}
+
+% line numbers color
+\renewcommand{\theFancyVerbLine}{\ttfamily
+\textcolor[rgb]{1,1,1}{\tiny{\arabic{FancyVerbLine}}}}
+
+\newminted[jsxcode]{jsx}{linenos=true, texcl=true, bgcolor=CodeBG, breakanywhere}
+\newminted[shellcode]{bash}{linenos=true, texcl=true, bgcolor=CodeBG, breakanywhere}
+\newminted[pycode]{python}{linenos=true, texcl=true, bgcolor=CodeBG, breakanywhere}
+
+% example for commands above
+% \begin{jsxcode}
+%   class HelloMessage extends React.Component {
+%       render() {
+%           return (
+%               <div>
+%                   Hello {this.props.name}
+%               </div>
+%           );
+%       }
+%   }
+%
+%   ReactDOM.render(
+%       <HelloMessage name="Taylor" />,
+%       document.getElementById('hello-example')
+%   );
+% \end{jsxcode}
+
+% Abbreviations and glosaries
+\usepackage{parskip}
+\usepackage[toc, acronym]{glossaries}
+
+% make glossaries
+\makeglossaries
+
+% Bibliograpyhy
+\usepackage[
+    style=authoryear-icomp,
+    maxbibnames=9,
+    maxcitenames=2,
+    mincitenames=1,
+    backend=biber,
+]{biblatex}

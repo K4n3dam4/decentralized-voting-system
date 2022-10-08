@@ -1,13 +1,13 @@
 % Preamble
-\documentclass[11pt, american, oneside]{report}
+\documentclass[11pt, oneside]{report}
 
 % Meta
 \edef\mytitle{Electronic Voting and Web3}
 \edef\mysubtitle{Developing an electronic voting system using blockchain technology}
 \edef\me{Nils Boehm}
-\edef\publishedon{22.09.2022}
+\edef\publishedon{\today}
 
-% Load config
+% Load preamble
 \usepackage{preamble}
 
 % References
@@ -21,16 +21,54 @@
 
     \tableofcontents
 
-    \printglossary[title=Abbreviations]\newpage
-
+    % Abbreviations
+    \include{abbreviations}
+    \cleardoublepage
+    \phantomsection
+    \printglossary[type=\acronymtype, title=Abbreviations]
+    \newpage
+    % Glossaries
+    \include{glossaries}
+    \cleardoublepage
+    \phantomsection
+    \printglossary
+    \newpage
+    % Figures
+    \renewcommand{\listfigurename}{Figures}
+    \cleardoublepage
+    \phantomsection
     \addcontentsline{toc}{chapter}{Figures}
-    \listoffigures\newpage
+    \listoffigures
+    \newpage
+    % Listings
+    \cleardoublepage
+    \phantomsection
+    \addcontentsline{toc}{chapter}{Listings}
+    \tcblistof[\chapter*]{listoflistings}{Listings}
+    \newpage
 
+    \renewcommand{\listtablename}{Tables}
+    \cleardoublepage
+    \phantomsection
     \addcontentsline{toc}{chapter}{Tables}
     \listoftables\newpage
 
     \include{chapters/intro}
 
-    \printbibliography
+    \include{chapters/context}
+
+    \include{chapters/methodology}
+
+    \include{chapters/implementation}
+
+    \include{chapters/results}
+
+    % Bibliography
+    \printbibliography[heading=bibintoc]
+
+    % Appendix
+    \appendix
+
+    \include{appendix/technologies}
 
 \end{document}

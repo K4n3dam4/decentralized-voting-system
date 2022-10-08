@@ -1,37 +1,84 @@
-\chapter{Introduction}
-\label{ch:intro}
+\chapter{Introduction}\label{ch:intro}
 
-Elections are the corner stone modern democracies are built on and thus are arguably one of the most important aspects of our democratic processes.
+Elections are the cornerstone modern democracies are built on and thus are arguably one of the most critical aspects of our democratic processes.
 Consequently, ensuring fair elections and voting results that are trustworthy should be of concern to every democratic nation and its citizens.
-Unfortunately, no system is perfect and analogous voting systems that are currently employed by democratic countries are no exception to this rule.
-The consensus view is that voting systems must be secure, anonymous, transparent and scalable~
-\autocites{lowry_desirable_2009}[5]{agora_agora_nodate}[9-11]{jafar_blockchain_2021}, which are properties that may not be impossible but very costly to achieve;
-even for industrialized nations.
-Furthermore, even when a nation does allocate the necessary amount of funds to secure its electoral processes this is still no guarantee that voters' trust in the election result will be secured.
-This becomes evident when looking at the past two presidential elections of the \Gls{USA}, where theories of voter fraud dominated online discussions and news-reports in the weeks and months following both the 2016 and 2020 elections.
+However, no system is perfect, and analogous voting systems currently employed by democratic countries are no exception to this rule.
 
-%\autocite{poblet_linked_2017, diaz-santiso_e-voting_2021, canada_blockchain_2020} which can be challenging to achieve even in industrialized nations.
+The consensus view is that voting systems must be secure, anonymous, transparent, and scalable
+\autocites[9-11]{jafar_blockchain_2021}[3]{diaz-santiso_e-voting_2021}{lowry_desirable_2009}[10-12]{tas_systematic_2020},
+which are properties that may not be impossible but very costly to achieve;\ even for industrialized nations.
+Furthermore, even when a government allocates the necessary funds to secure its election processes, there is still no
+guarantee that this will ensure voters’ trust in the election result, as evidenced by presidential elections in the \Gls{USA}, where voter fraud theories dominated online discussions and news reports in the weeks and months following the 2016 and 2020 elections.
+In the case of the \Gls{USA}, it could be argued that the distrust was partly caused by the fact that even though regular citizens can personally audit paper ballots, they usually do not possess the necessary skills to make statistical assessments.
+At the same time, the voting process consists of several steps involving election officials or centralized software, which might be intransparent for a broad part of the population, thus providing critics with ample ground for speculation about election fraud.
+Once such theories have gained traction, experience has shown that their spread is not easy to stop, regardless of whether they are untrue.
+Therefore, many Democrats in the \Gls{USA} still believe that the 2016 election was manipulated~\autocite{sinclair_its_2018}
+even though the Mueller investigation has found no evidence of Russian interference~\autocite{mueller_report_2019}.
+Similarly, many Republicans still believe widespread voter fraud is the reason, Donald.\ J. Trump lost the 2020 election.
+However, statistical analysis of voter ballots does not confirm that hypothesis~\autocite{eggers_no_2021}.
 
+A \Gls{Web3} application using \gls{Blockchain} technology could solve those problems while at the same time being considerably less vulnerable to cyberattacks than currently employed centralized e-voting systems.
+According to~\textcite{yaga_blockchain_2018}, \glspl{Blockchain} are decentralized digital ledgers that enable a community of users to record transactions publicly.
+This makes \gls{Blockchain} technology an ideal candidate for electronic voting systems as transactions are immutable and auditable on the public ledger.
+Furthermore, the decentralized manner in which \gls{Blockchain} ledgers are distributed means no single point of attack exists.
+Provided governments will either run their respective voting systems on their own \glspl{Blockchain} with a high enough number of nodes or an existing and widely distributed blockchain network, e.g., Ethereum.
 
+\section{Objectives}\label{sec:objectives}
 
-\section{Sed elementum}\label{sec:sedelemntum}
+This thesis will discuss the operational features of \gls{Blockchain} technology and describe the development process of a decentralized electronic voting system that has this technology at its core.
+The resulting prototype will then be evaluated, and its feasibility discussed in~\cref{ch:results} following implementation.
 
-Sed elementum nec velit sit amet viverra.
-Pellentesque dignissim consectetur dolor id vulputate.
-Duis semper at mi ut varius.
-Phasellus finibus euismod velit eget fermentum~.
-Sed a egestas ante, vel \strong{\textit{lobortis felis}}.
-Nulla dignissim tincidunt lacus, a lacinia lacus posuere nec.
-Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus~.
+\subsection{Qualitative objectives}\label{subsec:qualitative-objectives}
 
-\subsection{Nulla dignissim tincidunt lacus}\label{subsec:nulladinissim}
+Among others, \textcites[9-11]{jafar_blockchain_2021}[3]{diaz-santiso_e-voting_2021}{lowry_desirable_2009}[10-12]{tas_systematic_2020} name security, anonymity, transparency, and scalability as the most important qualitative features of a voting system.
+Consequently, they will be critical considerations in the following chapters.
 
-\lipsum[1-10]
+\subsection{Quantitative objectives}\label{subsec:quantitative-objectives}
 
-\section{fermentum}\label{sec:fermentum}
+In order to demonstrate that modern technology, specifically \gls{Blockchain} technology, can be used to develop a secure electronic voting system, the project must include the following features.
+These are essential to simulate an end-to-end voting process.
 
-\lipsum[1-5]
+\begin{enumerate}
+    \item Voter registration
+    \begin{itemize}
+        \item Registration mask (client)
+        \item Matching of voter data with database entries of registered voters (server)
+        \item Creation of voter wallet that connects to anonymous voter login data (server)
+    \end{itemize}
+    \item Voting booth
+    \begin{itemize}
+        \item Display open elections (client)
+        \item Display election information and candidates (client)
+        \item A user interface to facilitate voting (client)
+        \item Display election results (client)
+        \item Execution of submitted votes as \gls{SmartContract} (server)
+        \item Fetching election results from the corresponding \gls{SmartContract} and transforming them into readable data for the client (server)
+    \end{itemize}
+    \item Administration
+    \begin{itemize}
+        \item A user interface to facilitate the creation of elections (client)
+        \item Transformation of entered data and subsequent creation of election \gls{SmartContract} (server)
+    \end{itemize}
+\end{enumerate}
 
-\Gls{API} is in \Gls{NYC}
+\subsection{Out-of-scope objectives}\label{subsec:out-of-scope-objectives}
+
+Several objectives were identified as non-essential and out-of-scope, respectively.
+Among them is designing a visually appealing user interface, which is time-consuming and requires specific results based on local regulations.
+For the same reasons, accessibility was excluded as a qualitative objective but would ultimately need to be addressed in a viable product, depending on the jurisdiction seeking to employ it~\autocites{laskowski_promoting_2022}[sections 2.2, 2.7]{lowry_desirable_2009}.
+Governments must also consider cost-efficiency as transaction costs vary significantly between blockchain networks.
+For example, transaction costs on the Ethereum network reached \$1.52 - \$4.00 in Juli 2022, while costs on the Polygon network were as low as \$0.00021697 in the same month~\autocite{shrivastava_ethereum_2022}.
+However, since we aim primarily at developing a secure and transparent electronic voting system, the question of cost-efficiency will be deferred behind the objectives set in~\cref{subsec:qualitative-objectives}.
+
+\section{Relevance}\label{sec:relevance}
+
+Decentralized autonomy, specifically decentralized voting, is not an entirely new idea.
+The concept was first introduced by members of the Ethereum community in 2016 when they created \emph{The DAO} \autocites[section 3.1]{el_faqir_overview_2020}{falkon_story_2018}, which would become the first \gls{DAO}.
+\emph{The DAO} effectively enabled its users to crowdfund community projects by investing Ethereum in exchange for DAO tokens and then using those tokens to vote on the most promising proposals~\autocite{falkon_story_2018}.
+
+In the years since, \glspl{DAO} have become an essential part of the cryptocurrency market’s ecosystem;
+however, the concept of decentralized voting has thus mainly been studied by private individuals rather than governments.
+Furthermore, most companies that work on decentralized voting systems made for nations are profit-oriented and therefore do not have an open-source code base.
+Hence, an open-source project like this could provide new actionable insights for governments wishing to research this topic to facilitate progress.
 
 
