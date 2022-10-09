@@ -1,0 +1,37 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/smart-contracts/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/smart-contracts/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/smart-contracts"],
+      "options": {
+        "jestConfig": "libs/smart-contracts/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "compile-contracts": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx hardhat compile",
+        "cwd": "libs/smart-contracts"
+      }
+    },
+    "deploy-contracts-testnet": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx hardhat run src/lib/scripts/deploy.ts --network testnet",
+        "cwd": "libs/smart-contracts"
+      }
+    }
+  },
+  "tags": []
+}

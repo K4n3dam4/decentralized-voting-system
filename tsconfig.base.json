@@ -17,7 +17,8 @@
     "paths": {
       "@dvs/api-core": ["libs/api/core/src/index.ts"],
       "@dvs/api/auth": ["libs/api/auth/src/index.ts"],
-      "@dvs/api/prisma": ["libs/api/prisma/src/index.ts"]
+      "@dvs/api/prisma": ["libs/api/prisma/src/index.ts"],
+      "@dvs/smart-contracts": ["libs/smart-contracts/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

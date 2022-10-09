@@ -55,5 +55,5 @@
     }
   },
   "tags": ["scope:api"],
-  "implicitDependencies": ["api-core", "api-prisma"]
+  "implicitDependencies": ["api-core", "api-prisma", "smart-contracts"]
 }

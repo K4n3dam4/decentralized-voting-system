@@ -7,6 +7,7 @@
     "api-core": "libs/api/core",
     "api-e2e": "apps/api-e2e",
     "api-prisma": "libs/api/prisma",
-    "client": "apps/client"
+    "client": "apps/client",
+    "smart-contracts": "libs/smart-contracts"
   }
 }
