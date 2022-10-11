@@ -1,0 +1,23 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/server-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/api/e2e"],
+      "options": {
+        "jestConfig": "apps/server-e2e/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/server-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": ["api-e2e"],
+  "implicitDependencies": ["server", "api", "prisma"]
+}

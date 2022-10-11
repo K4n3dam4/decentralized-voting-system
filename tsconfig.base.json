@@ -15,9 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@dvs/api-core": ["libs/api/core/src/index.ts"],
-      "@dvs/api/auth": ["libs/api/auth/src/index.ts"],
-      "@dvs/api/prisma": ["libs/api/prisma/src/index.ts"],
+      "@dvs/api": ["libs/api/src/index.ts"],
+      "@dvs/prisma": ["libs/prisma/src/index.ts"],
       "@dvs/smart-contracts": ["libs/smart-contracts/src/index.ts"]
     }
   },

@@ -2,12 +2,11 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
-    "api": "apps/api",
-    "api-auth": "libs/api/auth",
-    "api-core": "libs/api/core",
-    "api-e2e": "apps/api-e2e",
-    "api-prisma": "libs/api/prisma",
+    "api": "libs/api",
     "client": "apps/client",
+    "prisma": "libs/prisma",
+    "server": "apps/server",
+    "server-e2e": "apps/server-e2e",
     "smart-contracts": "libs/smart-contracts"
   }
 }
