@@ -28,7 +28,7 @@
     "deploy-testnet": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx hardhat run src/lib/scripts/deploy.ts --network testnet",
+        "command": "npx hardhat deploy-to-testnet --network testnet",
         "cwd": "libs/smart-contracts"
       }
     },
