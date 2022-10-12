@@ -29,13 +29,13 @@ const deployAndUpdate = async (file: string, env: string, hre: HardhatRuntimeEnv
   console.log(`${env} updated`);
 };
 
-task('deploy-to-testnet', 'deploys contracts to testnet').setAction(async (_taskArgs, hre) => {
+task('deploy-testnet', 'deploys contracts to testnet').setAction(async (_taskArgs, hre) => {
   const env = '.env.local';
   const file = path.resolve(workspaceRoot, env);
   await deployAndUpdate(file, env, hre);
 });
 
-task('deploy-to-mainnet', 'deploys contracts to mainnet').setAction(async (_taskArgs, hre) => {
+task('deploy-mainnet', 'deploys contracts to mainnet').setAction(async (_taskArgs, hre) => {
   const env = '.env';
   const file = path.resolve(workspaceRoot, env);
   await deployAndUpdate(file, env, hre);
