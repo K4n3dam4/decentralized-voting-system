@@ -18,17 +18,24 @@
         "passWithNoTests": true
       }
     },
-    "compile-contracts": {
+    "compile": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npx hardhat compile",
         "cwd": "libs/smart-contracts"
       }
     },
-    "deploy-contracts-testnet": {
+    "deploy-testnet": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npx hardhat run src/lib/scripts/deploy.ts --network testnet",
+        "cwd": "libs/smart-contracts"
+      }
+    },
+    "deploy-mainnet": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx hardhat run src/lib/scripts/deploy.ts --network mainnet",
         "cwd": "libs/smart-contracts"
       }
     }

@@ -8,6 +8,10 @@ const config: HardhatUserConfig = {
       url: process.env.ALCHEMY_API,
       accounts: [`0x${process.env.ADMIN_PK}`],
     },
+    mainnet: {
+      url: process.env.ALCHEMY_API_MAIN,
+      accounts: [`0x${process.env.ADMIN_PK_MAIN}`],
+    },
   },
   paths: {
     root: './src/lib/',

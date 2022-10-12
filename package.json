@@ -6,8 +6,9 @@
   "scripts": {
     "module:nest": "nx g @nrwl/nest:lib",
     "prepare": "husky install",
-    "compile:contracts": "nx compile-contracts smart-contracts",
-    "deploy:contracts:testnet": "nx deploy-contracts-testnets smart-contracts",
+    "compile:contracts": "nx compile smart-contracts",
+    "deploy:contracts:testnet": "nx deploy-testnet smart-contracts",
+    "deploy:contracts:mainnet": "nx deploy-mainnet smart-contracts",
     "build:client": "nx build client",
     "build:server": "nx build server",
     "build:client:prod": "nx build client --prod",

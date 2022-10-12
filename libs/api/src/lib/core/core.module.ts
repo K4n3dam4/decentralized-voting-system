@@ -14,7 +14,7 @@ import { EthersCoreModule } from 'nestjs-ethers/dist/ethers-core.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
-        network: config.get('NODE_ENV') === 'production' ? 'matic' : 'maticmum',
+        network: config.get('environment') === 'production' ? 'matic' : 'maticmum',
         alchemy: config.get('alchemyAPIKey'),
         waitUntilIsConnected: true,
         useDefaultProvider: false,
