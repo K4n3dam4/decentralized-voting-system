@@ -120,7 +120,7 @@ made it easier to follow best practices for backend development. Additionally, b
 ### Polygon
 
 [Polygon](https://polygon.technology/) was chosen to deploy smart contracts mainly due to its higher transaction throughput. Since Polygon is a Layer 2 protocol running on top of Ethereum, this seemed like the most balanced option when looking at security vs. scalability.
-Furthermore, migrating the voting system from MATIC Mainnet to Ethereum once Sharding will have improved Ethereum's scalability will be a matter of simply changing network configurations and redeploying all developed contracts on Ethereum's Mainnet.
+Furthermore, migrating the voting system from MATIC Mainnet to Ethereum, once the implementation of Sharding has Ethereum's scalability, will be a matter of simply changing network configurations and redeploying all developed contracts on Ethereum's Mainnet.
 
 #### Polygon Documentation
 
