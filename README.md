@@ -21,6 +21,9 @@
 - **[Blockchain](#blockchain)**
   - [Polygon](#polygon)
 - **[Getting started](#getting-started)**
+  - [.envs](#envs)
+  - [Smart Contracts](#smart-contracts)
+  - [Running the application](#running-the-application)
 
 ## Introduction
 
@@ -71,7 +74,7 @@ xelatex -shell-escape -output-directory=out main.tex
 
 ## Architecture
 
-This chapter provides a quick overview over the projects architecture.
+This chapter provides a quick overview over the project's architecture.
 
 ### Workspace
 
@@ -141,7 +144,19 @@ Locate example.env files in the project's root directory and rename them:
 
 Add your configurations and secrets.
 
-### Starting the application
+### Smart Contracts
+
+As the application relies on smart contracts to manage the voting process, you first need to compile and deploy the contracts located in _libs/smart-contracts_
+
+```shell
+# compile contracts
+yarn compile:contracts
+
+# deploy contracts
+yarn deploy:contracts
+```
+
+### Running the application
 
 ```shell
 # start server
