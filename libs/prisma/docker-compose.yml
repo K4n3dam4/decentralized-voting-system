@@ -23,7 +23,7 @@ services:
     networks:
       - dvs-app
   dvs-db-test:
-    container_name: dvs-dv-test
+    container_name: dvs-db-test
     image: postgres:13
     ports:
       - '5435:5432'
