@@ -17,6 +17,7 @@
     "paths": {
       "@dvs/api": ["libs/api/src/index.ts"],
       "@dvs/prisma": ["libs/prisma/src/index.ts"],
+      "@dvs/server": ["apps/server/src/index.ts"],
       "@dvs/smart-contracts": ["libs/smart-contracts/src/index.ts"]
     }
   },

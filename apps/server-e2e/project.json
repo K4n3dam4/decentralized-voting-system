@@ -18,6 +18,6 @@
       }
     }
   },
-  "tags": ["api-e2e"],
+  "tags": ["scope:api"],
   "implicitDependencies": ["server", "api", "prisma"]
 }
