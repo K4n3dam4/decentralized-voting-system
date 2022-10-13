@@ -3,10 +3,12 @@ import { PrismaService } from '@dvs/prisma';
 import { VoterSignin, VoterSignup } from './auth.dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) {}
   async signup(dto: VoterSignup) {
     // find social security number in registered voters list
     const registeredVoter = await this.prisma.registeredVoter.findFirst({
@@ -35,8 +37,7 @@ export class AuthService {
       });
 
       // return voter
-      delete voter.hash;
-      return voter;
+      return this.signJwtToken(voter.id, voter.username);
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -58,7 +59,23 @@ export class AuthService {
     if (!matchHash) throw new ForbiddenException('signin.forbidden.wrongPassword');
 
     // return voter
-    delete voter.hash;
-    return voter;
+    return this.signJwtToken(voter.id, voter.username);
+  }
+
+  async signJwtToken(id: number, username: string) {
+    const secret = this.config.get('jwtSecret');
+    const payload = {
+      sub: id,
+      username,
+    };
+
+    const token = await this.jwt.signAsync(payload, {
+      expiresIn: '15m',
+      secret,
+    });
+
+    return {
+      access_token: token,
+    };
   }
 }

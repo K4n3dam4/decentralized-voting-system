@@ -168,12 +168,8 @@ describe('App e2e', () => {
         });
 
         it('should sign in', function () {
-          return spec().post(url).withBody(dto).expectStatus(200).inspect();
+          return spec().post(url).withBody(dto).expectStatus(200);
         });
-      });
-
-      describe('Signout', function () {
-        it('should sign out', function () {});
       });
     });
   });
