@@ -10,24 +10,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Admin {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  firstName String
+  lastName String
+  employeeNumber Int @unique
+
+  @@map("admins")
+}
+
 model RegisteredVoter {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  socialSecurity Int
+  socialSecurity Int @unique
   firstName String
   lastName String
   street String
-  postalCode String
+  postalCode Int
   city String
 
-  hasRegistred Boolean
+  hasRegistered Boolean
 
   @@map("resgisteredVoters")
 }
 
-model Voters {
+model Voter {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

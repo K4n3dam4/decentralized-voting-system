@@ -25,6 +25,13 @@
         "cwd": "libs/prisma"
       }
     },
+    "prisma-migrate-deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma migrate deploy",
+        "cwd": "libs/prisma"
+      }
+    },
     "prisma-generate": {
       "executor": "nx:run-commands",
       "options": {
