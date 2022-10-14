@@ -1,47 +1,35 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from '@dvs/prisma';
-import { VoterSignin, VoterSignup } from './auth.dto';
-import * as argon from 'argon2';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import * as argon from 'argon2';
+import { PrismaService } from '@dvs/prisma';
+import { VoterSignin, VoterSignup } from './auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) {}
   async signup(dto: VoterSignup) {
-    // find social security number in registered voters list
-    const registeredVoter = await this.prisma.registeredVoter.findFirst({
-      where: { socialSecurity: dto.socialSecurity, hasRegistered: false },
-    });
-    //  if voter is not found or has already registered throw error
-    if (!registeredVoter) throw new ForbiddenException('signup.forbidden.notEligible');
-
     // hash password
     const hash = await argon.hash(dto.password);
+    delete dto.password;
+    // hash social security number
+    dto.socialSecurity = await argon.hash(dto.socialSecurity, { salt: Buffer.from(this.config.get('salt')) });
     // add voter
     try {
       const voter = await this.prisma.voter.create({
         data: {
-          username: dto.username,
+          ...dto,
           hash,
-          privateKey: 'myPrivateKey',
-          publicKey: 'myPublicKey',
         },
       });
 
-      // update registered voter
-      await this.prisma.registeredVoter.update({
-        where: { socialSecurity: dto.socialSecurity },
-        data: { hasRegistered: true },
-      });
-
       // return voter
-      return this.signJwtToken(voter.id, voter.username);
+      return this.signJwtToken(voter.id, voter.email);
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new ForbiddenException('signup.forbidden.takenUsername');
+          throw new ForbiddenException('signup.forbidden.alreadyRegistered');
         }
       }
       throw error;
@@ -49,7 +37,7 @@ export class AuthService {
   }
   async signin(dto: VoterSignin) {
     // find user
-    const voter = await this.prisma.voter.findUnique({ where: { username: dto.username } });
+    const voter = await this.prisma.voter.findUnique({ where: { email: dto.email } });
     // if user does not exist throw error
     if (!voter) throw new ForbiddenException('signin.forbidden.wrongUsername');
 
@@ -59,14 +47,14 @@ export class AuthService {
     if (!matchHash) throw new ForbiddenException('signin.forbidden.wrongPassword');
 
     // return voter
-    return this.signJwtToken(voter.id, voter.username);
+    return this.signJwtToken(voter.id, voter.email);
   }
 
-  async signJwtToken(id: number, username: string) {
+  async signJwtToken(id: number, email: string) {
     const secret = this.config.get('jwtSecret');
     const payload = {
       sub: id,
-      username,
+      email,
     };
 
     const token = await this.jwt.signAsync(payload, {

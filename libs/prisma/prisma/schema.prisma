@@ -2,54 +2,54 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+      provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+      provider = "postgresql"
+      url      = env("DATABASE_URL")
 }
 
 model Admin {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+      id Int @id @default(autoincrement())
+      createdAt DateTime @default(now())
+      updatedAt DateTime @default(now())
 
-  firstName String
-  lastName String
-  employeeNumber Int @unique
+      firstName String
+      lastName String
+      serviceNumber Int @unique
 
-  @@map("admins")
-}
-
-model RegisteredVoter {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  socialSecurity Int @unique
-  firstName String
-  lastName String
-  street String
-  postalCode Int
-  city String
-
-  hasRegistered Boolean
-
-  @@map("resgisteredVoters")
+      elections Election[]
+      @@map("admins")
 }
 
 model Voter {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  username String @unique
-  hash String
+    socialSecurity String @unique
+    firstName String
+    lastName String
+    street String
+    postalCode Int
+    city String
 
-  publicKey String
-  privateKey String
+    email String @unique
+    hash String
 
-  @@map("voters")
+    @@map("resgisteredVoters")
+}
+
+model Election {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime
+    adminId Int
+    admin Admin @relation(fields: [adminId], references: [id])
+
+    contract String
+    eligableVoters Int[]
+    @@map("elections")
 }
 

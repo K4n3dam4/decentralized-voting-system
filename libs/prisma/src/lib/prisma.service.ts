@@ -1,7 +1,7 @@
 import { Body, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
-import { Admin, RegisteredVoter } from './prisma.dto';
+import { Admin } from './prisma.dto';
 
 @Injectable()
 export class PrismaService extends PrismaClient {
@@ -16,7 +16,7 @@ export class PrismaService extends PrismaClient {
   }
 
   withCleanDatabase() {
-    return this.$transaction([this.admin.deleteMany(), this.registeredVoter.deleteMany(), this.voter.deleteMany()]);
+    return this.$transaction([this.admin.deleteMany(), this.voter.deleteMany()]);
   }
 
   async withAdmin(@Body() dto: Admin) {
@@ -24,12 +24,5 @@ export class PrismaService extends PrismaClient {
       data: dto,
     };
     await this.admin.create(admin);
-  }
-
-  async withRegisteredVoter(@Body() dto: RegisteredVoter) {
-    const registeredVoter = {
-      data: dto,
-    };
-    await this.registeredVoter.create(registeredVoter);
   }
 }

@@ -6,6 +6,8 @@ export const configuration = () => ({
   globalPrefix: process.env.GLOBAL_PREFIX || 'api',
   validationPipe: new ValidationPipe({ whitelist: true }),
   jwtSecret: process.env.JWT_SECRET,
+  secret: process.env.SECRET,
+  salt: process.env.SALT,
   // Blockchain
   alchemyAPI: process.env.ALCHEMY_API,
   alchemyAPIKey: process.env.ALCHEMY_API_KEY,

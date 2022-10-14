@@ -1,23 +1,35 @@
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class VoterSignup {
-  @IsInt()
+  @IsString()
   @IsNotEmpty()
-  socialSecurity: number;
-
+  socialSecurity: string;
   @IsNotEmpty()
   @IsString()
-  username: string;
+  firstName: string;
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
+  @IsNotEmpty()
+  @IsString()
+  street: string;
+  @IsNotEmpty()
+  @IsInt()
+  postalCode: number;
+  @IsNotEmpty()
+  @IsString()
+  city: string;
 
+  @IsEmail()
+  email: string;
   @IsNotEmpty()
   @IsString()
   password: string;
 }
 
 export class VoterSignin {
-  @IsNotEmpty()
-  @IsString()
-  username: string;
+  @IsEmail()
+  email: string;
 
   @IsNotEmpty()
   @IsString()

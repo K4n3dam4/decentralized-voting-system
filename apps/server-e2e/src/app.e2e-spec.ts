@@ -1,7 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthModule, CoreModule, VoterSignin, VoterSignup } from '@dvs/api';
-import { Admin, PrismaModule, PrismaService, RegisteredVoter } from '@dvs/prisma';
+import { Admin, PrismaModule, PrismaService } from '@dvs/prisma';
 import { AppModule } from '@dvs/server';
 import { request, spec } from 'pactum';
 
@@ -16,27 +16,17 @@ describe('App e2e', () => {
     const admin: Admin = {
       firstName: 'Test',
       lastName: 'Admin',
-      employeeNumber: 987654,
+      serviceNumber: 987654,
     };
-
-    const registeredVoter0: RegisteredVoter = {
-      socialSecurity: 123456,
-      firstName: 'Test',
-      lastName: 'User 0',
-      street: 'Street 1',
-      postalCode: 32432,
-      city: 'City',
-      hasRegistered: false,
-    };
-
-    const registeredVoter1: RegisteredVoter = {
-      socialSecurity: 654321,
-      firstName: 'Test',
-      lastName: 'User 1',
-      street: 'Street 1',
-      postalCode: 32432,
-      city: 'City',
-      hasRegistered: false,
+    const mockVoter: VoterSignup = {
+      socialSecurity: '123456',
+      firstName: 'John',
+      lastName: 'Doe',
+      street: 'Baker Street 1',
+      postalCode: 20095,
+      city: 'Web3 City',
+      email: 'johndoe@test.com',
+      password: 'testpassword',
     };
 
     beforeAll(async () => {
@@ -57,8 +47,6 @@ describe('App e2e', () => {
       prisma = app.get(PrismaService);
       await prisma.withCleanDatabase();
       await prisma.withAdmin(admin);
-      await prisma.withRegisteredVoter(registeredVoter0);
-      await prisma.withRegisteredVoter(registeredVoter1);
     });
 
     afterAll(function () {
@@ -102,27 +90,14 @@ describe('App e2e', () => {
     // Test auth module
     describe('Auth', function () {
       describe('Signup', function () {
-        const dto: VoterSignup = {
-          socialSecurity: registeredVoter0.socialSecurity,
-          username: 'Test User',
-          password: 'testuserpassword',
-        };
+        const dto = { ...mockVoter };
 
         const url = 'auth/signup';
 
         it('should validate request', function () {
           const faultyDto = { ...dto };
-          faultyDto.password = '';
-          return spec()
-            .post(url)
-            .withBody(faultyDto)
-            .expectBody({ statusCode: 400, message: ['password should not be empty'], error: 'Bad Request' });
-        });
-
-        it('should only sign up registered voters', function () {
-          const unregisteredVoter = { ...dto };
-          unregisteredVoter.socialSecurity = 4378273842;
-          return spec().post(url).withBody(unregisteredVoter).expectStatus(403);
+          faultyDto.email = '';
+          return spec().post(url).withBody(faultyDto).expectStatus(400);
         });
 
         it('should sign up', function () {
@@ -133,16 +108,22 @@ describe('App e2e', () => {
           return spec().post(url).withBody(dto).expectStatus(403);
         });
 
-        it('should not allow duplicate usernames', function () {
-          const duplicateUsername = { ...dto };
-          duplicateUsername.socialSecurity = registeredVoter1.socialSecurity;
-          return spec().post(url).withBody(duplicateUsername).expectStatus(403);
+        it('should not allow duplicate emails', function () {
+          const duplicateEmail = { ...dto };
+          duplicateEmail.socialSecurity = '1357810';
+          return spec().post(url).withBody(duplicateEmail).expectStatus(403);
+        });
+
+        it('should not allow duplicate social security number', function () {
+          const duplicateSocialNumber = { ...dto };
+          duplicateSocialNumber.email = 'johndoe2@test.com';
+          return spec().post(url).withBody(duplicateSocialNumber).expectStatus(403);
         });
       });
       describe('Signin', function () {
         const dto: VoterSignin = {
-          username: 'Test User',
-          password: 'testuserpassword',
+          email: mockVoter.email,
+          password: mockVoter.password,
         };
         const url = 'auth/signin';
 
@@ -157,18 +138,43 @@ describe('App e2e', () => {
 
         it('should validate username', function () {
           const faultyDto = { ...dto };
-          faultyDto.username = 'Test';
+          faultyDto.email = 'john.doe@test.de';
           return spec().post(url).withBody(faultyDto).expectStatus(403);
         });
 
         it('should validate password', function () {
           const faultyDto = { ...dto };
-          faultyDto.username = 'ewffrefr';
+          faultyDto.password = 'ewffrefr';
           return spec().post(url).withBody(faultyDto).expectStatus(403);
         });
 
-        it('should sign in', function () {
-          return spec().post(url).withBody(dto).expectStatus(200);
+        it('should sign in', async function () {
+          return spec().post(url).withBody(dto).expectStatus(200).stores('access_token', 'access_token');
+        });
+      });
+    });
+
+    // Test elections module
+    describe('Elections', function () {
+      const headers = { Authorization: 'Bearer $S{access_token}' };
+
+      describe('Get all', function () {
+        const url = 'elections/get/all';
+
+        it('should be guarded', function () {
+          return spec().get(url).expectStatus(401);
+        });
+
+        it('should get all elections', function () {
+          return spec().get(url).withHeaders(headers).expectStatus(200);
+        });
+      });
+
+      describe('Get single', function () {
+        const url = 'elections/get/1';
+
+        it('should be guarded', function () {
+          return spec().get(url).expectStatus(401);
         });
       });
     });
