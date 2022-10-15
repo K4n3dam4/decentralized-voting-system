@@ -11,11 +11,11 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "nx:run-commands",
       "outputs": ["coverage/libs/smart-contracts"],
       "options": {
-        "jestConfig": "libs/smart-contracts/jest.config.ts",
-        "passWithNoTests": true
+        "command": "npx hardhat test",
+        "cwd": "libs/smart-contracts"
       }
     },
     "compile": {

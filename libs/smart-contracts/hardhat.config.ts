@@ -1,33 +1,8 @@
 import { workspaceRoot } from 'nx/src/utils/workspace-root';
 import path from 'path';
-import fs from 'fs-extra';
 import { HardhatUserConfig, task } from 'hardhat/config';
-import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import '@nomicfoundation/hardhat-toolbox';
-import contractMap from './src/lib/scripts/contractMap';
-import main from './src/lib/scripts/deploy';
-
-const deployAndUpdate = async (file: string, env: string, hre: HardhatRuntimeEnvironment) => {
-  const contracts = contractMap;
-  let data = await fs.readFile(file, 'utf-8');
-
-  // loop through contracts, deploy and update env
-  for (const entry of Object.entries(contracts)) {
-    const [key, value] = entry;
-    let contract = key.split('_')[1].toLowerCase();
-    contract = contract.charAt(0).toUpperCase() + contract.slice(1);
-    try {
-      const address = await main(contract, hre);
-      data = data.replace(`${key}=${value}`, `${key}=${address}`);
-    } catch (err) {
-      console.log(`Error: ${err}`);
-      console.log(`Could not deploy ${contract}`);
-    }
-  }
-  console.log(`Updating ${env} with new addresses...`);
-  await fs.writeFile(file, data);
-  console.log(`${env} updated`);
-};
+import { deployAndUpdate } from './src/lib/scripts/deploy';
 
 task('deploy-testnet', 'deploys contracts to testnet').setAction(async (_taskArgs, hre) => {
   const env = '.env.local';
