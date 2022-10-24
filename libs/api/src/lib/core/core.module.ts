@@ -34,10 +34,6 @@ export class CoreModule {
     private readonly provider: AlchemyProvider,
   ) {}
 
-  withConfig() {
-    return this.config;
-  }
-
   async withPolygonConnection() {
     return await this.provider.detectNetwork();
   }

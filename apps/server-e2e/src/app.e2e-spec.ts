@@ -1,7 +1,8 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthModule, CoreModule, VoterSignin, VoterSignup } from '@dvs/api';
+import { AuthModule, CoreModule, ElectionModule, VoterSignin, VoterSignup } from '@dvs/api';
 import { Admin, PrismaModule, PrismaService } from '@dvs/prisma';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { AppModule } from '@dvs/server';
 import { request, spec } from 'pactum';
 
@@ -71,18 +72,13 @@ describe('App e2e', () => {
         expect(app.get(AuthModule)).toBeDefined();
       });
 
-      it('should load configuration', function () {
-        const config = core.withConfig();
-        const environment = config.get('environment');
-        const port = config.get('port');
-        expect(environment).toEqual(process.env.NODE_ENV);
-        expect(port).toBe(3000);
+      it('should load ElectionModule', function () {
+        expect(app.get(ElectionModule)).toBeDefined();
       });
 
       it('should establish Polygon network connection', async function () {
         const network = await core.withPolygonConnection();
-        const environment = core.withConfig().get('environment');
-        const expectedNetwork = environment === 'production' ? 'matic' : 'maticmum';
+        const expectedNetwork = 'maticmum';
         expect(network.name).toEqual(expectedNetwork);
       });
     });
@@ -159,7 +155,7 @@ describe('App e2e', () => {
       const headers = { Authorization: 'Bearer $S{access_token}' };
 
       describe('Get all', function () {
-        const url = 'elections/get/all';
+        const url = 'election/get/all';
 
         it('should be guarded', function () {
           return spec().get(url).expectStatus(401);
@@ -171,7 +167,7 @@ describe('App e2e', () => {
       });
 
       describe('Get single', function () {
-        const url = 'elections/get/1';
+        const url = 'election/get/1';
 
         it('should be guarded', function () {
           return spec().get(url).expectStatus(401);
