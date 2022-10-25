@@ -1,3 +1,7 @@
-export default {
-  CONTRACT_ELECTION_ADDRESS: process.env.CONTRACT_ELECTION_ADDRESS,
+const contractMap: {
+  [k: string]: string | undefined;
+} = {
+  Election: process.env.ELECTION,
 };
+
+export default contractMap;

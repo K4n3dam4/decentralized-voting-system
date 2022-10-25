@@ -25,17 +25,17 @@
         "cwd": "libs/smart-contracts"
       }
     },
-    "deploy-testnet": {
+    "dpl-election-test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx hardhat deploy-testnet --network testnet",
+        "command": "npx hardhat dpl-election-test --name {args.name} --candidates {args.candidates} --expiration {args.expiration} --network testnet",
         "cwd": "libs/smart-contracts"
       }
     },
-    "deploy-mainnet": {
+    "dpl-election-main": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx hardhat deploy-mainnet --network mainnet",
+        "command": "npx hardhat dpl-election-main --name {args.name} --candidates {args.candidates} --expiration {args.expiration} --network mainnet",
         "cwd": "libs/smart-contracts"
       }
     }

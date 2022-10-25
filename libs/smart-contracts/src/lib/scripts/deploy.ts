@@ -2,9 +2,9 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import contractMap from './contractMap';
 import fs from 'fs-extra';
 
-async function deploy(contract: string, hre: HardhatRuntimeEnvironment) {
+export async function deploy(contract: string, hre: HardhatRuntimeEnvironment, args: any[] = []) {
   const contractFactory = await hre.ethers.getContractFactory(contract);
-  const deployedContract = await contractFactory.deploy();
+  const deployedContract = await contractFactory.deploy(...args);
 
   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
   const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
@@ -16,24 +16,47 @@ async function deploy(contract: string, hre: HardhatRuntimeEnvironment) {
   return deployedContract.address;
 }
 
-export async function deployAndUpdate(file: string, env: string, hre: HardhatRuntimeEnvironment) {
-  const contracts = contractMap;
+export async function deployAndUpdate(
+  file: string,
+  env: string,
+  contract: string,
+  hre: HardhatRuntimeEnvironment,
+  args: any[] = [],
+  fileTest?: string,
+  envTest?: string,
+) {
   let data = await fs.readFile(file, 'utf-8');
+  let dataTest;
 
-  // loop through contracts, deploy and update env
-  for (const entry of Object.entries(contracts)) {
-    const [key, value] = entry;
-    let contract = key.split('_')[1].toLowerCase();
-    contract = contract.charAt(0).toUpperCase() + contract.slice(1);
-    try {
-      const address = await deploy(contract, hre);
-      data = data.replace(`${key}=${value}`, `${key}=${address}`);
-    } catch (err) {
-      console.log(`Error: ${err}`);
-      console.log(`Could not deploy ${contract}`);
-    }
+  if (fileTest) {
+    dataTest = await fs.readFile(fileTest, 'utf-8');
   }
-  console.log(`Updating ${env} with new addresses...`);
-  await fs.writeFile(file, data);
-  console.log(`${env} updated`);
+
+  const contractKey = contract.toUpperCase();
+  const contractValue = contractMap[contract];
+
+  try {
+    const address = await deploy(contract, hre, args);
+
+    if (address) {
+      data = data.replace(`${contractKey}=${contractValue}`, `${contractKey}=${address}`);
+
+      if (dataTest) {
+        dataTest = dataTest.replace(`${contractKey}=${contractValue}`, `${contractKey}=${address}`);
+      }
+
+      console.log(`Updating ${env} with new addresses...`);
+      await fs.writeFile(file, data);
+      console.log(`${env} updated`);
+
+      if (fileTest && dataTest) {
+        console.log(`Updating ${envTest} with new addresses...`);
+        await fs.writeFile(fileTest, dataTest);
+        console.log(`${envTest} updated`);
+      }
+    }
+  } catch (err) {
+    console.log(`Error: ${err}`);
+    console.log(`Could not deploy ${contract}`);
+  }
 }

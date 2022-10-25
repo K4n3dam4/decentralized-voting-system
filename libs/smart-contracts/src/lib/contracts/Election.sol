@@ -46,11 +46,11 @@ contract Election is Ownable {
      * @dev Check whether election is open or expired.
      */
     modifier checkExpired {
-        require(1000 * block.timestamp <= expires, "election.expired");
+        require(block.timestamp <= expires, "election.expired");
         _;
     }
     modifier checkUnexpired {
-        require(1000 * block.timestamp >= expires, "election.notexpired");
+        require(block.timestamp >= expires, "election.notexpired");
         _;
     }
 

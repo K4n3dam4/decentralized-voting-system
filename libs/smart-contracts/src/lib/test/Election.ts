@@ -14,7 +14,8 @@ describe('Test contracts', function () {
       provider = ethers.provider;
       // contract
       const Election = await ethers.getContractFactory('Election');
-      election = await Election.deploy('Presidential Election 2020', ['Biden', 'Trump'], Date.now() * 2);
+      const expiration = Math.floor((Date.now() / 1000) * 2);
+      election = await Election.deploy('Presidential Election 2020', ['Biden', 'Trump'], expiration);
       // voter wallet
       const [address0, address1] = await provider.listAccounts();
       wallet0 = address0;
