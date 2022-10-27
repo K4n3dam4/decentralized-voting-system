@@ -5,10 +5,12 @@ export const configuration = () => ({
   port: parseInt(process.env.PORT || '3000', 10),
   globalPrefix: process.env.GLOBAL_PREFIX || 'api',
   validationPipe: new ValidationPipe({ whitelist: true }),
-  jwtSecret: process.env.JWT_SECRET,
+  jwtSecretVoter: process.env.JWT_SECRET_VOTER,
+  jwtSecretAdmin: process.env.JWT_SECRET_ADMIN,
   secret: process.env.SECRET,
   salt: process.env.SALT,
   // Blockchain
   alchemyAPI: process.env.ALCHEMY_API,
   alchemyAPIKey: process.env.ALCHEMY_API_KEY,
+  contractElection: process.env.ELECTION,
 });

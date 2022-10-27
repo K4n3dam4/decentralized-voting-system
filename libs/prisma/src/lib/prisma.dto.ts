@@ -1,6 +1,6 @@
 import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
-export class Admin {
+export class AdminDto {
   @IsString()
   @IsNotEmpty()
   firstName: string;
@@ -12,4 +12,8 @@ export class Admin {
   @IsInt()
   @IsNotEmpty()
   serviceNumber: number;
+
+  @IsString()
+  @IsNotEmpty()
+  hash: string;
 }

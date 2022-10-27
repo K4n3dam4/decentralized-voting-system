@@ -1,15 +1,15 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import * as argon from 'argon2';
 import { PrismaService } from '@dvs/prisma';
-import { VoterSignin, VoterSignup } from './auth.dto';
+import { AdminSigninDto, VoterSigninDto, VoterSignupDto } from './auth.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) {}
-  async signup(dto: VoterSignup) {
+  async signup(dto: VoterSignupDto) {
     // hash password
     const hash = await argon.hash(dto.password);
     delete dto.password;
@@ -25,7 +25,7 @@ export class AuthService {
       });
 
       // return voter
-      return this.signJwtToken(voter.id, voter.email);
+      return this.signJwtToken('Voter', { id: voter.id, email: voter.email });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -35,27 +35,37 @@ export class AuthService {
       throw error;
     }
   }
-  async signin(dto: VoterSignin) {
+  async signin(dto: VoterSigninDto) {
     // find user
     const voter = await this.prisma.voter.findUnique({ where: { email: dto.email } });
-    // if user does not exist throw error
-    if (!voter) throw new ForbiddenException('signin.forbidden.wrongUsername');
-
+    // voter does not exist
+    if (!voter) throw new ForbiddenException('signin.forbidden.wrongEmail');
     // compare password
     const matchHash = await argon.verify(voter.hash, dto.password);
     // mismatched hash
     if (!matchHash) throw new ForbiddenException('signin.forbidden.wrongPassword');
 
     // return voter
-    return this.signJwtToken(voter.id, voter.email);
+    return this.signJwtToken('Voter', { id: voter.id, email: voter.email });
   }
 
-  async signJwtToken(id: number, email: string) {
-    const secret = this.config.get('jwtSecret');
-    const payload = {
-      sub: id,
-      email,
-    };
+  async adminSignin(dto: AdminSigninDto) {
+    // find admin
+    const admin = await this.prisma.admin.findUnique({ where: { serviceNumber: dto.serviceNumber } });
+    // if admin does not exist throw error
+    if (!admin) throw new ForbiddenException('signin.forbidden.wrongServiceNumber');
+
+    // compare password
+    const matchHash = await argon.verify(admin.hash, dto.password);
+    // mismatched hash
+    if (!matchHash) throw new ForbiddenException('signin.forbidden.wrongPassword');
+
+    // return admin
+    return this.signJwtToken('Admin', { id: admin.id, serviceNumber: admin.serviceNumber });
+  }
+
+  async signJwtToken(type: 'Admin' | 'Voter', payload: { id: number; email?: string; serviceNumber?: number }) {
+    const secret = this.config.get(`jwtSecret${type}`);
 
     const token = await this.jwt.signAsync(payload, {
       expiresIn: '15m',

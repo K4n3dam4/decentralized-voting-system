@@ -18,6 +18,7 @@ model Admin {
       firstName String
       lastName String
       serviceNumber Int @unique
+      hash String
 
       elections Election[]
       @@map("admins")
@@ -44,12 +45,12 @@ model Voter {
 model Election {
     id Int @id @default(autoincrement())
     createdAt DateTime @default(now())
-    updatedAt DateTime
+    updatedAt DateTime @updatedAt
     adminId Int
     admin Admin @relation(fields: [adminId], references: [id])
 
     contract String
-    eligableVoters Int[]
+    eligibleVoters String[]
     @@map("elections")
 }
 

@@ -1,10 +1,19 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthModule, CoreModule, ElectionModule, VoterSignin, VoterSignup } from '@dvs/api';
-import { Admin, PrismaModule, PrismaService } from '@dvs/prisma';
+import {
+  AdminSigninDto,
+  AuthModule,
+  CoreModule,
+  ElectionDto,
+  ElectionModule,
+  VoterSigninDto,
+  VoterSignupDto,
+} from '@dvs/api';
+import { AdminDto, PrismaModule, PrismaService } from '@dvs/prisma';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { AppModule } from '@dvs/server';
 import { request, spec } from 'pactum';
+import * as argon from 'argon2';
 
 describe('App e2e', () => {
   describe('e2e running...', () => {
@@ -14,12 +23,13 @@ describe('App e2e', () => {
     const host = 'http://localhost:3333/api/';
 
     // test users and data
-    const admin: Admin = {
+    const admin: AdminDto = {
       firstName: 'Test',
       lastName: 'Admin',
       serviceNumber: 987654,
+      hash: 'adminpw',
     };
-    const mockVoter: VoterSignup = {
+    const mockVoter: VoterSignupDto = {
       socialSecurity: '123456',
       firstName: 'John',
       lastName: 'Doe',
@@ -31,6 +41,9 @@ describe('App e2e', () => {
     };
 
     beforeAll(async () => {
+      // admin
+      admin.hash = await argon.hash(admin.hash);
+
       // app
       const moduleFixture: TestingModule = await Test.createTestingModule({ imports: [AppModule] }).compile();
       app = moduleFixture.createNestApplication();
@@ -85,7 +98,8 @@ describe('App e2e', () => {
 
     // Test auth module
     describe('Auth', function () {
-      describe('Signup', function () {
+      // Signup voter
+      describe('Signup voter', function () {
         const dto = { ...mockVoter };
 
         const url = 'auth/signup';
@@ -116,8 +130,10 @@ describe('App e2e', () => {
           return spec().post(url).withBody(duplicateSocialNumber).expectStatus(403);
         });
       });
-      describe('Signin', function () {
-        const dto: VoterSignin = {
+
+      // Signin voter
+      describe('Signin voter', function () {
+        const dto: VoterSigninDto = {
           email: mockVoter.email,
           password: mockVoter.password,
         };
@@ -145,14 +161,49 @@ describe('App e2e', () => {
         });
 
         it('should sign in', async function () {
-          return spec().post(url).withBody(dto).expectStatus(200).stores('access_token', 'access_token');
+          return spec().post(url).withBody(dto).expectStatus(200).stores('access_tokenV', 'access_token');
+        });
+      });
+
+      describe('Signin admin', function () {
+        const dto: AdminSigninDto = {
+          serviceNumber: admin.serviceNumber,
+          password: 'adminpw',
+        };
+        const url = 'auth/signin/admin';
+
+        it('should validate request', function () {
+          const faultyDto = { ...dto };
+          faultyDto.password = '';
+
+          return spec()
+            .post(url)
+            .withBody(faultyDto)
+            .expectBody({ statusCode: 400, message: ['password should not be empty'], error: 'Bad Request' });
+        });
+
+        it('should validate service number', function () {
+          const faultyDto = { ...dto };
+          faultyDto.serviceNumber = 3;
+          return spec().post(url).withBody(faultyDto).expectStatus(403);
+        });
+
+        it('should validate password', function () {
+          const faultyDto = { ...dto };
+          faultyDto.password = 'ewffrefr';
+          return spec().post(url).withBody(faultyDto).expectStatus(403);
+        });
+
+        it('should sign in', async function () {
+          return spec().post(url).withBody(dto).expectStatus(200).stores('access_tokenA', 'access_token');
         });
       });
     });
 
     // Test elections module
     describe('Elections', function () {
-      const headers = { Authorization: 'Bearer $S{access_token}' };
+      const headersVoter = { Authorization: 'Bearer $S{access_tokenV}' };
+      const headersAdmin = { Authorization: 'Bearer $S{access_tokenA}' };
 
       describe('Get all', function () {
         const url = 'election/get/all';
@@ -162,7 +213,7 @@ describe('App e2e', () => {
         });
 
         it('should get all elections', function () {
-          return spec().get(url).withHeaders(headers).expectStatus(200);
+          return spec().get(url).withHeaders(headersVoter).expectStatus(200);
         });
       });
 
@@ -171,6 +222,34 @@ describe('App e2e', () => {
 
         it('should be guarded', function () {
           return spec().get(url).expectStatus(401);
+        });
+
+        it('should get single election', function () {
+          return spec().get(url).withHeaders(headersVoter).expectStatus(200);
+        });
+      });
+
+      describe('Create election', function () {
+        const dto: ElectionDto = {
+          name: 'US Presidential Election 2020',
+          candidates: ['Trump', 'Biden'],
+          eligibleVoters: [mockVoter.socialSecurity],
+          expires: Math.floor(Date.now() * 2),
+        };
+        const url = 'election/create';
+
+        it('should be guarded', function () {
+          return spec().post(url).withHeaders(headersVoter).expectStatus(401);
+        });
+
+        it('should validate request', function () {
+          const faultyDto = { ...dto };
+          faultyDto.name = '';
+          return spec().post(url).withHeaders(headersAdmin).withBody(faultyDto).expectStatus(400);
+        });
+
+        it('should create election', function () {
+          return spec().post(url).withHeaders(headersAdmin).withBody(dto).expectStatus(201);
         });
       });
     });
