@@ -16,8 +16,7 @@ export class ElectionService {
     const admin = await this.prisma.admin.findUnique({ where: { serviceNumber } });
     if (!admin) throw new ForbiddenException('signin.forbidden.wrongServiceNumber');
 
-    console.log(admin);
-
+    // add election to db
     const dbElection = await this.prisma.election.create({
       data: {
         contract: '',
