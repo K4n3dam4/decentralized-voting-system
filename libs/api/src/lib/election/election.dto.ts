@@ -1,6 +1,6 @@
-import { IsArray, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class ElectionDto {
+export class ElectionCreateDto {
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -14,6 +14,12 @@ export class ElectionDto {
   eligibleVoters: string[];
 
   @IsNotEmpty()
-  @IsInt()
+  @IsNumber()
   expires: number;
+}
+
+export class ElectionRegisterDto {
+  @IsNotEmpty()
+  @IsString()
+  ssn: string;
 }

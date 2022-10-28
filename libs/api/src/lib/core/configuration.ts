@@ -12,5 +12,8 @@ export const configuration = () => ({
   // Blockchain
   alchemyAPI: process.env.ALCHEMY_API,
   alchemyAPIKey: process.env.ALCHEMY_API_KEY,
+  // Blockchain - Admin
+  adminPk: process.env.ADMIN_PK,
+  // Blockchain - Contracts
   contractElection: process.env.ELECTION,
 });

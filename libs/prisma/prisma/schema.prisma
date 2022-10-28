@@ -49,8 +49,12 @@ model Election {
     adminId Int
     admin Admin @relation(fields: [adminId], references: [id])
 
+    name String
+    candidates String[]
     contract String
     eligibleVoters String[]
+    expires DateTime
+
     @@map("elections")
 }
 

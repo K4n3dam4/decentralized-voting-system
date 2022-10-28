@@ -4,8 +4,10 @@ import {
   AdminSigninDto,
   AuthModule,
   CoreModule,
-  ElectionDto,
+  ElectionCreateDto,
   ElectionModule,
+  ElectionRegisterDto,
+  JwtModule,
   VoterSigninDto,
   VoterSignupDto,
 } from '@dvs/api';
@@ -81,6 +83,10 @@ describe('App e2e', () => {
         expect(app.get(PrismaModule)).toBeDefined();
       });
 
+      it('should load JwtModule', function () {
+        expect(app.get(JwtModule)).toBeDefined();
+      });
+
       it('should load AuthModule', function () {
         expect(app.get(AuthModule)).toBeDefined();
       });
@@ -98,11 +104,12 @@ describe('App e2e', () => {
 
     // Test auth module
     describe('Auth', function () {
+      const baseUrl = 'auth/';
       // Signup voter
       describe('Signup voter', function () {
         const dto = { ...mockVoter };
 
-        const url = 'auth/signup';
+        const url = baseUrl + 'signup';
 
         it('should validate request', function () {
           const faultyDto = { ...dto };
@@ -137,7 +144,7 @@ describe('App e2e', () => {
           email: mockVoter.email,
           password: mockVoter.password,
         };
-        const url = 'auth/signin';
+        const url = baseUrl + 'signin';
 
         it('should validate request', function () {
           const faultyDto = { ...dto };
@@ -168,9 +175,9 @@ describe('App e2e', () => {
       describe('Signin admin', function () {
         const dto: AdminSigninDto = {
           serviceNumber: admin.serviceNumber,
-          password: 'adminpw',
+          password: admin.hash,
         };
-        const url = 'auth/signin/admin';
+        const url = baseUrl + 'signin/admin';
 
         it('should validate request', function () {
           const faultyDto = { ...dto };
@@ -205,38 +212,16 @@ describe('App e2e', () => {
       const headersVoter = { Authorization: 'Bearer $S{access_tokenV}' };
       const headersAdmin = { Authorization: 'Bearer $S{access_tokenA}' };
 
-      describe('Get all', function () {
-        const url = 'election/get/all';
-
-        it('should be guarded', function () {
-          return spec().get(url).expectStatus(401);
-        });
-
-        it('should get all elections', function () {
-          return spec().get(url).withHeaders(headersVoter).expectStatus(200);
-        });
-      });
-
-      describe('Get single', function () {
-        const url = 'election/get/1';
-
-        it('should be guarded', function () {
-          return spec().get(url).expectStatus(401);
-        });
-
-        it('should get single election', function () {
-          return spec().get(url).withHeaders(headersVoter).expectStatus(200);
-        });
-      });
+      const baseUrl = 'election/';
 
       describe('Create election', function () {
-        const dto: ElectionDto = {
+        const dto: ElectionCreateDto = {
           name: 'US Presidential Election 2020',
           candidates: ['Trump', 'Biden'],
           eligibleVoters: [mockVoter.socialSecurity],
-          expires: Math.floor(Date.now() * 2),
+          expires: 1677625200,
         };
-        const url = 'election/create';
+        const url = baseUrl + 'create';
 
         it('should be guarded', function () {
           return spec().post(url).withHeaders(headersVoter).expectStatus(401);
@@ -249,7 +234,82 @@ describe('App e2e', () => {
         });
 
         it('should create election', function () {
-          return spec().post(url).withHeaders(headersAdmin).withBody(dto).expectStatus(201);
+          return spec().post(url).withHeaders(headersAdmin).withBody(dto).expectStatus(201).stores('ElectionId', 'id');
+        });
+      });
+
+      describe('Get all', function () {
+        const url = baseUrl + 'all';
+
+        it('should be guarded', function () {
+          return spec().get(url).expectStatus(401);
+        });
+
+        it('should get all elections', function () {
+          return spec().get(url).withHeaders(headersVoter).expectStatus(200).inspect();
+        });
+      });
+
+      describe('Get single', function () {
+        const url = baseUrl + 'single/';
+
+        it('should be guarded', function () {
+          return spec()
+            .get(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .expectStatus(401);
+        });
+
+        it('should get single election', function () {
+          return spec()
+            .get(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .expectStatus(200)
+            .inspect();
+        });
+      });
+
+      describe('Register voter', function () {
+        const dto: ElectionRegisterDto = {
+          ssn: mockVoter.socialSecurity,
+        };
+        const url = baseUrl + 'register/';
+
+        it('should be guarded', function () {
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withBody(dto)
+            .expectStatus(401);
+        });
+
+        it('should throw not found error', function () {
+          return spec()
+            .post(url + '2403490')
+            .withHeaders(headersVoter)
+            .withBody(dto)
+            .expectStatus(404);
+        });
+
+        it('should not register uneligible voters', function () {
+          const faultyDto = { ...dto };
+          faultyDto.ssn = '2134';
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .withBody(faultyDto)
+            .expectStatus(403);
+        });
+
+        it('should register eligible voters', function () {
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .withBody(dto)
+            .expectStatus(201);
         });
       });
     });
