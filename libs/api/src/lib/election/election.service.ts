@@ -39,15 +39,15 @@ export class ElectionService {
     if (!admin) throw new ForbiddenException('signin.forbidden.wrongServiceNumber');
 
     const signer = this.signer.createWallet(this.config.get('adminPk'));
-    // const factory = new ContractFactory(Election__factory.abi, Election__factory.bytecode, signer);
-    // const contract = await factory.deploy(dto.name, dto.eligibleVoters, dto.expires);
+    const factory = new ContractFactory(Election__factory.abi, Election__factory.bytecode, signer);
+    const contract = await factory.deploy(dto.name, dto.eligibleVoters, dto.expires);
 
     // add election to db
     const election = await this.prisma.election.create({
       data: {
         name: dto.name,
         candidates: dto.candidates,
-        contract: '',
+        contract: contract.address,
         eligibleVoters: dto.eligibleVoters,
         expires: new Date(dto.expires * 1000),
         admin: {

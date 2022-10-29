@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configuration, validationSchema } from './';
 import { EthersCoreModule } from 'nestjs-ethers/dist/ethers-core.module';
-import { AlchemyProvider } from '@ethersproject/providers';
-import { InjectEthersProvider } from 'nestjs-ethers';
+import { AlchemyProvider, Network } from '@ethersproject/providers';
+import { EthersModuleOptions, InjectEthersProvider } from 'nestjs-ethers';
 
 @Module({
   imports: [
@@ -15,12 +15,31 @@ import { InjectEthersProvider } from 'nestjs-ethers';
     EthersCoreModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (config: ConfigService) => ({
-        network: config.get('environment') === 'production' ? 'matic' : 'maticmum',
-        alchemy: config.get('alchemyAPIKey'),
-        waitUntilIsConnected: true,
-        useDefaultProvider: false,
-      }),
+      useFactory: async (config: ConfigService) => {
+        const environment = config.get('environment');
+        const network: { [k: string]: string | Network } = {
+          test: {
+            name: 'ganache',
+            chainId: 1337,
+          },
+          development: 'maticmum',
+          production: 'matic',
+        };
+
+        const options: EthersModuleOptions = {
+          network: network[environment],
+          waitUntilIsConnected: true,
+          useDefaultProvider: false,
+          alchemy: config.get('alchemyAPIKey'),
+        };
+
+        if (environment === 'test') {
+          delete options.alchemy;
+          options.custom = 'http://127.0.0.1:8545';
+        }
+
+        return options;
+      },
     }),
   ],
   controllers: [],

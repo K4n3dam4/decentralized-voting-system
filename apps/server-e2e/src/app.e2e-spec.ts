@@ -97,7 +97,7 @@ describe('App e2e', () => {
 
       it('should establish Polygon network connection', async function () {
         const network = await core.withPolygonConnection();
-        const expectedNetwork = 'maticmum';
+        const expectedNetwork = 'ganache';
         expect(network.name).toEqual(expectedNetwork);
       });
     });
@@ -246,7 +246,7 @@ describe('App e2e', () => {
         });
 
         it('should get all elections', function () {
-          return spec().get(url).withHeaders(headersVoter).expectStatus(200).inspect();
+          return spec().get(url).withHeaders(headersVoter).expectStatus(200);
         });
       });
 
@@ -265,8 +265,7 @@ describe('App e2e', () => {
             .get(url + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
-            .expectStatus(200)
-            .inspect();
+            .expectStatus(200);
         });
       });
 
