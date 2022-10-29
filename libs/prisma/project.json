@@ -1,0 +1,122 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/prisma/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/prisma/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/prisma"],
+      "options": {
+        "jestConfig": "libs/prisma/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "prisma-migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma migrate dev",
+        "cwd": "libs/prisma"
+      }
+    },
+    "prisma-migrate-deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma migrate deploy",
+        "cwd": "libs/prisma"
+      }
+    },
+    "prisma-generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma generate",
+        "cwd": "libs/prisma"
+      }
+    },
+    "prisma-deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma migrate deploy",
+        "cwd": "libs/prisma"
+      }
+    },
+    "prisma-studio": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma studio",
+        "cwd": "libs/prisma"
+      }
+    },
+    "remove-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose rm dvs-db-dev -s -f -v",
+        "cwd": "libs/prisma"
+      }
+    },
+    "serve-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose up dvs-db-dev -d",
+        "cwd": "libs/prisma"
+      }
+    },
+    "export-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker exec -i dvs-db-dev pg_dump dvs -U admin --column-inserts --data-only > prisma/dumps/db-dev-dump.sql",
+        "cwd": "libs/prisma"
+      }
+    },
+    "import-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker exec -i dvs-db-dev psql -U admin -d dvs < prisma/dumps/db-dev-dump.sql",
+        "cwd": "libs/prisma"
+      }
+    },
+    "restart-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx remove-db prisma",
+          "nx serve-db prisma",
+          "sleep 1",
+          "nx prisma-deploy prisma",
+          "nx prisma-studio prisma"
+        ],
+        "parallel": false,
+        "cwd": "libs/prisma"
+      }
+    },
+    "remove-db-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose rm dvs-db-test -s -f -v",
+        "cwd": "libs/prisma"
+      }
+    },
+    "serve-db-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose up dvs-db-test -d",
+        "cwd": "libs/prisma"
+      }
+    },
+    "restart-db-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx remove-db-test prisma", "nx serve-db-test prisma", "sleep 1", "nx prisma-deploy prisma"],
+        "parallel": false,
+        "cwd": "libs/prisma"
+      }
+    }
+  },
+  "tags": ["scope:api"]
+}

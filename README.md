@@ -14,10 +14,16 @@
 - **[Architecture](#architecture)**
   - [Workspace](#workspace)
   - [Frontend](#frontend)
+    - [Next.js](#nextjs)
   - [Backend](#backend)
     - [Prisma](#prisma)
     - [Nest.js](#nestjs)
 - **[Blockchain](#blockchain)**
+  - [Polygon](#polygon)
+- **[Getting started](#getting-started)**
+  - [.envs](#envs)
+  - [Smart Contracts](#smart-contracts)
+  - [Running the application](#running-the-application)
 
 ## Introduction
 
@@ -68,7 +74,7 @@ xelatex -shell-escape -output-directory=out main.tex
 
 ## Architecture
 
-This chapter provides a quick overview over the projects architecture.
+This chapter provides a quick overview over the project's architecture.
 
 ### Workspace
 
@@ -87,6 +93,8 @@ The dependency graph can be called with `nx graph` in the project root and provi
 
 ### Frontend
 
+#### Next.js
+
 [Next.js](https://nextjs.org) was chosen as a frontend framework mainly for its hybrid static and server rendering capabilities.
 Since this means that only static html is being served to the client, a Next.js frontend is one part of ensuring the security of elections carried out using this application.
 
@@ -100,4 +108,60 @@ Since this means that only static html is being served to the client, a Next.js 
 
 #### Nest.js
 
-### Blockchain
+[Nest.js](https://nestjs.com/) is regularly mentioned among the best Node.js backend frameworks. Although Next.js comes with its own routing framework for API calls, using Nest.js
+made it easier to follow best practices for backend development. Additionally, by utilizing [nestjs-ethers](https://github.com/blockcoders/nestjs-ethers), communication between the application's services and an arbitrary blockchain network could easily be established.
+
+#### Next.js Documentation
+
+[Documentation](https://docs.nestjs.com/)
+
+## Blockchain
+
+### Polygon
+
+[Polygon](https://polygon.technology/) was chosen to deploy smart contracts mainly due to its higher transaction throughput. Since Polygon is a Layer 2 protocol running on top of Ethereum, this seemed like the most balanced option when looking at security vs. scalability.
+Furthermore, migrating the voting system from MATIC Mainnet to Ethereum, once the implementation of Sharding has Ethereum's scalability, will be a matter of simply changing network configurations and redeploying all developed contracts on Ethereum's Mainnet.
+
+#### Polygon Documentation
+
+[Documentation](https://wiki.polygon.technology/)
+
+## Getting started
+
+```shell
+# install dependencies
+yarn install
+```
+
+### .envs
+
+Locate example.env files in the project's root directory and rename them:
+<br/>
+
+**Production: example.env => .env**<br/>
+**Development: example.env.local => .env.local**<br/>
+**Test environment: example.env.test => .env.test**<br/>
+
+Add your configurations and secrets.
+
+### Smart Contracts
+
+As the application relies on smart contracts to manage the voting process, you first need to compile and deploy the contracts located in _libs/smart-contracts_
+
+```shell
+# compile contracts
+yarn compile:contracts
+
+# deploy contracts
+yarn deploy:contracts
+```
+
+### Running the application
+
+```shell
+# start server
+yarn serve:server
+
+# start client
+yarn serve:client
+```

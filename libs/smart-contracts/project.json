@@ -1,0 +1,44 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/smart-contracts/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/smart-contracts/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "outputs": ["coverage/libs/smart-contracts"],
+      "options": {
+        "command": "npx hardhat test",
+        "cwd": "libs/smart-contracts"
+      }
+    },
+    "compile": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx hardhat compile",
+        "cwd": "libs/smart-contracts"
+      }
+    },
+    "dpl-election-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx hardhat dpl-election-test --name {args.name} --candidates {args.candidates} --expiration {args.expiration} --network testnet",
+        "cwd": "libs/smart-contracts"
+      }
+    },
+    "dpl-election-main": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx hardhat dpl-election-main --name {args.name} --candidates {args.candidates} --expiration {args.expiration} --network mainnet",
+        "cwd": "libs/smart-contracts"
+      }
+    }
+  },
+  "tags": ["scope:shared"]
+}
