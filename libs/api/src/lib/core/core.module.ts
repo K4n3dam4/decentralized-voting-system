@@ -17,6 +17,7 @@ import { EthersModuleOptions, InjectEthersProvider } from 'nestjs-ethers';
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => {
         const environment = config.get('environment');
+        // networks to connect
         const network: { [k: string]: string | Network } = {
           test: {
             name: 'ganache',
@@ -26,6 +27,7 @@ import { EthersModuleOptions, InjectEthersProvider } from 'nestjs-ethers';
           production: 'matic',
         };
 
+        // connection options
         const options: EthersModuleOptions = {
           network: network[environment],
           waitUntilIsConnected: true,
@@ -33,6 +35,7 @@ import { EthersModuleOptions, InjectEthersProvider } from 'nestjs-ethers';
           alchemy: config.get('alchemyAPIKey'),
         };
 
+        // configure test environment options
         if (environment === 'test') {
           delete options.alchemy;
           options.custom = 'http://127.0.0.1:8545';

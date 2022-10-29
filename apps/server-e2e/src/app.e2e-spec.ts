@@ -7,6 +7,7 @@ import {
   ElectionCreateDto,
   ElectionModule,
   ElectionRegisterDto,
+  ElectionVoteDto,
   JwtModule,
   VoterSigninDto,
   VoterSignupDto,
@@ -95,7 +96,7 @@ describe('App e2e', () => {
         expect(app.get(ElectionModule)).toBeDefined();
       });
 
-      it('should establish Polygon network connection', async function () {
+      it('should establish blockchain network connection', async function () {
         const network = await core.withPolygonConnection();
         const expectedNetwork = 'ganache';
         expect(network.name).toEqual(expectedNetwork);
@@ -218,7 +219,7 @@ describe('App e2e', () => {
         const dto: ElectionCreateDto = {
           name: 'US Presidential Election 2020',
           candidates: ['Trump', 'Biden'],
-          eligibleVoters: [mockVoter.socialSecurity],
+          eligibleVoters: [mockVoter.socialSecurity, process.env.VOTER_ADDRESS],
           expires: 1677625200,
         };
         const url = baseUrl + 'create';
@@ -303,6 +304,63 @@ describe('App e2e', () => {
         });
 
         it('should register eligible voters', function () {
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .withBody(dto)
+            .expectStatus(201)
+            .stores('Mnemonic', 'mnemonic');
+        });
+      });
+
+      describe('Vote', function () {
+        const dto: ElectionVoteDto = {
+          mnemonic: '$S{Mnemonic}',
+          candidate: 0,
+        };
+        const url = baseUrl + 'vote/';
+
+        it('should be guarded', function () {
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withBody(dto)
+            .expectStatus(401);
+        });
+
+        it('should throw not found error', function () {
+          return spec()
+            .post(url + '2403490')
+            .withHeaders(headersVoter)
+            .withBody(dto)
+            .expectStatus(404);
+        });
+
+        it('should throw not registered error', function () {
+          const faultyDto = { ...dto };
+          faultyDto.mnemonic =
+            'town sun north elevator rubber crack dolphin runway liar awake try iron crew relief basic';
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .withBody(faultyDto)
+            .expectStatus(403);
+        });
+
+        it('should throw voter.notEligible', function () {
+          const faultyDto = { ...dto };
+          faultyDto.mnemonic = process.env.VOTER_MNEMONIC;
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .withBody(faultyDto)
+            .expectBody({ message: 'voter.notEligible', statusCode: 403 });
+        });
+
+        it('should vote', function () {
           return spec()
             .post(url + '{id}')
             .withPathParams('id', '$S{ElectionId}')

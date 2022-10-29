@@ -23,3 +23,13 @@ export class ElectionRegisterDto {
   @IsString()
   ssn: string;
 }
+
+export class ElectionVoteDto {
+  @IsNotEmpty()
+  @IsString()
+  mnemonic: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  candidate: number;
+}
