@@ -64,6 +64,17 @@ export class AuthService {
     return this.signJwtToken('Admin', { id: admin.id, serviceNumber: admin.serviceNumber });
   }
 
+  async verify(authorization: string) {
+    if (!authorization) throw new ForbiddenException('token.notFound');
+
+    const secret = this.config.get('jwtSecretVoter');
+    try {
+      this.jwt.verify(authorization, { secret });
+    } catch (e) {
+      throw new ForbiddenException('token.invalid');
+    }
+  }
+
   async signJwtToken(type: 'Admin' | 'Voter', payload: { id: number; email?: string; serviceNumber?: number }) {
     const secret = this.config.get(`jwtSecret${type}`);
 

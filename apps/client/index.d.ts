@@ -5,18 +5,14 @@ declare module '*.svg' {
   export default content;
 }
 
-// Api
-interface VoterSignup {
-  firstName: string;
-  lastName: string;
-  street: string;
-  postalCode: string;
-  city: string;
-  ssn: string;
-  email: string;
-  password: string;
+interface ValidateParam {
+  field: string;
+  value: string;
+  validationType: validationType[];
 }
-
-interface VoterSignin {}
-
+type validationType = 'notEmpty' | 'string' | 'email' | 'password' | 'passwordRepeat';
+interface validationFactoryParams {
+  fields: Record<string, any>;
+  validationTypes: { field: string; validationType: validationType[] }[];
+}
 type buttonType = 'primary' | 'secondary';
