@@ -14,7 +14,7 @@ export class AuthService {
     const hash = await argon.hash(dto.password);
     delete dto.password;
     // hash social security number
-    dto.socialSecurity = await argon.hash(dto.socialSecurity, { salt: Buffer.from(this.config.get('salt')) });
+    dto.ssn = await argon.hash(dto.ssn, { salt: Buffer.from(this.config.get('salt')) });
     // add voter
     try {
       const voter = await this.prisma.voter.create({

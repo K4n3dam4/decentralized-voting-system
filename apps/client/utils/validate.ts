@@ -1,4 +1,4 @@
-const pwRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$');
+const pwRegex = new RegExp('^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\\d]){1,})(?=(.*[\\W]){1,})(?!.*\\s).{8,}$');
 const emailRegex = new RegExp('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$');
 
 export const validationFactory = ({ fields, validationTypes }: validationFactoryParams) =>
@@ -31,7 +31,7 @@ const validate = (params: ValidateParam[]) => {
       if (!pwRegex.test(value))
         setError(
           field,
-          'Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character.',
+          'Minimum eight characters, at least one letter, one number and one special, upper- as well as lower case character',
         );
     }
 
@@ -49,7 +49,7 @@ const validate = (params: ValidateParam[]) => {
     }
   });
 
-  if (hasErrors) return { errors, hasErrors };
+  return { errors, hasErrors };
 };
 
 export default validate;

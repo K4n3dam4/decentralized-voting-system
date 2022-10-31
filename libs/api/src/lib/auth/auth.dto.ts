@@ -1,9 +1,9 @@
-import { IsEmail, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class VoterSignupDto {
   @IsString()
   @IsNotEmpty()
-  socialSecurity: string;
+  ssn: string;
   @IsNotEmpty()
   @IsString()
   firstName: string;
@@ -14,7 +14,7 @@ export class VoterSignupDto {
   @IsString()
   street: string;
   @IsNotEmpty()
-  @IsInt()
+  @IsNumber()
   postalCode: number;
   @IsNotEmpty()
   @IsString()
@@ -39,7 +39,7 @@ export class VoterSigninDto {
 
 export class AdminSigninDto {
   @IsNotEmpty()
-  @IsInt()
+  @IsNumber()
   serviceNumber: number;
 
   @IsNotEmpty()

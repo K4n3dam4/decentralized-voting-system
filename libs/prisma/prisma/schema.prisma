@@ -29,7 +29,7 @@ model Voter {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    socialSecurity String @unique
+    ssn String @unique
     firstName String
     lastName String
     street String

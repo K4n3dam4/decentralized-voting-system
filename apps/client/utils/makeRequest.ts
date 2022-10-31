@@ -5,11 +5,11 @@ const queryString = (queryParams: { [x: string]: any }) =>
     .map((key) => `${key}=${queryParams[key]}`)
     .join('&')}`;
 
-const makeRequest = <QP = void>(
+const makeRequest = <Res, QP = void>(
   requestConfig: AxiosRequestConfig,
   queryParams: QP | Record<string, any>,
   baseUrl = '/api/',
-): Promise<unknown> => {
+): Promise<Res> => {
   const { method = 'GET', url, data } = requestConfig;
   const concatQP = (api: string, qp: typeof queryParams) => (Object.keys(qp).length > 0 ? api + queryString(qp) : api);
 

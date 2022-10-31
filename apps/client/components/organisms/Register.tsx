@@ -48,9 +48,10 @@ const Register = () => {
       name: 'postalCode',
       placeholder: 'Postalcode',
       value: postalCode,
-      onChange: ({ target }) => setRegister(target.name, target.value),
+      onChange: ({ target }) => setRegister(target.name, Number(target.value)),
       onFocus: ({ target }) => setError(target.name),
       error: errors['postalCode'],
+      type: 'number',
     },
     {
       name: 'city',
@@ -104,15 +105,7 @@ const Register = () => {
       onClick: register,
     },
   ];
-  return (
-    <DVSFormCard
-      heading="Register"
-      description="Register today and experience the ease of securely voting from home."
-      inputs={inputProps}
-      buttons={buttonProps}
-      splitAtIndex={5}
-    />
-  );
+  return <DVSFormCard heading="Register" inputs={inputProps} buttons={buttonProps} splitAtIndex={5} />;
 };
 
 export default Register;

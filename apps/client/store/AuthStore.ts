@@ -7,13 +7,13 @@ interface AuthStore {
   firstName: string;
   lastName: string;
   street: string;
-  postalCode: string;
+  postalCode: number;
   city: string;
   ssn: string;
   email: string;
   password: string;
   passwordRepeat: string;
-  setRegister: (key: string, value: string) => void;
+  setRegister: (key: string, value: string | number) => void;
   register: () => Promise<void>;
   setLogin: (key: string, value: string) => void;
   errors: { [k: string]: string };
@@ -27,7 +27,7 @@ const useAuthStore = create<AuthStore>()(
       firstName: '',
       lastName: '',
       street: '',
-      postalCode: '',
+      postalCode: null,
       city: '',
       ssn: '',
       email: '',
@@ -47,8 +47,9 @@ const useAuthStore = create<AuthStore>()(
       setRegister: (key, value) => set({ [key]: value }),
       register: async () => {
         const { firstName, lastName, street, postalCode, city, ssn, email, password, passwordRepeat } = get();
+        const dto = { firstName, lastName, street, postalCode, city, ssn, email, password };
         const factory: validationFactoryParams = {
-          fields: { firstName, lastName, street, postalCode, city, ssn, email, password, passwordRepeat },
+          fields: { ...dto, passwordRepeat },
           validationTypes: [
             { field: 'firstName', validationType: ['notEmpty'] },
             { field: 'lastName', validationType: ['notEmpty'] },
@@ -65,16 +66,14 @@ const useAuthStore = create<AuthStore>()(
 
         if (validation.hasErrors) {
           set({ errors: validation.errors });
+          return;
         }
 
-        // const errors = validate(validation);
-
         try {
-          const res = await makeRequest(
-            { url: 'auth/signin', method: 'POST', data: { email: 'ewji@ew.de', password: 'wejewioj' } },
+          const { access_token } = await makeRequest<{ access_token }>(
+            { url: 'auth/signup', method: 'POST', data: dto },
             {},
           );
-          console.log(res);
         } catch (error) {
           console.error(error);
         }
