@@ -1,15 +1,20 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import './styles.css';
+import { ChakraProvider } from '@chakra-ui/react';
+import customTheme from '../config/theme/customTheme';
+import DVSNavbar from '../components/molecules/DVSNavbar';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Welcome to client!</title>
+        <title>Decentralized electronic voting system</title>
       </Head>
       <main className="app">
-        <Component {...pageProps} />
+        <ChakraProvider theme={customTheme}>
+          <DVSNavbar />
+          <Component {...pageProps} />
+        </ChakraProvider>
       </main>
     </>
   );
