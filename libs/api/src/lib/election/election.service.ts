@@ -1,9 +1,10 @@
 import { ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { ElectionCreateDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
-import { AdminDto, PrismaService } from '@dvs/prisma';
+import { PrismaService } from '@dvs/prisma';
 import { EthersContract, EthersSigner, InjectContractProvider, InjectSignerProvider } from 'nestjs-ethers';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Election } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { ContractFactory, ethers } from 'ethers';
 import { Election__factory } from '@dvs/smart-contracts';
@@ -31,9 +32,7 @@ export class ElectionService {
     return this.sanitizeElections(elections);
   }
 
-  async createElection(bearer: string, dto: ElectionCreateDto) {
-    // get serviceNumber
-    const { serviceNumber } = this.decodeBearer(bearer) as Partial<AdminDto>;
+  async createElection(dto: ElectionCreateDto, serviceNumber: number) {
     // get admin
     const admin = await this.prisma.admin.findUnique({ where: { serviceNumber } });
     if (!admin) throw new ForbiddenException('signin.forbidden.wrongServiceNumber');
@@ -139,22 +138,17 @@ export class ElectionService {
 
   async getElectionInternal(electionId: string) {
     const id = Number(electionId);
-    const election = await this.prisma.election.findUnique({ where: { id } });
+    const election: Election = await this.prisma.election.findUnique({ where: { id } });
     if (!election) throw new NotFoundException('election.notFound');
     return election;
   }
 
-  sanitizeElections(elections: any) {
-    if (!elections.length) {
+  sanitizeElections(elections: Election | Election[]): Partial<Election> | Partial<Election>[] {
+    if (!Array.isArray(elections)) {
       const { name, candidates, expires } = elections;
       return { name, candidates, expires };
     } else {
       return elections.map(({ name, candidates, expires }) => ({ name, candidates, expires }));
     }
-  }
-
-  decodeBearer(bearer: string) {
-    const token = bearer.split(' ')[1];
-    return this.jwt.decode(token);
   }
 }

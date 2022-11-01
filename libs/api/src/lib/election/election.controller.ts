@@ -1,7 +1,8 @@
-import { Headers, Body, Controller, Get, Post, UseGuards, Param } from '@nestjs/common';
-import { ElectionService } from './election.service';
+import { Body, Controller, Get, Post, UseGuards, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ElectionService } from './election.service';
 import { ElectionCreateDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
+import { GetUser } from '../decorator';
 
 @Controller('election')
 export class ElectionController {
@@ -21,8 +22,8 @@ export class ElectionController {
 
   @UseGuards(AuthGuard('Admin'))
   @Post('create')
-  createElection(@Headers() { authorization }, @Body() dto: ElectionCreateDto) {
-    return this.electionsService.createElection(authorization, dto);
+  createElection(@Body() dto: ElectionCreateDto, @GetUser('serviceNumber') serviceNumber) {
+    return this.electionsService.createElection(dto, serviceNumber);
   }
 
   @UseGuards(AuthGuard('Voter'))
