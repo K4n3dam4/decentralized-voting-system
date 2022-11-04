@@ -5,7 +5,7 @@ import React from 'react';
 const DVSHeroIcon: React.FC<IconProps> = (props) => {
   return (
     <Icon
-      width={useBreakpointValue({ base: '100%', md: '40vw', lg: '30vw' })}
+      width={useBreakpointValue({ base: '100vw', md: '40vw', lg: '30vw' })}
       zIndex={useBreakpointValue({ base: -1, md: -1, lg: 0 })}
       height="560px"
       viewBox="0 0 528 560"

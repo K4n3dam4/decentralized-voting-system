@@ -29,14 +29,15 @@ const Home = () => {
   ];
 
   return (
-    <Box position="relative">
+    <Box height={{ base: 'calc(100vh - 64px)' }} width="100vw" display="flex" alignItems="center">
       <Container
         as={SimpleGrid}
         maxW="7xl"
         columns={{ base: 1, md: 2 }}
         spacing={{ base: 10, lg: 32 }}
-        py={32}
-        maxHeight="100vh"
+        alignItems="center"
+        height="100%"
+        py={12}
       >
         <Stack spacing={{ base: 10, md: 20 }}>
           <DVSHeroHeading
@@ -48,7 +49,13 @@ const Home = () => {
         </Stack>
         <Register />
       </Container>
-      <DVSHeroIcon position="absolute" zIndex={-10} top={100} left={15} style={{ filter: 'blur(70px)' }} />
+      <DVSHeroIcon
+        position="absolute"
+        zIndex={-10}
+        top={100}
+        left={{ base: 0, sm: 15 }}
+        style={{ filter: 'blur(70px)' }}
+      />
     </Box>
   );
 };

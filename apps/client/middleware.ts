@@ -15,15 +15,19 @@ export default async function middleware(req: NextRequest) {
     redirectUrl.pathname = '/';
 
     if (accessToken) {
-      const url = 'api/auth/verify';
+      const url = req.nextUrl.origin + '/api/auth/verify';
       try {
-        const res = await fetch(url, { method: req.method, headers: { Authorization: accessToken } });
-        if (res.status === 403) {
-          return NextResponse.redirect(redirectUrl);
+        const validate = await fetch(url, { method: req.method, headers: { Authorization: accessToken } });
+        if (validate.status === 403) {
+          console.log(validate.status);
+          const redirect = NextResponse.redirect(redirectUrl);
+          redirect.cookies.delete('access_token');
+          return redirect;
         } else {
           return NextResponse.next();
         }
       } catch (e) {
+        console.error(e);
         return NextResponse.redirect(redirectUrl);
       }
     } else {

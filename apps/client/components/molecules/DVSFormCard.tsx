@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Heading, Stack, Text } from '@chakra-ui/react';
+import { Box, Heading, Stack, StackProps, Text } from '@chakra-ui/react';
 import DVSInput, { DVSFormInputProps } from '../atoms/DVSFormInput';
 import DVSButton, { DVSButtonProps } from '../atoms/DVSButton';
 
-export interface DVSFormCardProps {
+export interface DVSFormCardProps extends StackProps {
   heading: string;
   description?: string;
   inputs: DVSFormInputProps[];
@@ -11,7 +11,14 @@ export interface DVSFormCardProps {
   splitAtIndex?: number;
 }
 
-const DVSFormCard: React.FC<DVSFormCardProps> = ({ heading, description, inputs, buttons, splitAtIndex }) => {
+const DVSFormCard: React.FC<DVSFormCardProps> = ({
+  heading,
+  description,
+  inputs,
+  buttons,
+  splitAtIndex,
+  ...restProps
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePageChange = () => setCurrentIndex(currentIndex > 0 ? currentIndex - 1 : currentIndex + 1);
@@ -57,7 +64,15 @@ const DVSFormCard: React.FC<DVSFormCardProps> = ({ heading, description, inputs,
   };
 
   return (
-    <Stack bg="gray.50" rounded="xl" p={{ base: 4, sm: 6, md: 8 }} spacing={{ base: 8 }} maxW={{ lg: 'lg' }}>
+    <Stack
+      bg="gray.50"
+      rounded="xl"
+      p={{ base: 4, sm: 6, md: 8 }}
+      height="fit-content"
+      spacing={{ base: 8 }}
+      maxW={{ lg: 'md' }}
+      {...restProps}
+    >
       <Stack spacing={4}>
         <Heading color="gray.800" lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}>
           {heading}

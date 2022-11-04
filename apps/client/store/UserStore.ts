@@ -1,26 +1,47 @@
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
+import parseJwt from '../utils/jwt';
+import { deleteCookie } from 'cookies-next';
+import { NextRouter } from 'next/router';
 
-interface UserStore {
+interface State {
   access_token: string;
-  voter: { email: string };
-  admin: { serviceNumber: number };
+  voter: Voter;
+  admin: Admin;
 }
 
-const useAuthStore = create<UserStore>()(
+interface Actions {
+  setAccessToken: (access_token: string) => void;
+  setUser: (token: string) => void;
+  logout: (router: NextRouter) => Promise<void>;
+}
+
+const initialState: State = {
+  access_token: null,
+  voter: null,
+  admin: null,
+};
+
+const useUserStore = create<State & Actions>()(
   devtools(
     (set) => ({
-      access_token: null,
-      voter: null,
-      admin: null,
-      setUser: (token: string, user: Record<string, any>) => {
+      ...initialState,
+      setAccessToken: (access_token: string) => set({ access_token }),
+      setUser: (token: string) => {
+        console.log(token);
         set({ access_token: token });
-        if (user?.serviceNumber) set({ admin: user as UserStore['admin'] });
-        if (user?.email) set({ voter: user as UserStore['voter'] });
+        const user = parseJwt(token);
+        if (user?.serviceNumber) set({ admin: user as Admin });
+        if (user?.email) set({ voter: user as Voter });
+      },
+      logout: async (router: NextRouter) => {
+        set({ access_token: null, voter: null, admin: null });
+        deleteCookie('access_token');
+        await router.push('/');
       },
     }),
     { name: 'DVS-UserStore' },
   ),
 );
 
-export default useAuthStore;
+export default useUserStore;

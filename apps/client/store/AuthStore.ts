@@ -2,8 +2,13 @@ import create from 'zustand';
 import { devtools } from 'zustand/middleware';
 import makeRequest from '../utils/makeRequest';
 import validate, { validationFactory } from '../utils/validate';
+import useUserStore from './UserStore';
+import { NextRouter } from 'next/router';
+import { setCookie } from 'cookies-next';
 
-interface AuthStore {
+interface State {
+  displayAuth: 'Register' | 'Login';
+
   firstName: string;
   lastName: string;
   street: string;
@@ -13,41 +18,52 @@ interface AuthStore {
   email: string;
   password: string;
   passwordRepeat: string;
-  setRegister: (key: string, value: string | number) => void;
-  register: () => Promise<void>;
-  setLogin: (key: string, value: string) => void;
+
   errors: { [k: string]: string };
+}
+
+interface Actions {
+  setDisplayAuth: () => void;
+
+  setAuth: (key: string, value: string | number) => void;
+  register: (router?: NextRouter) => Promise<void>;
+  login: (router?: NextRouter) => Promise<void>;
+
   setErrors: (errors: Record<string, any>) => void;
   setError: (field?: string, error?: string) => void;
 }
 
-const useAuthStore = create<AuthStore>()(
+const initialState: State = {
+  displayAuth: 'Register',
+
+  firstName: '',
+  lastName: '',
+  street: '',
+  postalCode: undefined,
+  city: '',
+  ssn: '',
+  email: '',
+  password: '',
+  passwordRepeat: '',
+
+  errors: {},
+};
+
+const useAuthStore = create<State & Actions>()(
   devtools(
     (set, get) => ({
-      firstName: '',
-      lastName: '',
-      street: '',
-      postalCode: null,
-      city: '',
-      ssn: '',
-      email: '',
-      password: '',
-      passwordRepeat: '',
-      errors: {},
-      setErrors: (errors: Record<string, string>) => set({ errors }),
-      setError: (field?: string, error?: string) => {
-        const errors = get().errors;
-        if (!error) {
-          delete errors[field];
-        } else {
-          errors[field] = error;
-        }
-        set({ errors });
+      ...initialState,
+
+      setDisplayAuth: () => {
+        const resetState = { ...initialState };
+        delete resetState.displayAuth;
+        set({ ...resetState, displayAuth: get().displayAuth === 'Register' ? 'Login' : 'Register' });
       },
-      setRegister: (key, value) => set({ [key]: value }),
-      register: async () => {
+
+      setAuth: (key, value) => set({ [key]: value }),
+      register: async (router?: NextRouter) => {
         const { firstName, lastName, street, postalCode, city, ssn, email, password, passwordRepeat } = get();
-        const dto = { firstName, lastName, street, postalCode, city, ssn, email, password };
+        const dto: VoterSignup = { firstName, lastName, street, postalCode, city, ssn, email, password };
         const factory: validationFactoryParams = {
           fields: { ...dto, passwordRepeat },
           validationTypes: [
@@ -70,15 +86,70 @@ const useAuthStore = create<AuthStore>()(
         }
 
         try {
-          const { access_token } = await makeRequest<{ access_token }>(
+          const { data } = await makeRequest<Access, VoterSignup>(
             { url: 'auth/signup', method: 'POST', data: dto },
             {},
           );
+          const { access_token } = data;
+          if (access_token) {
+            useUserStore.getState().setUser(access_token);
+            setCookie('access_token', access_token);
+            set(initialState);
+            if (router) await router.push('/election');
+          }
         } catch (error) {
+          // TODO set exception as error for given field
           console.error(error);
         }
       },
-      setLogin: (key, value) => set({ [key]: value }),
+      login: async (router?: NextRouter) => {
+        const { email, password } = get();
+        const dto = { email, password };
+        const factory: validationFactoryParams = {
+          fields: { ...dto },
+          validationTypes: [
+            { field: 'email', validationType: ['notEmpty', 'email'] },
+            { field: 'password', validationType: ['notEmpty'] },
+          ],
+        };
+        const validation = validate(validationFactory(factory));
+
+        if (validation.hasErrors) {
+          set({ errors: validation.errors });
+          return;
+        }
+
+        try {
+          const { data } = await makeRequest<Access, VoterSignin>(
+            { url: 'auth/signin', method: 'POST', data: dto },
+            {},
+          );
+          const { access_token } = data;
+
+          if (access_token) {
+            useUserStore.getState().setUser(access_token);
+            setCookie('access_token', access_token);
+            set(initialState);
+            if (router) await router.push('/election');
+          }
+        } catch (error) {
+          // TODO set exception as error for given field
+          console.error(error);
+        }
+      },
+
+      setErrors: (errors: Record<string, string>) => set({ errors }),
+      setError: (field?: string, error?: string) => {
+        const errors = get().errors;
+        if (!error) {
+          delete errors[field];
+        } else {
+          errors[field] = error;
+        }
+        set({ errors });
+      },
+
+      reset: () => set(initialState),
     }),
     { name: 'DVS-AuthStore' },
   ),

@@ -19,12 +19,48 @@ import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import Link from 'next/link';
 import DVSButton from '../atoms/DVSButton';
 
-const DVSNavbar: React.FC = () => {
+export interface DVSNavbarProps {
+  voter: Voter;
+  admin: Admin;
+  displayAuth: 'Register' | 'Login';
+  onLogout: VoidFunction;
+  onDisplayAuthChange: VoidFunction;
+}
+
+const DVSNavbar: React.FC<DVSNavbarProps> = ({ voter, admin, onLogout, displayAuth, onDisplayAuthChange }) => {
   const { colorMode, toggleColorMode } = useColorMode();
+
+  const renderMenu = () =>
+    voter || admin ? (
+      <Menu>
+        <MenuButton as={Button} rounded="full" variant="link" cursor="pointer" minW={0}>
+          <Avatar size="sm" src="https://avatars.dicebear.com/api/male/username.svg" />
+        </MenuButton>
+        <MenuList alignItems="center">
+          <br />
+          <Center>
+            <Avatar size="2xl" src="https://avatars.dicebear.com/api/male/username.svg" />
+          </Center>
+          <br />
+          <Center>
+            <p>{voter.email || admin.serviceNumber}</p>
+          </Center>
+          <br />
+          <MenuDivider />
+          <MenuItem onClick={onLogout}>Logout</MenuItem>
+        </MenuList>
+      </Menu>
+    ) : (
+      <Link href="/auth/login">
+        <DVSButton onClick={onDisplayAuthChange} dvsType="primary">
+          {displayAuth === 'Register' ? 'Login' : 'Register'}
+        </DVSButton>
+      </Link>
+    );
 
   return (
     <>
-      <Box position="absolute" width="100%" zIndex={1000} bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Box position="fixed" width="100%" zIndex={1000} bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
         <Flex h={16} alignItems="center" justifyContent="space-between">
           <Stack direction="row" spacing={5} alignItems="center">
             <Link href="/">Logo</Link>
@@ -33,30 +69,7 @@ const DVSNavbar: React.FC = () => {
           <Flex alignItems="center">
             <Stack direction="row" spacing={6}>
               <Button onClick={toggleColorMode}>{colorMode === 'light' ? <MoonIcon /> : <SunIcon />}</Button>
-              <Link href="/auth/login">
-                <DVSButton dvsType="primary">Login</DVSButton>
-              </Link>
-
-              <Menu>
-                <MenuButton as={Button} rounded="full" variant="link" cursor="pointer" minW={0}>
-                  <Avatar size="sm" src="https://avatars.dicebear.com/api/male/username.svg" />
-                </MenuButton>
-                <MenuList alignItems="center">
-                  <br />
-                  <Center>
-                    <Avatar size="2xl" src="https://avatars.dicebear.com/api/male/username.svg" />
-                  </Center>
-                  <br />
-                  <Center>
-                    <p>Username</p>
-                  </Center>
-                  <br />
-                  <MenuDivider />
-                  <MenuItem>Your Servers</MenuItem>
-                  <MenuItem>Account Settings</MenuItem>
-                  <MenuItem>Logout</MenuItem>
-                </MenuList>
-              </Menu>
+              {renderMenu()}
             </Stack>
           </Flex>
         </Flex>
