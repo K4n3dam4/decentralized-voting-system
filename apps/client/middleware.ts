@@ -19,12 +19,11 @@ export default async function middleware(req: NextRequest) {
       try {
         const validate = await fetch(url, { method: req.method, headers: { Authorization: accessToken } });
         if (validate.status === 403) {
-          console.log(validate.status);
           const redirect = NextResponse.redirect(redirectUrl);
           redirect.cookies.delete('access_token');
           return redirect;
         } else {
-          return NextResponse.next();
+          return NextResponse.next().cookies.set('access_token', accessToken);
         }
       } catch (e) {
         console.error(e);

@@ -14,6 +14,7 @@ import {
   Stack,
   useColorMode,
   useColorModeValue,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import Link from 'next/link';
@@ -29,6 +30,7 @@ export interface DVSNavbarProps {
 
 const DVSNavbar: React.FC<DVSNavbarProps> = ({ voter, admin, onLogout, displayAuth, onDisplayAuthChange }) => {
   const { colorMode, toggleColorMode } = useColorMode();
+  const [displayName] = useMediaQuery('(min-width: 600px)');
 
   const renderMenu = () =>
     voter || admin ? (
@@ -64,7 +66,7 @@ const DVSNavbar: React.FC<DVSNavbarProps> = ({ voter, admin, onLogout, displayAu
         <Flex h={16} alignItems="center" justifyContent="space-between">
           <Stack direction="row" spacing={5} alignItems="center">
             <Link href="/">Logo</Link>
-            <Heading size="md">Decentralized Voting System</Heading>
+            <Heading size="md">{displayName && 'Decentralized Voting System'}</Heading>
           </Stack>
           <Flex alignItems="center">
             <Stack direction="row" spacing={6}>
