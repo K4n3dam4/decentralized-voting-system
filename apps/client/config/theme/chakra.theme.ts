@@ -9,6 +9,10 @@ const override: Partial<ChakraTheme> = {
   config: {
     initialColorMode: 'dark',
   },
+  fonts: {
+    heading: 'Cabin',
+    body: 'Montserrat',
+  },
   colors: {
     brand: {
       50: '#ffe4f7',

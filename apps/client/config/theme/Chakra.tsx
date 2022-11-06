@@ -2,6 +2,8 @@ import React from 'react';
 import { NextPageContext } from 'next';
 import { ChakraProvider, cookieStorageManagerSSR, localStorageManager } from '@chakra-ui/react';
 import chakraTheme from './chakra.theme';
+import '@fontsource/cabin/latin.css';
+import '@fontsource/montserrat/latin.css';
 
 interface ChakraWrapperProps {
   cookies: string;
