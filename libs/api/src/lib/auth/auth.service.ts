@@ -14,7 +14,7 @@ export class AuthService {
     const hash = await argon.hash(dto.password);
     delete dto.password;
     // hash social security number
-    dto.socialSecurity = await argon.hash(dto.socialSecurity, { salt: Buffer.from(this.config.get('salt')) });
+    dto.ssn = await argon.hash(dto.ssn, { salt: Buffer.from(this.config.get('salt')) });
     // add voter
     try {
       const voter = await this.prisma.voter.create({
@@ -62,6 +62,19 @@ export class AuthService {
 
     // return admin
     return this.signJwtToken('Admin', { id: admin.id, serviceNumber: admin.serviceNumber });
+  }
+
+  async verify(authorization: string, user: string) {
+    if (!authorization) throw new ForbiddenException('token.notFound');
+    const first = user.charAt(0).toUpperCase();
+    const remaining = user.substring(1);
+
+    const secret = this.config.get(`jwtSecret${first + remaining}`);
+    try {
+      this.jwt.verify(authorization, { secret });
+    } catch (e) {
+      throw new ForbiddenException('token.invalid');
+    }
   }
 
   async signJwtToken(type: 'Admin' | 'Voter', payload: { id: number; email?: string; serviceNumber?: number }) {

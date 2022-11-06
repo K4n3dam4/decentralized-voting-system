@@ -28,6 +28,8 @@
       },
       "configurations": {
         "development": {
+          "hostname": "localhost",
+          "port": 4200,
           "buildTarget": "client:build:development",
           "dev": true
         },

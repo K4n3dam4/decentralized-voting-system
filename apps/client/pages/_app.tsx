@@ -1,18 +1,26 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import './styles.css';
+import Layout from '../layouts/Layout';
+import DVS from '../config/DVS';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Welcome to client!</title>
+        <title>Decentralized electronic voting system</title>
       </Head>
       <main className="app">
-        <Component {...pageProps} />
+        <DVS cookies={pageProps.cookies} token={pageProps.token}>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </DVS>
       </main>
     </>
   );
 }
+
+// re-export dvs getServerSideProps function
+export { getServerSideProps } from '../config/DVS';
 
 export default CustomApp;

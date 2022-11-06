@@ -33,7 +33,7 @@ describe('App e2e', () => {
       hash: 'adminpw',
     };
     const mockVoter: VoterSignupDto = {
-      socialSecurity: '123456',
+      ssn: '123456',
       firstName: 'John',
       lastName: 'Doe',
       street: 'Baker Street 1',
@@ -128,7 +128,7 @@ describe('App e2e', () => {
 
         it('should not allow duplicate emails', function () {
           const duplicateEmail = { ...dto };
-          duplicateEmail.socialSecurity = '1357810';
+          duplicateEmail.ssn = '1357810';
           return spec().post(url).withBody(duplicateEmail).expectStatus(403);
         });
 
@@ -219,7 +219,7 @@ describe('App e2e', () => {
         const dto: ElectionCreateDto = {
           name: 'US Presidential Election 2020',
           candidates: ['Trump', 'Biden'],
-          eligibleVoters: [mockVoter.socialSecurity, process.env.VOTER_ADDRESS],
+          eligibleVoters: [mockVoter.ssn, process.env.VOTER_ADDRESS],
           expires: 1677625200,
         };
         const url = baseUrl + 'create';
@@ -272,7 +272,7 @@ describe('App e2e', () => {
 
       describe('Register voter', function () {
         const dto: ElectionRegisterDto = {
-          ssn: mockVoter.socialSecurity,
+          ssn: mockVoter.ssn,
         };
         const url = baseUrl + 'register/';
 
