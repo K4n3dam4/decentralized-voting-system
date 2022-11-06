@@ -1,38 +1,44 @@
 import { Body, Controller, Get, Post, UseGuards, Param } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { ElectionService } from './election.service';
 import { ElectionCreateDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
-import { GetUser } from '../decorator';
+import { GetUser, Roles } from '../decorators';
+import { RolesGuard } from '../guards/roles.guard';
+import { RoleEnum } from '../types';
 
 @Controller('election')
 export class ElectionController {
   constructor(private electionsService: ElectionService) {}
 
-  @UseGuards(AuthGuard(['Voter', 'Admin']))
+  @Roles(RoleEnum.Voter, RoleEnum.Admin)
+  @UseGuards(RolesGuard)
   @Get('single/:id')
   getElection(@Param('id') id: string) {
     return this.electionsService.getElection(id);
   }
 
-  @UseGuards(AuthGuard(['Voter', 'Admin']))
+  @Roles(RoleEnum.Voter, RoleEnum.Admin)
+  @UseGuards(RolesGuard)
   @Get('all')
   getAllElections() {
     return this.electionsService.getAllElections();
   }
 
-  @UseGuards(AuthGuard('Admin'))
+  @Roles(RoleEnum.Admin)
+  @UseGuards(RolesGuard)
   @Post('create')
-  createElection(@Body() dto: ElectionCreateDto, @GetUser('serviceNumber') serviceNumber) {
-    return this.electionsService.createElection(dto, serviceNumber);
+  createElection(@Body() dto: ElectionCreateDto, @GetUser('id') id: number) {
+    return this.electionsService.createElection(dto, id);
   }
 
-  @UseGuards(AuthGuard('Voter'))
+  @Roles(RoleEnum.Voter)
+  @UseGuards(RolesGuard)
   @Post('register/:id')
   registerVoter(@Body() dto: ElectionRegisterDto, @Param('id') id: string) {
     return this.electionsService.registerVoter(dto, id);
   }
 
-  @UseGuards(AuthGuard('Voter'))
+  @Roles(RoleEnum.Voter)
+  @UseGuards(RolesGuard)
   @Post('vote/:id')
   vote(@Body() dto: ElectionVoteDto, @Param('id') id: string) {
     return this.electionsService.vote(dto, id);

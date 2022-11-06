@@ -1,26 +1,23 @@
 import { Headers, Body, Controller, Get, HttpCode, Post, HttpStatus, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AdminSigninDto, VoterSigninDto, VoterSignupDto } from './auth.dto';
+import { SigninDto, VoterSignupDto } from './auth.dto';
+import { Public } from '../decorators';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Public()
   @Post('signup')
   signup(@Body() dto: VoterSignupDto) {
     return this.authService.signup(dto);
   }
 
+  @Public()
   @Post('signin')
   @HttpCode(HttpStatus.OK)
-  signin(@Body() dto: VoterSigninDto) {
+  signin(@Body() dto: SigninDto) {
     return this.authService.signin(dto);
-  }
-
-  @Post('signin/admin')
-  @HttpCode(HttpStatus.OK)
-  signInAdmin(@Body() dto: AdminSigninDto) {
-    return this.authService.adminSignin(dto);
   }
 
   @Get('verify/:user')

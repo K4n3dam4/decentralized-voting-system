@@ -10,36 +10,31 @@ datasource db {
       url      = env("DATABASE_URL")
 }
 
-model Admin {
-      id Int @id @default(autoincrement())
-      createdAt DateTime @default(now())
-      updatedAt DateTime @default(now())
-
-      firstName String
-      lastName String
-      serviceNumber Int @unique
-      hash String
-
-      elections Election[]
-      @@map("admins")
+enum Role {
+  VOTER
+  ADMIN
 }
 
-model Voter {
+model User {
     id Int @id @default(autoincrement())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    role Role @default(VOTER)
 
-    ssn String @unique
+    ssn String? @unique
     firstName String
     lastName String
     street String
     postalCode Int
     city String
 
+    serviceNumber Int? @unique
+    elections Election[]
+
     email String @unique
     hash String
 
-    @@map("resgisteredVoters")
+    @@map("users")
 }
 
 model Election {
@@ -47,7 +42,7 @@ model Election {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     adminId Int
-    admin Admin @relation(fields: [adminId], references: [id])
+    admin User @relation(fields: [adminId], references: [id])
 
     name String
     candidates String[]
