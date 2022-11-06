@@ -5,6 +5,7 @@ import validate, { validationFactory } from '../utils/validate';
 import useUserStore from './UserStore';
 import { NextRouter } from 'next/router';
 import { setCookie } from 'cookies-next';
+import routes from '../config/routes';
 
 interface State {
   displayAuth: 'Register' | 'Login';
@@ -94,8 +95,8 @@ const useAuthStore = create<State & Actions>()(
           if (access_token) {
             useUserStore.getState().setUser(access_token);
             setCookie('access_token', access_token);
+            if (router) await router.push(`${routes.Election}/all`);
             set(initialState);
-            if (router) await router.push('/election');
           }
         } catch (error) {
           // TODO set exception as error for given field
@@ -129,8 +130,8 @@ const useAuthStore = create<State & Actions>()(
           if (access_token) {
             useUserStore.getState().setUser(access_token);
             setCookie('access_token', access_token);
+            if (router) await router.push(`${routes.Election}/all`);
             set(initialState);
-            if (router) await router.push('/election');
           }
         } catch (error) {
           // TODO set exception as error for given field

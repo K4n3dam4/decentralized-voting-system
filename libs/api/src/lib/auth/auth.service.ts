@@ -64,10 +64,12 @@ export class AuthService {
     return this.signJwtToken('Admin', { id: admin.id, serviceNumber: admin.serviceNumber });
   }
 
-  async verify(authorization: string) {
+  async verify(authorization: string, user: string) {
     if (!authorization) throw new ForbiddenException('token.notFound');
+    const first = user.charAt(0).toUpperCase();
+    const remaining = user.substring(1);
 
-    const secret = this.config.get('jwtSecretVoter');
+    const secret = this.config.get(`jwtSecret${first + remaining}`);
     try {
       this.jwt.verify(authorization, { secret });
     } catch (e) {

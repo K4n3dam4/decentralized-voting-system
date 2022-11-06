@@ -1,4 +1,4 @@
-import { Headers, Body, Controller, Get, HttpCode, Post, HttpStatus } from '@nestjs/common';
+import { Headers, Body, Controller, Get, HttpCode, Post, HttpStatus, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AdminSigninDto, VoterSigninDto, VoterSignupDto } from './auth.dto';
 
@@ -23,8 +23,8 @@ export class AuthController {
     return this.authService.adminSignin(dto);
   }
 
-  @Get('verify')
-  async verify(@Headers() { authorization }) {
-    return this.authService.verify(authorization);
+  @Get('verify/:user')
+  async verify(@Headers() { authorization }, @Param('user') user) {
+    return this.authService.verify(authorization, user);
   }
 }

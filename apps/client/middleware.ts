@@ -1,36 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
+import routes, { protectedRoutes } from './config/routes';
+import { deleteCookie } from './utils/cookies';
 
 export default async function middleware(req: NextRequest) {
   const { nextUrl, cookies } = req;
   const accessToken = cookies.get('access_token');
 
-  const splitPath = nextUrl.pathname.split('/');
-  const protectedRoutes = ['election', 'auth'];
+  const checker = (path: string) => protectedRoutes.some((route) => path.includes(route));
 
-  const checker = (pathArray: string[]) => protectedRoutes.some((route) => pathArray.includes(route));
-
-  // path is not root
-  if (checker(splitPath)) {
+  const rejected = () => {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = '/';
+    const redirect = NextResponse.redirect(redirectUrl);
+    deleteCookie(req, redirect, 'access_token');
+    return redirect;
+  };
 
+  // path is protected - clearance user
+  if (checker(nextUrl.pathname)) {
     if (accessToken) {
-      const url = req.nextUrl.origin + '/api/auth/verify';
+      const adminRoute = nextUrl.pathname.includes(routes.Admin);
+      const url = req.nextUrl.origin + `/api/auth/verify/${adminRoute ? 'admin' : 'voter'}`;
       try {
         const validate = await fetch(url, { method: req.method, headers: { Authorization: accessToken } });
-        if (validate.status === 403) {
-          const redirect = NextResponse.redirect(redirectUrl);
-          redirect.cookies.delete('access_token');
-          return redirect;
+        if (validate.status === 200) {
+          return NextResponse.next();
         } else {
-          return NextResponse.next().cookies.set('access_token', accessToken);
+          return rejected();
         }
       } catch (e) {
         console.error(e);
-        return NextResponse.redirect(redirectUrl);
+        return rejected();
       }
     } else {
-      return NextResponse.redirect(redirectUrl);
+      return rejected();
     }
   }
 }

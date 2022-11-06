@@ -1,7 +1,7 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import Layout from '../layouts/Layout';
-import Chakra from '../config/theme/Chakra';
+import DVS from '../config/DVS';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
@@ -10,17 +10,17 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <title>Decentralized electronic voting system</title>
       </Head>
       <main className="app">
-        <Chakra cookies={pageProps.cookies}>
+        <DVS cookies={pageProps.cookies} token={pageProps.token}>
           <Layout>
             <Component {...pageProps} />
           </Layout>
-        </Chakra>
+        </DVS>
       </main>
     </>
   );
 }
 
-// re-export the reusable `getServerSideProps` function
-export { getServerSideProps } from '../config/theme/Chakra';
+// re-export dvs getServerSideProps function
+export { getServerSideProps } from '../config/DVS';
 
 export default CustomApp;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, Stack, Text } from '@chakra-ui/react';
+import { Heading, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 
 export interface DVSHeroHeading {
   heading1: string;
@@ -10,6 +10,10 @@ export interface DVSHeroHeading {
 
 const DVSHeroHeading: React.FC<DVSHeroHeading> = ({ heading1, heading2, emphasize, children }) => {
   const headings: string[] = [];
+  const emphasizeColor = useColorModeValue(
+    'linear(to-r, brand.600, purple.400)',
+    'linear(to-l, brand.200, purple.200)',
+  );
 
   if (emphasize) {
     const words = heading1.split(' ');
@@ -33,7 +37,7 @@ const DVSHeroHeading: React.FC<DVSHeroHeading> = ({ heading1, heading2, emphasiz
       ) : (
         <Heading lineHeight={1.3} fontSize={{ base: '3xl', sm: '4xl', md: '5xl', lg: '6xl' }}>
           {headings[0]}{' '}
-          <Text as="span" bgGradient="linear(to-r, red.400,pink.400)" bgClip="text">
+          <Text as="span" bgGradient={emphasizeColor} bgClip="text">
             {headings[1]}{' '}
           </Text>
           {headings[2]}

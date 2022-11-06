@@ -13,6 +13,7 @@ interface State {
 interface Actions {
   setAccessToken: (access_token: string) => void;
   setUser: (token: string) => void;
+  resetUser: VoidFunction;
   logout: (router: NextRouter) => Promise<void>;
 }
 
@@ -24,18 +25,18 @@ const initialState: State = {
 
 const useUserStore = create<State & Actions>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
       setAccessToken: (access_token: string) => set({ access_token }),
       setUser: (token: string) => {
-        console.log(token);
         set({ access_token: token });
         const user = parseJwt(token);
         if (user?.serviceNumber) set({ admin: user as Admin });
         if (user?.email) set({ voter: user as Voter });
       },
+      resetUser: () => set(initialState),
       logout: async (router: NextRouter) => {
-        set({ access_token: null, voter: null, admin: null });
+        get().resetUser();
         deleteCookie('access_token');
         await router.push('/');
       },

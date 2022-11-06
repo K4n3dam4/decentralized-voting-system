@@ -53,11 +53,9 @@ const DVSNavbar: React.FC<DVSNavbarProps> = ({ voter, admin, onLogout, displayAu
         </MenuList>
       </Menu>
     ) : (
-      <Link href="/auth/login">
-        <DVSButton onClick={onDisplayAuthChange} dvsType="primary">
-          {displayAuth === 'Register' ? 'Login' : 'Register'}
-        </DVSButton>
-      </Link>
+      <DVSButton onClick={onDisplayAuthChange} dvsType="primary">
+        {displayAuth === 'Register' ? 'Login' : 'Register'}
+      </DVSButton>
     );
 
   return (

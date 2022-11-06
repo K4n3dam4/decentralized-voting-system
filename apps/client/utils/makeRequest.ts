@@ -14,7 +14,6 @@ const makeRequest = <Res, D, QP = void>(
   const concatQP = (api: string, qp: typeof queryParams) => (Object.keys(qp).length > 0 ? api + queryString(qp) : api);
 
   const completeUrl = concatQP(baseUrl + url, queryParams);
-  console.log(completeUrl);
 
   return axios({
     method,

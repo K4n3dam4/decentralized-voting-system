@@ -3,8 +3,7 @@ import Register from '../components/organisms/Register';
 import DVSHeroIcon from '../components/atoms/DVSHeroIcon';
 import DVSAvatarGroup from '../components/molecules/DVSAvatarGroup';
 import DVSHeroHeading from '../components/molecules/DVSHeroHeading';
-import { getServerSideProps as chakraServerSideProps } from './_app';
-import { NextPageContext } from 'next';
+import { getServerSideProps } from './_app';
 
 const Home = () => {
   const avatars = [
@@ -62,8 +61,5 @@ const Home = () => {
   );
 };
 
-export const getServerSideProps = (ctx: NextPageContext) => {
-  return chakraServerSideProps(ctx);
-};
-
+export { getServerSideProps };
 export default Home;
