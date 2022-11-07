@@ -1,0 +1,28 @@
+{
+  "title": "Decentralized Voting System",
+  "hero": {
+    "landing": {
+      "heading": "Your decentralized voting system",
+      "subHeading": "Millions of voters have joined. Would you like to be next?"
+    }
+  },
+  "auth": {
+    "register": "Register",
+    "login": "Login",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "street": "Street",
+    "postalCode": "Postal code",
+    "city": "City",
+    "country": "Country",
+    "ssn": "Social security number",
+    "email": "Email",
+    "password": "Password",
+    "passwordRepeat": "Repeat password"
+  },
+  "controls": {
+    "back": "Back",
+    "continue": "Continue",
+    "submit": "Submit"
+  }
+}
