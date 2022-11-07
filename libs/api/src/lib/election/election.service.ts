@@ -32,9 +32,9 @@ export class ElectionService {
     return this.sanitizeElections(elections);
   }
 
-  async createElection(dto: ElectionCreateDto, serviceNumber: number) {
+  async createElection(dto: ElectionCreateDto, id: number) {
     // get admin
-    const admin = await this.prisma.admin.findUnique({ where: { serviceNumber } });
+    const admin = await this.prisma.user.findUnique({ where: { id } });
     if (!admin) throw new ForbiddenException('signin.forbidden.wrongServiceNumber');
 
     const signer = this.signer.createWallet(this.config.get('adminPk'));

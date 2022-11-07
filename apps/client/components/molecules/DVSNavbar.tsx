@@ -21,19 +21,18 @@ import Link from 'next/link';
 import DVSButton from '../atoms/DVSButton';
 
 export interface DVSNavbarProps {
-  voter: Voter;
-  admin: Admin;
+  user: User;
   displayAuth: 'Register' | 'Login';
   onLogout: VoidFunction;
   onDisplayAuthChange: VoidFunction;
 }
 
-const DVSNavbar: React.FC<DVSNavbarProps> = ({ voter, admin, onLogout, displayAuth, onDisplayAuthChange }) => {
+const DVSNavbar: React.FC<DVSNavbarProps> = ({ user, onLogout, displayAuth, onDisplayAuthChange }) => {
   const { colorMode, toggleColorMode } = useColorMode();
   const [displayName] = useMediaQuery('(min-width: 600px)');
 
   const renderMenu = () =>
-    voter || admin ? (
+    user ? (
       <Menu>
         <MenuButton as={Button} rounded="full" variant="link" cursor="pointer" minW={0}>
           <Avatar size="sm" src="https://avatars.dicebear.com/api/male/username.svg" />
@@ -45,7 +44,7 @@ const DVSNavbar: React.FC<DVSNavbarProps> = ({ voter, admin, onLogout, displayAu
           </Center>
           <br />
           <Center>
-            <p>{voter.email || admin.serviceNumber}</p>
+            <p>{user.email}</p>
           </Center>
           <br />
           <MenuDivider />

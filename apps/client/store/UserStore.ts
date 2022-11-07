@@ -6,8 +6,7 @@ import { NextRouter } from 'next/router';
 
 interface State {
   access_token: string;
-  voter: Voter;
-  admin: Admin;
+  user: User;
 }
 
 interface Actions {
@@ -19,8 +18,7 @@ interface Actions {
 
 const initialState: State = {
   access_token: null,
-  voter: null,
-  admin: null,
+  user: null,
 };
 
 const useUserStore = create<State & Actions>()(
@@ -31,8 +29,7 @@ const useUserStore = create<State & Actions>()(
       setUser: (token: string) => {
         set({ access_token: token });
         const user = parseJwt(token);
-        if (user?.serviceNumber) set({ admin: user as Admin });
-        if (user?.email) set({ voter: user as Voter });
+        set({ user });
       },
       resetUser: () => set(initialState),
       logout: async (router: NextRouter) => {

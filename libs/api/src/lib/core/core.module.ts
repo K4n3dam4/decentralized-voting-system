@@ -4,6 +4,8 @@ import { configuration, validationSchema } from './';
 import { EthersCoreModule } from 'nestjs-ethers/dist/ethers-core.module';
 import { AlchemyProvider, Network } from '@ethersproject/providers';
 import { EthersModuleOptions, InjectEthersProvider } from 'nestjs-ethers';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtGuard } from '../guards';
 
 @Module({
   imports: [
@@ -46,7 +48,12 @@ import { EthersModuleOptions, InjectEthersProvider } from 'nestjs-ethers';
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
+    },
+  ],
   exports: [],
 })
 export class CoreModule {

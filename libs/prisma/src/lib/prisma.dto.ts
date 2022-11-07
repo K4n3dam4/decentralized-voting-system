@@ -1,19 +1,29 @@
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsInt, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class AdminDto {
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   firstName: string;
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
+  @IsNotEmpty()
+  @IsString()
+  street: string;
+  @IsNotEmpty()
+  @IsNumber()
+  postalCode: number;
+  @IsNotEmpty()
+  @IsString()
+  city: string;
 
+  @IsEmail()
+  email: string;
   @IsString()
   @IsNotEmpty()
-  lastName: string;
+  hash: string;
 
   @IsInt()
   @IsNotEmpty()
   serviceNumber: number;
-
-  @IsString()
-  @IsNotEmpty()
-  hash: string;
 }

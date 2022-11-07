@@ -3,6 +3,6 @@ import { PrismaModule } from '@dvs/prisma';
 import { AuthModule, CoreModule, ElectionModule, JwtModule } from '@dvs/api';
 
 @Module({
-  imports: [CoreModule, JwtModule, AuthModule, PrismaModule, ElectionModule],
+  imports: [CoreModule, AuthModule, JwtModule, PrismaModule, ElectionModule],
 })
 export class AppModule {}

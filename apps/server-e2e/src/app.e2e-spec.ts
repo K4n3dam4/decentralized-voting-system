@@ -1,15 +1,13 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  AdminSigninDto,
   AuthModule,
   CoreModule,
   ElectionCreateDto,
   ElectionModule,
   ElectionRegisterDto,
   ElectionVoteDto,
-  JwtModule,
-  VoterSigninDto,
+  SigninDto,
   VoterSignupDto,
 } from '@dvs/api';
 import { AdminDto, PrismaModule, PrismaService } from '@dvs/prisma';
@@ -29,6 +27,10 @@ describe('App e2e', () => {
     const admin: AdminDto = {
       firstName: 'Test',
       lastName: 'Admin',
+      street: 'Baker Street 2',
+      postalCode: 20095,
+      city: 'Web3 City',
+      email: 'admin@test.com',
       serviceNumber: 987654,
       hash: 'adminpw',
     };
@@ -84,10 +86,6 @@ describe('App e2e', () => {
         expect(app.get(PrismaModule)).toBeDefined();
       });
 
-      it('should load JwtModule', function () {
-        expect(app.get(JwtModule)).toBeDefined();
-      });
-
       it('should load AuthModule', function () {
         expect(app.get(AuthModule)).toBeDefined();
       });
@@ -141,7 +139,7 @@ describe('App e2e', () => {
 
       // Signin voter
       describe('Signin voter', function () {
-        const dto: VoterSigninDto = {
+        const dto: SigninDto = {
           email: mockVoter.email,
           password: mockVoter.password,
         };
@@ -156,7 +154,7 @@ describe('App e2e', () => {
             .expectBody({ statusCode: 400, message: ['password should not be empty'], error: 'Bad Request' });
         });
 
-        it('should validate username', function () {
+        it('should validate email', function () {
           const faultyDto = { ...dto };
           faultyDto.email = 'john.doe@test.de';
           return spec().post(url).withBody(faultyDto).expectStatus(403);
@@ -174,11 +172,11 @@ describe('App e2e', () => {
       });
 
       describe('Signin admin', function () {
-        const dto: AdminSigninDto = {
-          serviceNumber: admin.serviceNumber,
+        const dto: SigninDto = {
+          email: admin.email,
           password: admin.hash,
         };
-        const url = baseUrl + 'signin/admin';
+        const url = baseUrl + 'signin';
 
         it('should validate request', function () {
           const faultyDto = { ...dto };
@@ -190,9 +188,9 @@ describe('App e2e', () => {
             .expectBody({ statusCode: 400, message: ['password should not be empty'], error: 'Bad Request' });
         });
 
-        it('should validate service number', function () {
+        it('should validate email', function () {
           const faultyDto = { ...dto };
-          faultyDto.serviceNumber = 3;
+          faultyDto.email = 'eweoifwjie@dskm.de';
           return spec().post(url).withBody(faultyDto).expectStatus(403);
         });
 
@@ -225,7 +223,7 @@ describe('App e2e', () => {
         const url = baseUrl + 'create';
 
         it('should be guarded', function () {
-          return spec().post(url).withHeaders(headersVoter).expectStatus(401);
+          return spec().post(url).withHeaders(headersVoter).expectStatus(403);
         });
 
         it('should validate request', function () {

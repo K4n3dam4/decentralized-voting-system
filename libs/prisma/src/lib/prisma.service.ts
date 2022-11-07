@@ -16,13 +16,13 @@ export class PrismaService extends PrismaClient {
   }
 
   withCleanDatabase() {
-    return this.$transaction([this.election.deleteMany(), this.admin.deleteMany(), this.voter.deleteMany()]);
+    return this.$transaction([this.election.deleteMany(), this.user.deleteMany()]);
   }
 
   async withAdmin(@Body() dto: AdminDto) {
     const admin = {
-      data: dto,
+      data: { ...dto, role: 'ADMIN' as any },
     };
-    await this.admin.create(admin);
+    await this.user.create(admin);
   }
 }
