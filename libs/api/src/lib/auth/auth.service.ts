@@ -50,19 +50,6 @@ export class AuthService {
     return this.signJwtToken({ id: user.id, email: user.email, role: user.role });
   }
 
-  async verify(authorization: string, user: string) {
-    if (!authorization) throw new ForbiddenException('token.notFound');
-    const first = user.charAt(0).toUpperCase();
-    const remaining = user.substring(1);
-
-    const secret = this.config.get(`jwtSecret${first + remaining}`);
-    try {
-      this.jwt.verify(authorization, { secret });
-    } catch (e) {
-      throw new ForbiddenException('token.invalid');
-    }
-  }
-
   async signJwtToken(payload: JwtPayload) {
     const token = await this.jwt.signAsync(payload);
 

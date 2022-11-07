@@ -14,19 +14,14 @@ interface VoterSignin {
   password: string;
 }
 
-interface Voter {
+type Role = { role: 'VOTER' } | { serviceNumber: number; role: 'ADMIN' };
+
+type User = {
   email: string;
   id: number;
   iat: number;
   exp: number;
-}
-
-interface Admin {
-  serviceNumber: string;
-  id: number;
-  iat: number;
-  exp: number;
-}
+} & Role;
 
 interface Access {
   access_token: string;

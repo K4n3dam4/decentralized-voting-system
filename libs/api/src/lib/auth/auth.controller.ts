@@ -1,7 +1,9 @@
-import { Headers, Body, Controller, Get, HttpCode, Post, HttpStatus, Param } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SigninDto, VoterSignupDto } from './auth.dto';
-import { Public } from '../decorators';
+import { GetUser, Public, Roles } from '../decorators';
+import { JwtPayload, RoleEnum } from '../types';
+import { RolesGuard } from '../guards';
 
 @Controller('auth')
 export class AuthController {
@@ -20,8 +22,11 @@ export class AuthController {
     return this.authService.signin(dto);
   }
 
-  @Get('verify/:user')
-  async verify(@Headers() { authorization }, @Param('user') user) {
-    return this.authService.verify(authorization, user);
+  @Roles(RoleEnum.Voter, RoleEnum.Admin)
+  @UseGuards(RolesGuard)
+  @Get('verify')
+  async verify(@GetUser('role') role: JwtPayload['role']) {
+    console.log(role);
+    return { role };
   }
 }
