@@ -41,7 +41,9 @@ export const getServerSideProps = (ctx: NextPageContext) => {
 
   return {
     props: {
+      // all cookies
       cookies: ctx.req.headers.cookie ?? '',
+      // jwt token
       token: access_token ?? '',
     },
   };

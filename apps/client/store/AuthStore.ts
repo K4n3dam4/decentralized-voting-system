@@ -8,7 +8,7 @@ import { setCookie } from 'cookies-next';
 import routes from '../config/routes';
 
 interface State {
-  displayAuth: 'Register' | 'Login';
+  displayAuth: 'register' | 'login';
 
   firstName: string;
   lastName: string;
@@ -35,7 +35,7 @@ interface Actions {
 }
 
 const initialState: State = {
-  displayAuth: 'Register',
+  displayAuth: 'register',
 
   firstName: '',
   lastName: '',
@@ -58,7 +58,7 @@ const useAuthStore = create<State & Actions>()(
       setDisplayAuth: () => {
         const resetState = { ...initialState };
         delete resetState.displayAuth;
-        set({ ...resetState, displayAuth: get().displayAuth === 'Register' ? 'Login' : 'Register' });
+        set({ ...resetState, displayAuth: get().displayAuth === 'register' ? 'login' : 'register' });
       },
 
       setAuth: (key, value) => set({ [key]: value }),

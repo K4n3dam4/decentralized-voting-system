@@ -2,6 +2,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import Layout from '../layouts/Layout';
 import DVS from '../config/DVS';
+import { appWithTranslation } from 'next-i18next';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
@@ -23,4 +24,4 @@ function CustomApp({ Component, pageProps }: AppProps) {
 // re-export dvs getServerSideProps function
 export { getServerSideProps } from '../config/DVS';
 
-export default CustomApp;
+export default appWithTranslation(CustomApp);

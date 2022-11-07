@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Heading, Stack, StackProps, Text } from '@chakra-ui/react';
 import DVSInput, { DVSFormInputProps } from '../atoms/DVSFormInput';
 import DVSButton, { DVSButtonProps } from '../atoms/DVSButton';
+import { useTranslation } from 'next-i18next';
 
 export interface DVSFormCardProps extends StackProps {
   heading: string;
@@ -20,8 +21,13 @@ const DVSFormCard: React.FC<DVSFormCardProps> = ({
   ...restProps
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { t } = useTranslation();
 
   const handlePageChange = () => setCurrentIndex(currentIndex > 0 ? currentIndex - 1 : currentIndex + 1);
+
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [inputs]);
 
   const renderInputs = () => {
     const splitInputArray: [JSX.Element[], JSX.Element[]] = [[], []];
@@ -47,13 +53,13 @@ const DVSFormCard: React.FC<DVSFormCardProps> = ({
       if (currentIndex < 1) {
         buttonArray.push(
           <DVSButton onClick={handlePageChange} dvsType="secondary">
-            Continue
+            {t('controls.continue')}
           </DVSButton>,
         );
       } else {
         buttonArray.push(
           <DVSButton onClick={handlePageChange} dvsType="secondary">
-            Back
+            {t('controls.back')}
           </DVSButton>,
         );
         buttons.forEach((props, index) => buttonArray.push(<DVSButton key={`formcard-btn-${index}`} {...props} />));

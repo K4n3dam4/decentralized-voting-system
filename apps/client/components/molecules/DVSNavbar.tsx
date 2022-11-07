@@ -19,10 +19,11 @@ import {
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import Link from 'next/link';
 import DVSButton from '../atoms/DVSButton';
+import { useTranslation } from 'next-i18next';
 
 export interface DVSNavbarProps {
   user: User;
-  displayAuth: 'Register' | 'Login';
+  displayAuth: 'register' | 'login';
   onLogout: VoidFunction;
   onDisplayAuthChange: VoidFunction;
 }
@@ -30,6 +31,7 @@ export interface DVSNavbarProps {
 const DVSNavbar: React.FC<DVSNavbarProps> = ({ user, onLogout, displayAuth, onDisplayAuthChange }) => {
   const { colorMode, toggleColorMode } = useColorMode();
   const [displayName] = useMediaQuery('(min-width: 600px)');
+  const { t } = useTranslation();
 
   const renderMenu = () =>
     user ? (
@@ -53,7 +55,7 @@ const DVSNavbar: React.FC<DVSNavbarProps> = ({ user, onLogout, displayAuth, onDi
       </Menu>
     ) : (
       <DVSButton onClick={onDisplayAuthChange} dvsType="primary">
-        {displayAuth === 'Register' ? 'Login' : 'Register'}
+        {t(`auth.${displayAuth === 'register' ? 'login' : 'register'}`)}
       </DVSButton>
     );
 

@@ -1,11 +1,14 @@
 import { Box, Container, SimpleGrid, Stack } from '@chakra-ui/react';
-import Register from '../components/organisms/Register';
+import Auth from '../components/organisms/Auth';
 import DVSHeroIcon from '../components/atoms/DVSHeroIcon';
 import DVSAvatarGroup from '../components/molecules/DVSAvatarGroup';
 import DVSHeroHeading from '../components/molecules/DVSHeroHeading';
-import { getServerSideProps } from './_app';
+import { getServerSideProps as dvsGetServerSideProps } from './_app';
+import { ssrTranslations } from '../utils/i18next';
+import { useTranslation } from 'next-i18next';
 
 const Home = () => {
+  const { t } = useTranslation();
   const avatars = [
     {
       name: 'Ryan Florence',
@@ -42,13 +45,13 @@ const Home = () => {
       >
         <Stack spacing={{ base: 10, md: 20 }}>
           <DVSHeroHeading
-            heading1="Your decentralized voting system"
-            heading2="Millions of voters have joined. Would you like to be next?"
+            heading1={t('hero.landing.heading')}
+            heading2={t('hero.landing.subHeading')}
             emphasize="decentralized"
           />
           <DVSAvatarGroup avatars={avatars} user />
         </Stack>
-        <Register />
+        <Auth />
       </Container>
       <DVSHeroIcon
         position="absolute"
@@ -61,5 +64,13 @@ const Home = () => {
   );
 };
 
-export { getServerSideProps };
+export const getServerSideProps = async (ctx) => {
+  return {
+    props: {
+      // locales
+      ...dvsGetServerSideProps(ctx).props,
+      ...(await ssrTranslations(ctx.locale, ['common'])),
+    },
+  };
+};
 export default Home;

@@ -4,9 +4,12 @@ import { DVSButtonProps } from '../atoms/DVSButton';
 import { DVSFormInputProps } from '../atoms/DVSFormInput';
 import useAuthStore from '../../store/AuthStore';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 
-const Register = () => {
+const Auth = () => {
   const router = useRouter();
+  const { t } = useTranslation('common');
+
   const [displayAuth, firstName, lastName, street, postalCode, city, ssn, email, password, passwordRepeat, errors] =
     useAuthStore((s) => [
       s.displayAuth,
@@ -27,10 +30,10 @@ const Register = () => {
 
   const getInputs = () => {
     const inputs: { [type: string]: DVSFormInputProps[] } = {
-      Register: [
+      register: [
         {
           name: 'firstName',
-          placeholder: 'First name',
+          placeholder: t('auth.firstName'),
           value: firstName,
           onChange: ({ target }) => setAuth(target.name, target.value),
           onFocus: ({ target }) => setError(target.name),
@@ -38,7 +41,7 @@ const Register = () => {
         },
         {
           name: 'lastName',
-          placeholder: 'Last name',
+          placeholder: t('auth.lastName'),
           value: lastName,
           onChange: ({ target }) => setAuth(target.name, target.value),
           onFocus: ({ target }) => setError(target.name),
@@ -46,7 +49,7 @@ const Register = () => {
         },
         {
           name: 'street',
-          placeholder: 'Street',
+          placeholder: t('auth.street'),
           value: street,
           onChange: ({ target }) => setAuth(target.name, target.value),
           onFocus: ({ target }) => setError(target.name),
@@ -54,7 +57,7 @@ const Register = () => {
         },
         {
           name: 'postalCode',
-          placeholder: 'Postalcode',
+          placeholder: t('auth.postalCode'),
           value: postalCode,
           onChange: ({ target }) => setAuth(target.name, Number(target.value)),
           onFocus: ({ target }) => setError(target.name),
@@ -63,7 +66,7 @@ const Register = () => {
         },
         {
           name: 'city',
-          placeholder: 'City',
+          placeholder: t('auth.city'),
           value: city,
           onChange: ({ target }) => setAuth(target.name, target.value),
           onFocus: ({ target }) => setError(target.name),
@@ -71,7 +74,7 @@ const Register = () => {
         },
         {
           name: 'ssn',
-          placeholder: 'Social security nunber',
+          placeholder: t('auth.ssn'),
           value: ssn,
           onChange: ({ target }) => setAuth(target.name, target.value),
           onFocus: ({ target }) => setError(target.name),
@@ -79,7 +82,7 @@ const Register = () => {
         },
         {
           name: 'email',
-          placeholder: 'Email address',
+          placeholder: t('auth.email'),
           value: email,
           onChange: ({ target }) => setAuth(target.name, target.value),
           onFocus: ({ target }) => setError(target.name),
@@ -88,7 +91,7 @@ const Register = () => {
         },
         {
           name: 'password',
-          placeholder: 'Password',
+          placeholder: t('auth.password'),
           value: password,
           onChange: ({ target }) => setAuth(target.name, target.value),
           onFocus: ({ target }) => setError(target.name),
@@ -97,7 +100,7 @@ const Register = () => {
         },
         {
           name: 'passwordRepeat',
-          placeholder: 'Repeat password',
+          placeholder: t('auth.passwordRepeat'),
           value: passwordRepeat,
           onChange: ({ target }) => setAuth(target.name, target.value),
           onFocus: ({ target }) => setError(target.name),
@@ -105,10 +108,10 @@ const Register = () => {
           error: errors['passwordRepeat'],
         },
       ],
-      Login: [
+      login: [
         {
           name: 'email',
-          placeholder: 'Email address',
+          placeholder: t('auth.email'),
           value: email,
           onChange: ({ target }) => setAuth(target.name, target.value),
           onFocus: ({ target }) => setError(target.name),
@@ -117,7 +120,7 @@ const Register = () => {
         },
         {
           name: 'password',
-          placeholder: 'Password',
+          placeholder: t('auth.password'),
           value: password,
           onChange: ({ target }) => setAuth(target.name, target.value),
           onFocus: ({ target }) => setError(target.name),
@@ -133,21 +136,21 @@ const Register = () => {
   const buttonProps: DVSButtonProps[] = [
     {
       dvsType: 'primary',
-      children: displayAuth,
+      children: t(`auth.${displayAuth}`),
       onClick: () => {
-        if (displayAuth === 'Register') register(router);
+        if (displayAuth === 'register') register(router);
         else login(router);
       },
     },
   ];
   return (
     <DVSFormCard
-      heading={displayAuth}
+      heading={t(`auth.${displayAuth}`)}
       inputs={getInputs()}
       buttons={buttonProps}
-      splitAtIndex={displayAuth === 'Register' && 5}
+      splitAtIndex={displayAuth === 'register' && 5}
     />
   );
 };
 
-export default Register;
+export default Auth;
