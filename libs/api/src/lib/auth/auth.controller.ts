@@ -26,7 +26,6 @@ export class AuthController {
   @UseGuards(RolesGuard)
   @Get('verify')
   async verify(@GetUser('role') role: JwtPayload['role']) {
-    console.log(role);
     return { role };
   }
 }
