@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { NextPageContext } from 'next';
 import { ChakraProvider, cookieStorageManagerSSR, localStorageManager } from '@chakra-ui/react';
 import '@fontsource/cabin/latin.css';
-import '@fontsource/montserrat/latin.css';
 import { getCookie } from 'cookies-next';
 import useUserStore from '../store/UserStore';
 import chakraTheme from './theme/chakra.theme';
@@ -26,11 +25,14 @@ export const getServerSideProps = (ctx: NextPageContext) => {
   };
 };
 
+// DVS Config Wrapper
 const DVS = ({ cookies, token, children }: ChakraWrapperProps) => {
+  // manage color mode
   const colorModeManager = typeof cookies === 'string' ? cookieStorageManagerSSR(cookies) : localStorageManager;
   const [accessToken, setUser, resetUser] = useUserStore((s) => [s.access_token, s.setUser, s.resetUser]);
   const [loaded, setLoaded] = useState(false);
 
+  // manage logged in user
   useEffect(() => {
     if (token) {
       if (token !== accessToken) {

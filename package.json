@@ -42,7 +42,6 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@fontsource/cabin": "^4.5.9",
-    "@fontsource/montserrat": "^4.5.13",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",

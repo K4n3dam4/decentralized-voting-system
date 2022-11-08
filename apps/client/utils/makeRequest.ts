@@ -1,10 +1,20 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
+/**
+ * Make api request
+ * @param queryParams
+ */
 const queryString = (queryParams: { [x: string]: any }) =>
   `?${Object.keys(queryParams)
     .map((key) => `${key}=${queryParams[key]}`)
     .join('&')}`;
 
+/**
+ *
+ * @param requestConfig
+ * @param queryParams
+ * @param baseUrl
+ */
 const makeRequest = <Res, D, QP = void>(
   requestConfig: AxiosRequestConfig,
   queryParams: QP | Record<string, any>,

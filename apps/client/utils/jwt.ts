@@ -1,3 +1,7 @@
+/**
+ * Decode jwt token
+ * @param token
+ */
 const parseJwt = (token: string) => {
   if (!token) {
     return;

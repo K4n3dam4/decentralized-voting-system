@@ -11,7 +11,6 @@ const override: Partial<ChakraTheme> = {
   },
   fonts: {
     heading: 'Cabin',
-    body: 'Montserrat',
   },
   colors: {
     brand: {
