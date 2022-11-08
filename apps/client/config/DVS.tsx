@@ -13,6 +13,19 @@ interface ChakraWrapperProps {
   children: React.ReactNode | React.ReactNode[];
 }
 
+export const getServerSideProps = (ctx: NextPageContext) => {
+  const access_token = getCookie('access_token', ctx);
+
+  return {
+    props: {
+      // all cookies
+      cookies: ctx.req.headers.cookie ?? '',
+      // jwt token
+      token: access_token ?? '',
+    },
+  };
+};
+
 const DVS = ({ cookies, token, children }: ChakraWrapperProps) => {
   const colorModeManager = typeof cookies === 'string' ? cookieStorageManagerSSR(cookies) : localStorageManager;
   const [accessToken, setUser, resetUser] = useUserStore((s) => [s.access_token, s.setUser, s.resetUser]);
@@ -34,19 +47,6 @@ const DVS = ({ cookies, token, children }: ChakraWrapperProps) => {
       {loaded && children}
     </ChakraProvider>
   );
-};
-
-export const getServerSideProps = (ctx: NextPageContext) => {
-  const access_token = getCookie('access_token', ctx);
-
-  return {
-    props: {
-      // all cookies
-      cookies: ctx.req.headers.cookie ?? '',
-      // jwt token
-      token: access_token ?? '',
-    },
-  };
 };
 
 export default DVS;

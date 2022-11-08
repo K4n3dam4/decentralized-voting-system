@@ -33,9 +33,9 @@ const useUserStore = create<State & Actions>()(
       },
       resetUser: () => set(initialState),
       logout: async (router: NextRouter) => {
-        get().resetUser();
         deleteCookie('access_token');
         await router.push('/');
+        get().resetUser();
       },
     }),
     { name: 'DVS-UserStore' },
