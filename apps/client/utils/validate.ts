@@ -1,3 +1,5 @@
+import { i18n } from 'next-i18next';
+
 const pwRegex = new RegExp('^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\\d]){1,})(?=(.*[\\W]){1,})(?!.*\\s).{8,}$');
 const emailRegex = new RegExp('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$');
 
@@ -24,28 +26,24 @@ const validate = (params: ValidateParam[]) => {
 
   params.forEach(({ field, value, validationType }) => {
     if (validationType.includes('notEmpty')) {
-      if (!value) setError(field, 'This field must not be empty.');
+      if (!value) setError(field, i18n.t('error.validate.notEmpty'));
     }
 
     if (validationType.includes('password')) {
-      if (!pwRegex.test(value))
-        setError(
-          field,
-          'Minimum eight characters, at least one letter, one number and one special, upper- as well as lower case character',
-        );
+      if (!pwRegex.test(value)) setError(field, i18n.t('error.validate.password'));
     }
 
     if (validationType.includes('string')) {
-      if (typeof value !== 'string') setError(field, 'You entered invalid characters.');
+      if (typeof value !== 'string') setError(field, i18n.t('error.validate.string'));
     }
 
     if (validationType.includes('passwordRepeat')) {
       const password = params.find(({ field }) => field === 'password');
-      if (!password || password.value !== value) setError(field, 'Passwords do not match.');
+      if (!password || password.value !== value) setError(field, i18n.t('error.validate.passwordRepeat'));
     }
 
     if (validationType.includes('email')) {
-      if (!emailRegex.test(value)) setError(field, 'Please enter a valid email.');
+      if (!emailRegex.test(value)) setError(field, i18n.t('error.validate.email'));
     }
   });
 

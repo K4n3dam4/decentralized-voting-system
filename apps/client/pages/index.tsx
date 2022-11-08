@@ -7,6 +7,16 @@ import { getServerSideProps as dvsGetServerSideProps } from './_app';
 import { ssrTranslations } from '../utils/i18next';
 import { useTranslation } from 'next-i18next';
 
+export const getServerSideProps = async (ctx) => {
+  return {
+    props: {
+      // locales
+      ...dvsGetServerSideProps(ctx).props,
+      ...(await ssrTranslations(ctx.locale, ['common'])),
+    },
+  };
+};
+
 const Home = () => {
   const { t } = useTranslation();
   const avatars = [
@@ -64,13 +74,4 @@ const Home = () => {
   );
 };
 
-export const getServerSideProps = async (ctx) => {
-  return {
-    props: {
-      // locales
-      ...dvsGetServerSideProps(ctx).props,
-      ...(await ssrTranslations(ctx.locale, ['common'])),
-    },
-  };
-};
 export default Home;

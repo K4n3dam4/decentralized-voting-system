@@ -27,7 +27,7 @@ const DVSFormCard: React.FC<DVSFormCardProps> = ({
 
   useEffect(() => {
     setCurrentIndex(0);
-  }, [inputs]);
+  }, [inputs.length]);
 
   const renderInputs = () => {
     const splitInputArray: [JSX.Element[], JSX.Element[]] = [[], []];

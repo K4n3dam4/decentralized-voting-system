@@ -24,5 +24,14 @@
     "back": "Back",
     "continue": "Continue",
     "submit": "Submit"
+  },
+  "error": {
+    "validate": {
+      "notEmpty": "This field must not be empty.",
+      "string": "Some of the characters you entered are invalid.",
+      "password": "Minimum eight characters, at least one letter, one number and one special, upper- as well as lower case character.",
+      "passwordRepeat": "Passwords do not match.",
+      "email": "Please enter a valid email."
+    }
   }
 }
