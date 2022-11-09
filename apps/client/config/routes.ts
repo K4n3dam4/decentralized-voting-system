@@ -1,8 +1,7 @@
-enum Routes {
-  Election = 'election',
-  Admin = 'admin',
+const enum Routes {
+  Election = 'election/',
+  ElectionAll = 'election/all',
+  Admin = 'admin/',
 }
-
-export const protectedRoutes = Object.values(Routes);
 
 export default Routes;

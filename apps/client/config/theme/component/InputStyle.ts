@@ -45,8 +45,4 @@ const InputStyle = defineMultiStyleConfig({
   variants: { formCard },
 });
 
-console.log(defineMultiStyleConfig);
-
-// const InputStyle = defineMultiStyleConfig({})
-
 export default InputStyle;

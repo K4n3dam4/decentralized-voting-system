@@ -1,7 +1,7 @@
 import React from 'react';
 import DVSNavbar from '../molecules/DVSNavbar';
-import useUserStore from '../../store/UserStore';
 import { useRouter } from 'next/router';
+import useUserStore from '../../store/UserStore';
 import useAuthStore from '../../store/AuthStore';
 
 const Navbar = () => {

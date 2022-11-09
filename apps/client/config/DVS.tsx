@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { NextPageContext } from 'next';
 import { ChakraProvider, cookieStorageManagerSSR, localStorageManager } from '@chakra-ui/react';
 import '@fontsource/cabin/latin.css';
@@ -30,7 +30,6 @@ const DVS = ({ cookies, token, children }: ChakraWrapperProps) => {
   // manage color mode
   const colorModeManager = typeof cookies === 'string' ? cookieStorageManagerSSR(cookies) : localStorageManager;
   const [accessToken, setUser, resetUser] = useUserStore((s) => [s.access_token, s.setUser, s.resetUser]);
-  const [loaded, setLoaded] = useState(false);
 
   // manage logged in user
   useEffect(() => {
@@ -41,12 +40,11 @@ const DVS = ({ cookies, token, children }: ChakraWrapperProps) => {
     } else {
       resetUser();
     }
-    setLoaded(true);
   }, [token]);
 
   return (
     <ChakraProvider theme={chakraTheme} colorModeManager={colorModeManager}>
-      {loaded && children}
+      {children}
     </ChakraProvider>
   );
 };

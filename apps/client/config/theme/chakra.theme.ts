@@ -1,11 +1,11 @@
 import { ChakraTheme, extendTheme } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 
-import { InputStyle } from './component';
+import { InputStyle, LinkStyle } from './component';
 
 export type DVSVariant = 'formCard';
 
-const override: Partial<ChakraTheme> = {
+const override: Partial<ChakraTheme> = extendTheme({
   config: {
     initialColorMode: 'dark',
   },
@@ -35,8 +35,9 @@ const override: Partial<ChakraTheme> = {
   },
   components: {
     Input: InputStyle,
+    Link: LinkStyle,
   },
-};
+});
 
 const chakraTheme = extendTheme(override);
 export default chakraTheme;

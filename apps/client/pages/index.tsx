@@ -10,8 +10,8 @@ import { useTranslation } from 'next-i18next';
 export const getServerSideProps = async (ctx) => {
   return {
     props: {
-      // locales
       ...dvsGetServerSideProps(ctx).props,
+      // locales
       ...(await ssrTranslations(ctx.locale, ['common'])),
     },
   };
@@ -43,7 +43,7 @@ const Home = () => {
   ];
 
   return (
-    <Box height={{ base: 'calc(100vh - 64px)' }} width="100vw" display="flex" alignItems="center">
+    <Box height={{ base: 'auto', sm: 'calc(100vh - 64px)' }} width="100vw" display="flex" alignItems="center">
       <Container
         as={SimpleGrid}
         maxW="7xl"

@@ -3,6 +3,8 @@ import Head from 'next/head';
 import Layout from '../layouts/Layout';
 import DVS from '../config/DVS';
 import { appWithTranslation } from 'next-i18next';
+import Navbar from '../components/organisms/Navbar';
+import React from 'react';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
@@ -12,6 +14,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
       </Head>
       <main className="app">
         <DVS cookies={pageProps.cookies} token={pageProps.token}>
+          <Navbar />
           <Layout>
             <Component {...pageProps} />
           </Layout>

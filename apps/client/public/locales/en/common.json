@@ -9,6 +9,7 @@
   "auth": {
     "register": "Register",
     "login": "Login",
+    "logout": "Logout",
     "firstName": "First name",
     "lastName": "Last name",
     "street": "Street",
@@ -19,6 +20,9 @@
     "email": "Email",
     "password": "Password",
     "passwordRepeat": "Repeat password"
+  },
+  "elections": {
+    "elections": "Elections"
   },
   "controls": {
     "back": "Back",

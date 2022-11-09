@@ -1,25 +1,12 @@
 import React from 'react';
-import {
-  Avatar,
-  Box,
-  Button,
-  Center,
-  Flex,
-  Heading,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Stack,
-  useColorMode,
-  useColorModeValue,
-  useMediaQuery,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Stack, useColorMode, useColorModeValue, useMediaQuery } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import Link from 'next/link';
 import DVSButton from '../atoms/DVSButton';
 import { useTranslation } from 'next-i18next';
+import DVSUserMenu from './DVSUserMenu';
+import DVSLink from '../atoms/DVSLink';
+import Routes from '../../config/routes';
 
 export interface DVSNavbarProps {
   user: User;
@@ -35,24 +22,7 @@ const DVSNavbar: React.FC<DVSNavbarProps> = ({ user, onLogout, displayAuth, onDi
 
   const renderMenu = () =>
     user ? (
-      <Menu>
-        <MenuButton as={Button} rounded="full" variant="link" cursor="pointer" minW={0}>
-          <Avatar size="sm" src="https://avatars.dicebear.com/api/male/username.svg" />
-        </MenuButton>
-        <MenuList alignItems="center">
-          <br />
-          <Center>
-            <Avatar size="2xl" src="https://avatars.dicebear.com/api/male/username.svg" />
-          </Center>
-          <br />
-          <Center>
-            <p>{user.email}</p>
-          </Center>
-          <br />
-          <MenuDivider />
-          <MenuItem onClick={onLogout}>Logout</MenuItem>
-        </MenuList>
-      </Menu>
+      <DVSUserMenu user={user} onLogout={onLogout} />
     ) : (
       <DVSButton onClick={onDisplayAuthChange} dvsType="primary">
         {t(`auth.${displayAuth === 'register' ? 'login' : 'register'}`)}
@@ -63,9 +33,16 @@ const DVSNavbar: React.FC<DVSNavbarProps> = ({ user, onLogout, displayAuth, onDi
     <>
       <Box position="fixed" width="100%" zIndex={1000} bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
         <Flex h={16} alignItems="center" justifyContent="space-between">
-          <Stack direction="row" spacing={5} alignItems="center">
-            <Link href="/">Logo</Link>
-            <Heading size="md">{displayName && 'Decentralized Voting System'}</Heading>
+          <Stack direction="row" spacing={8} alignItems="center">
+            <Stack direction="row" spacing={5}>
+              <Link href="/">Logo</Link>
+              <Heading size="md">{displayName && 'Decentralized Voting System'}</Heading>
+            </Stack>
+            <Stack direction="row" spacing={5}>
+              <DVSLink variant="navbar" href={Routes.ElectionAll}>
+                {t('elections.elections')}
+              </DVSLink>
+            </Stack>
           </Stack>
           <Flex alignItems="center">
             <Stack direction="row" spacing={6}>
