@@ -5,18 +5,13 @@ import { ssrTranslations } from '../../../utils/i18next';
 import { Box } from '@chakra-ui/react';
 import Elections from '../../../components/organisms/Elections';
 import DVSHeroIcon from '../../../components/atoms/DVSHeroIcon';
-import makeRequest from '../../../utils/makeRequest';
+import makeRequest, { createBearer } from '../../../utils/makeRequest';
 
 export const getServerSideProps = async (ctx: NextPageContext) => {
-  const api = process.env.API + 'api/';
   const dvsProps = dvsGetServerSideProps(ctx).props;
 
   try {
-    const elections = await makeRequest(
-      { url: 'election/all', headers: { Authorization: `Bearer ${dvsProps.token}` } },
-      {},
-      api,
-    );
+    const elections = await makeRequest({ url: 'election/all', headers: createBearer(dvsProps.token) }, {}, true);
 
     return {
       props: {

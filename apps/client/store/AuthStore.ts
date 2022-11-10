@@ -87,10 +87,7 @@ const useAuthStore = create<State & Actions>()(
         }
 
         try {
-          const { data } = await makeRequest<Access, VoterSignup>(
-            { url: 'auth/signup', method: 'POST', data: dto },
-            {},
-          );
+          const { data } = await makeRequest<Access, VoterSignup>({ url: 'auth/signup', method: 'POST', data: dto });
           const { access_token } = data;
           if (access_token) {
             useUserStore.getState().setUser(access_token);
@@ -121,10 +118,7 @@ const useAuthStore = create<State & Actions>()(
         }
 
         try {
-          const { data } = await makeRequest<Access, VoterSignin>(
-            { url: 'auth/signin', method: 'POST', data: dto },
-            {},
-          );
+          const { data } = await makeRequest<Access, VoterSignin>({ url: 'auth/signin', method: 'POST', data: dto });
           const { access_token } = data;
 
           if (access_token) {
