@@ -24,6 +24,7 @@
   - [.envs](#envs)
   - [Smart Contracts](#smart-contracts)
   - [Running the application](#running-the-application)
+- \*\*[Credits](#credits)
 
 ## Introduction
 
@@ -165,3 +166,14 @@ yarn serve:server
 # start client
 yarn serve:client
 ```
+
+## Credits
+
+Special thanks and credits go out to the following persons and or organizations.
+
+### Chakra Templates
+
+Since the development of a pretty user interface was not one of the main priorities of this project in some instances templates were used for inspiration and partly adapted to the project's codebase.
+
+- [Navbar](https://chakra-templates.dev/templates/navigation/navbar/withDarkModeSwitcher)
+- [Landing page](https://chakra-templates.dev/templates/forms/authentication/joinOurTeam)

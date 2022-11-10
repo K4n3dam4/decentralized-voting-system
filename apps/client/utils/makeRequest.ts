@@ -20,15 +20,17 @@ const makeRequest = <Res, D, QP = void>(
   queryParams: QP | Record<string, any>,
   baseUrl = '/api/',
 ): Promise<AxiosResponse<Res, D>> => {
-  const { method = 'GET', url, data } = requestConfig;
+  const { method = 'GET', url } = requestConfig;
   const concatQP = (api: string, qp: typeof queryParams) => (Object.keys(qp).length > 0 ? api + queryString(qp) : api);
 
   const completeUrl = concatQP(baseUrl + url, queryParams);
 
+  console.log(completeUrl);
+
   return axios({
+    ...requestConfig,
     method,
     url: completeUrl,
-    data,
   });
 };
 

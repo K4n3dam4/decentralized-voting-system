@@ -12,6 +12,15 @@ const nextConfig = {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   i18n,
+  // route rewrites
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${process.env.API}api/:path*`,
+      },
+    ];
+  },
   nx: {
     // Set this to true if you would like to to use SVGR
     // See: https://github.com/gregberge/svgr
