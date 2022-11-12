@@ -222,7 +222,7 @@ describe('App e2e', () => {
             { name: 'Joe Biden', image: '', party: 'Democrats' },
           ],
           description:
-            'After both parties have chosen their respective candidates, the election process for the 2021 presidential election will commence on November, 3.',
+            'After both parties have chosen their respective candidates, the election process for the 2020 presidential election will commence on November, 3.',
           eligibleVoters: [mockVoter.ssn, process.env.VOTER_ADDRESS],
           expires: 1677625200,
         };

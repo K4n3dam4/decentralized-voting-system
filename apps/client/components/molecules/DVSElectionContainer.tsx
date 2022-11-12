@@ -15,10 +15,10 @@ import DVSButton from '../atoms/DVSButton';
 import DVSHeroIcon from '../atoms/DVSHeroIcon';
 
 export interface DVSElectionContainer extends ContainerProps {
-  name: string;
+  election: Election;
 }
 
-const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ name, ...containerProps }) => {
+const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ election, ...containerProps }) => {
   return (
     <Container
       as={SimpleGrid}
@@ -32,20 +32,15 @@ const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ name, ...contain
       {...containerProps}
     >
       <Box w={{ base: '100%' }}>
-        <Image
-          alt="election"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Flag_of_Indiana.svg/2560px-Flag_of_Indiana.svg.png"
-        />
+        <Image alt="election" src={election.image} />
       </Box>
       <Box display="flex" flex="1" flexDirection="column" justifyContent="center">
         <Heading lineHeight={1.3}>
-          <Link href="/">{name}</Link>
+          <Link href="/">{election.name}</Link>
         </Heading>
         <Stack spacing={5}>
           <Text as="p" marginTop={10} color={useColorModeValue('gray.700', 'gray.200')} fontSize="lg">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-            scrambled it to make a type specimen book.
+            {election.description}
           </Text>
           <DVSButton h={12} maxW="min" dvsType="secondary">
             Register to vote

@@ -26,3 +26,19 @@ type User = {
 interface Access {
   access_token: string;
 }
+
+interface Candidate {
+  name: string;
+  image?: string;
+  party?: string;
+}
+
+interface Election {
+  name: string;
+  image?: string;
+  description: string;
+  candidates: Candidate[];
+  expires: string;
+  createdAt: string;
+  updatedAt: string;
+}

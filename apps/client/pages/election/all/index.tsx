@@ -11,7 +11,11 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   const dvsProps = dvsGetServerSideProps(ctx).props;
 
   try {
-    const elections = await makeRequest({ url: 'election/all', headers: createBearer(dvsProps.token) }, {}, true);
+    const elections = await makeRequest<Election[]>(
+      { url: 'election/all', headers: createBearer(dvsProps.token) },
+      {},
+      true,
+    );
 
     return {
       props: {

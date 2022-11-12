@@ -17,7 +17,7 @@ const queryString = (queryParams: { [x: string]: any }) =>
  * @param ssr
  * @param baseUrl
  */
-const makeRequest = <Res, D, QP = void>(
+const makeRequest = <Res, D = void, QP = void>(
   requestConfig: AxiosRequestConfig,
   queryParams: QP | Record<string, any> = {},
   ssr = false,

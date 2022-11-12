@@ -3,12 +3,13 @@ import DVSSlider from '../molecules/DVSSlider';
 import DVSElectionContainer from '../molecules/DVSElectionContainer';
 
 export interface ElectionsProps {
-  elections: any;
+  elections: Election[];
 }
 
 const Elections: React.FC<ElectionsProps> = ({ elections }) => {
   const ElectionMap =
-    elections && elections.map((props) => <DVSElectionContainer key={`election-${props.name}`} {...props} />);
+    elections &&
+    elections.map((election) => <DVSElectionContainer key={`election-${election.name}`} election={election} />);
 
   return <DVSSlider>{ElectionMap}</DVSSlider>;
 };

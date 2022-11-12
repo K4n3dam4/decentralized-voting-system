@@ -147,10 +147,15 @@ export class ElectionService {
 
   sanitizeElections(elections: Election | Election[]): Partial<Election> | Partial<Election>[] {
     if (!Array.isArray(elections)) {
-      const { name, candidates, expires } = elections;
-      return { name, candidates, expires };
+      delete elections.eligibleVoters;
+      delete elections.adminId;
+      return elections;
     } else {
-      return elections.map(({ name, candidates, expires }) => ({ name, candidates, expires }));
+      return elections.map((election) => {
+        delete election.eligibleVoters;
+        delete election.adminId;
+        return election;
+      });
     }
   }
 }
