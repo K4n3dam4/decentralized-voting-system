@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Box,
+  ButtonProps,
   Container,
   ContainerProps,
   Heading,
@@ -17,9 +18,10 @@ import DVSExpiration from '../atoms/DVSExpiration';
 
 export interface DVSElectionContainer extends ContainerProps {
   election: Election;
+  buttons?: ButtonProps[];
 }
 
-const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ election, ...containerProps }) => {
+const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ election, buttons, ...containerProps }) => {
   return (
     <Container
       as={SimpleGrid}
@@ -36,17 +38,18 @@ const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ election, ...con
         <Image alt="election" src={election.image} />
       </Box>
       <Box display="flex" flex="1" flexDirection="column" justifyContent="center">
-        <Heading lineHeight={1.3}>
+        <Heading lineHeight={1.3} mb={1}>
           <Link href={`${election.id}`}>{election.name}</Link>
         </Heading>
         <DVSExpiration value={election.expires} />
         <Stack spacing={5}>
-          <Text as="p" marginTop={5} color={useColorModeValue('gray.700', 'gray.200')} fontSize="lg">
+          <Text as="p" marginTop={8} color={useColorModeValue('gray.700', 'gray.200')} fontSize="md">
             {election.description}
           </Text>
-          <DVSButton h={12} maxW="min" dvsType="secondary">
-            Register to vote
-          </DVSButton>
+          {buttons &&
+            buttons.map((props, index) => (
+              <DVSButton key={`election-cont-btn-${index}`} h={10} maxW="min" dvsType="secondary" {...props} />
+            ))}
         </Stack>
       </Box>
       <DVSHeroIcon

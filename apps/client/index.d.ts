@@ -16,3 +16,8 @@ interface validationFactoryParams {
   validationTypes: { field: string; validationType: validationType[] }[];
 }
 type buttonType = 'primary' | 'secondary';
+
+type Modal = {
+  type: 'registerVoter';
+  payload: Election;
+};

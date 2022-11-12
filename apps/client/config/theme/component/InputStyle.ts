@@ -14,6 +14,18 @@ const formCard = () =>
     },
   });
 
+const modal = ({ colorMode }) =>
+  definePartsStyle({
+    field: {
+      px: '0',
+      borderColor: colorMode === 'dark' ? 'gray.400' : 'gray.500',
+      color: colorMode === 'dark' ? 'gray.400' : 'gray.500',
+      _placeholder: {
+        color: colorMode === 'dark' ? 'gray.400' : 'gray.500',
+      },
+    },
+  });
+
 const InputStyle = defineMultiStyleConfig({
   baseStyle: ({ colorMode }) => ({
     field: {
@@ -42,7 +54,7 @@ const InputStyle = defineMultiStyleConfig({
       },
     },
   }),
-  variants: { formCard },
+  variants: { formCard, modal },
 });
 
 export default InputStyle;

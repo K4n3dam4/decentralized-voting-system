@@ -13,13 +13,13 @@ const DVSExpiration: React.FC<DVSExpirationProps> = ({ value, renderer, children
   const rendererDefault = ({ days, hours, minutes, completed }) => {
     if (completed) {
       return (
-        <Tag maxW="min" size="lg" colorScheme="red">
+        <Tag maxW="min" size="md" colorScheme="red">
           <TagLabel>{t('expiration.closed')}</TagLabel>
         </Tag>
       );
     } else {
       return (
-        <Tag maxW="max" size="lg" colorScheme="green">
+        <Tag maxW="max" size="md" colorScheme="green">
           <TagLabel>{t('expiration.closesIn', { days, hours, minutes })}</TagLabel>
         </Tag>
       );
