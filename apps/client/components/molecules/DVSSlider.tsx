@@ -7,12 +7,26 @@ const DVSSlider: React.FC<CarouselProps> = ({ children, ...restProps }) => {
   return (
     <Carousel
       renderCenterLeftControls={({ previousDisabled, previousSlide }) => (
-        <Button variant="ghost" colorScheme="brand" onClick={previousSlide} disabled={previousDisabled} ml={2}>
+        <Button
+          display={{ base: 'none', md: 'inherit' }}
+          variant="ghost"
+          colorScheme="brand"
+          onClick={previousSlide}
+          disabled={previousDisabled}
+          ml={2}
+        >
           <ArrowLeftIcon height={5} width={10} />
         </Button>
       )}
       renderCenterRightControls={({ nextDisabled, nextSlide }) => (
-        <Button variant="ghost" colorScheme="brand" onClick={nextSlide} disabled={nextDisabled} mr={2}>
+        <Button
+          display={{ base: 'none', md: 'inherit' }}
+          variant="ghost"
+          colorScheme="brand"
+          onClick={nextSlide}
+          disabled={nextDisabled}
+          mr={2}
+        >
           <ArrowRightIcon height={5} width={10} />
         </Button>
       )}

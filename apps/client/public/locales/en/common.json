@@ -24,6 +24,10 @@
   "elections": {
     "elections": "Elections"
   },
+  "expiration": {
+    "closesIn": "Closes in {{days}} days {{hours}} hours {{minutes}} minutes",
+    "closed": "Closed"
+  },
   "controls": {
     "back": "Back",
     "continue": "Continue",

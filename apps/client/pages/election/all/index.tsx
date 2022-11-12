@@ -42,7 +42,13 @@ interface ElectionPageProps {
 const Election = ({ elections }: ElectionPageProps) => {
   return (
     <Box height="calc(100vh - 64px)" width="100vw" position="relative">
-      <DVSHeroIcon position="absolute" zIndex={-10} left={{ base: 0, sm: 0 }} style={{ filter: 'blur(70px)' }} />
+      <DVSHeroIcon
+        display={{ base: 'none', md: 'block' }}
+        position="absolute"
+        zIndex={-10}
+        left={{ base: 0, sm: 0 }}
+        style={{ filter: 'blur(70px)' }}
+      />
       <Elections elections={elections} />
     </Box>
   );

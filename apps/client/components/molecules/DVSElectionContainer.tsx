@@ -13,6 +13,7 @@ import {
 import Link from 'next/link';
 import DVSButton from '../atoms/DVSButton';
 import DVSHeroIcon from '../atoms/DVSHeroIcon';
+import DVSExpiration from '../atoms/DVSExpiration';
 
 export interface DVSElectionContainer extends ContainerProps {
   election: Election;
@@ -27,7 +28,7 @@ const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ election, ...con
       alignItems="center"
       columns={{ base: 1, md: 2 }}
       spacing={{ base: 4, md: 10, lg: 20 }}
-      py={12}
+      py={4}
       position="relative"
       {...containerProps}
     >
@@ -38,8 +39,9 @@ const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ election, ...con
         <Heading lineHeight={1.3}>
           <Link href="/">{election.name}</Link>
         </Heading>
+        <DVSExpiration value={election.expires} />
         <Stack spacing={5}>
-          <Text as="p" marginTop={10} color={useColorModeValue('gray.700', 'gray.200')} fontSize="lg">
+          <Text as="p" marginTop={5} color={useColorModeValue('gray.700', 'gray.200')} fontSize="lg">
             {election.description}
           </Text>
           <DVSButton h={12} maxW="min" dvsType="secondary">
@@ -49,6 +51,7 @@ const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ election, ...con
       </Box>
       <DVSHeroIcon
         position={'absolute'}
+        display={{ base: 'none', md: 'block' }}
         zIndex={-10}
         bottom={-10}
         right={{ base: 0, sm: -400 }}
