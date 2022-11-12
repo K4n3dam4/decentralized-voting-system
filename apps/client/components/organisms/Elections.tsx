@@ -7,7 +7,8 @@ export interface ElectionsProps {
 }
 
 const Elections: React.FC<ElectionsProps> = ({ elections }) => {
-  const ElectionMap = elections && elections.map((props) => <DVSElectionContainer {...props} />);
+  const ElectionMap =
+    elections && elections.map((props) => <DVSElectionContainer key={`election-${props.name}`} {...props} />);
 
   return <DVSSlider>{ElectionMap}</DVSSlider>;
 };

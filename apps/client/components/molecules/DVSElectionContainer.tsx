@@ -1,14 +1,24 @@
 import React from 'react';
-import { Box, Container, Heading, Image, SimpleGrid, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import {
+  Box,
+  Container,
+  ContainerProps,
+  Heading,
+  Image,
+  SimpleGrid,
+  Stack,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import Link from 'next/link';
 import DVSButton from '../atoms/DVSButton';
 import DVSHeroIcon from '../atoms/DVSHeroIcon';
 
-export interface DVSElectionContainer {
+export interface DVSElectionContainer extends ContainerProps {
   name: string;
 }
 
-const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ name }) => {
+const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ name, ...containerProps }) => {
   return (
     <Container
       as={SimpleGrid}
@@ -19,6 +29,7 @@ const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ name }) => {
       spacing={{ base: 4, md: 10, lg: 20 }}
       py={12}
       position="relative"
+      {...containerProps}
     >
       <Box w={{ base: '100%' }}>
         <Image
