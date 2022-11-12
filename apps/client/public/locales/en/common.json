@@ -24,10 +24,23 @@
   "elections": {
     "elections": "Elections"
   },
+  "expiration": {
+    "closesIn": "Closes in {{days}} days {{hours}} hours {{minutes}} minutes",
+    "closed": "Closed"
+  },
+  "modals": {
+    "registerVoter": {
+      "header": "Voter registration",
+      "text": "Please enter your social security number to register as a voter. Your social security number is used to determine your eligibility to vote in this election.",
+      "submit": "Register"
+    }
+  },
   "controls": {
     "back": "Back",
     "continue": "Continue",
-    "submit": "Submit"
+    "submit": "Submit",
+    "close": "Close",
+    "cancel": "Cancel"
   },
   "error": {
     "validate": {

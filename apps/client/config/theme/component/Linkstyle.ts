@@ -32,9 +32,6 @@ const navbarActive = ({ colorMode }) =>
   });
 
 const LinkStyle = defineStyleConfig({
-  baseStyle: ({ colorMode }) => ({
-    color: colorMode === 'dark' ? 'brand.200' : 'brand.600',
-  }),
   variants: { navbar, navbarActive },
 });
 

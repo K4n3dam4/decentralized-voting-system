@@ -12,7 +12,7 @@ const DVSFormInput: React.FC<DVSFormInputProps> = ({ label, error, dvsVariant, .
   return (
     <FormControl isInvalid={!!error}>
       {label && <FormLabel>{label}</FormLabel>}
-      <Input placeholder="Use placeholder prop" variant="formCard" {...props} />
+      <Input placeholder="Use placeholder prop" variant={dvsVariant} {...props} />
       {error && <FormErrorMessage>{error}</FormErrorMessage>}
     </FormControl>
   );

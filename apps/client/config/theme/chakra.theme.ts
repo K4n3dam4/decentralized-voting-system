@@ -1,7 +1,7 @@
 import { ChakraTheme, extendTheme } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 
-import { InputStyle, LinkStyle } from './component';
+import { InputStyle, LinkStyle, ModalStyle } from './component';
 
 export type DVSVariant = 'formCard';
 
@@ -36,6 +36,7 @@ const override: Partial<ChakraTheme> = extendTheme({
   components: {
     Input: InputStyle,
     Link: LinkStyle,
+    Modal: ModalStyle,
   },
 });
 

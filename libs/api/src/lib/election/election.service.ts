@@ -4,7 +4,7 @@ import { PrismaService } from '@dvs/prisma';
 import { EthersContract, EthersSigner, InjectContractProvider, InjectSignerProvider } from 'nestjs-ethers';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Election } from '@prisma/client';
+import { Prisma, Election } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { ContractFactory, ethers } from 'ethers';
 import { Election__factory } from '@dvs/smart-contracts';
@@ -45,7 +45,9 @@ export class ElectionService {
     const election = await this.prisma.election.create({
       data: {
         name: dto.name,
-        candidates: dto.candidates,
+        image: dto.image,
+        description: dto.description,
+        candidates: dto.candidates as unknown as Prisma.JsonArray,
         contract: contract.address,
         eligibleVoters: dto.eligibleVoters,
         expires: new Date(dto.expires * 1000),
@@ -145,10 +147,15 @@ export class ElectionService {
 
   sanitizeElections(elections: Election | Election[]): Partial<Election> | Partial<Election>[] {
     if (!Array.isArray(elections)) {
-      const { name, candidates, expires } = elections;
-      return { name, candidates, expires };
+      delete elections.eligibleVoters;
+      delete elections.adminId;
+      return elections;
     } else {
-      return elections.map(({ name, candidates, expires }) => ({ name, candidates, expires }));
+      return elections.map((election) => {
+        delete election.eligibleVoters;
+        delete election.adminId;
+        return election;
+      });
     }
   }
 }

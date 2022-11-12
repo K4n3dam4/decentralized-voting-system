@@ -1,13 +1,20 @@
 import React from 'react';
 import { NextPageContext } from 'next';
 import { getServerSideProps as dvsGetServerSideProps } from '../../config/DVS';
+import { ssrTranslations } from '../../utils/i18next';
 
-export const getServerSideProps = (ctx: NextPageContext) => {
-  return dvsGetServerSideProps(ctx);
+export const getServerSideProps = async (ctx: NextPageContext) => {
+  return {
+    props: {
+      ...dvsGetServerSideProps(ctx).props,
+      // locales
+      ...(await ssrTranslations(ctx.locale, ['common'])),
+    },
+  };
 };
 
-const Admin = (props) => {
+const AdminPage = (props) => {
   return <span>Test</span>;
 };
 
-export default Admin;
+export default AdminPage;

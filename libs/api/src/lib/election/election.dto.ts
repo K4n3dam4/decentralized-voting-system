@@ -1,13 +1,36 @@
-import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsObjectArray } from '../decorators';
+
+export class Candidates {
+  @IsString()
+  name: string;
+
+  @IsString()
+  image?: string;
+
+  @IsString()
+  party?: string;
+}
 
 export class ElectionCreateDto {
   @IsNotEmpty()
   @IsString()
   name: string;
 
+  @IsString()
   @IsNotEmpty()
-  @IsArray()
-  candidates: string[];
+  image: string;
+
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
+  @IsNotEmpty()
+  @IsObjectArray()
+  @ValidateNested()
+  @Type(() => Candidates)
+  candidates: Candidates[];
 
   @IsNotEmpty()
   @IsArray()

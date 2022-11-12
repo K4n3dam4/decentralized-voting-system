@@ -17,7 +17,7 @@ export const getServerSideProps = async (ctx) => {
   };
 };
 
-const Home = () => {
+const Homepage = () => {
   const { t } = useTranslation();
   const avatars = [
     {
@@ -74,4 +74,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Homepage;
