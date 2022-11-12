@@ -39,7 +39,7 @@ interface ElectionPageProps {
   elections: any;
 }
 
-const Election = ({ elections }: ElectionPageProps) => {
+const ElectionsPage = ({ elections }: ElectionPageProps) => {
   return (
     <Box height="calc(100vh - 64px)" width="100vw" position="relative">
       <DVSHeroIcon
@@ -54,4 +54,4 @@ const Election = ({ elections }: ElectionPageProps) => {
   );
 };
 
-export default Election;
+export default ElectionsPage;

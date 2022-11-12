@@ -13,8 +13,8 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   };
 };
 
-const Admin = (props) => {
+const AdminPage = (props) => {
   return <span>Test</span>;
 };
 
-export default Admin;
+export default AdminPage;

@@ -37,7 +37,7 @@ const DVSElectionContainer: React.FC<DVSElectionContainer> = ({ election, ...con
       </Box>
       <Box display="flex" flex="1" flexDirection="column" justifyContent="center">
         <Heading lineHeight={1.3}>
-          <Link href="/">{election.name}</Link>
+          <Link href={`${election.id}`}>{election.name}</Link>
         </Heading>
         <DVSExpiration value={election.expires} />
         <Stack spacing={5}>

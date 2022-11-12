@@ -34,6 +34,7 @@ interface Candidate {
 }
 
 interface Election {
+  id: number;
   name: string;
   image?: string;
   description: string;
