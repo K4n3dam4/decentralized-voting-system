@@ -4,6 +4,7 @@ import {
   AuthModule,
   CoreModule,
   ElectionCreateDto,
+  ElectionEligibleDto,
   ElectionModule,
   ElectionRegisterDto,
   ElectionVoteDto,
@@ -59,6 +60,7 @@ describe('App e2e', () => {
 
       // pactum
       request.setBaseUrl(host);
+      request.setDefaultTimeout(60000);
 
       // core
       core = moduleFixture.get(CoreModule);
@@ -105,7 +107,7 @@ describe('App e2e', () => {
     describe('Auth', function () {
       const baseUrl = 'auth/';
       // Signup voter
-      describe('Signup voter', function () {
+      describe('Signup voter [POST auth/signup]', function () {
         const dto = { ...mockVoter };
 
         const url = baseUrl + 'signup';
@@ -138,7 +140,7 @@ describe('App e2e', () => {
       });
 
       // Signin voter
-      describe('Signin voter', function () {
+      describe('Signin voter [POST auth/signin]', function () {
         const dto: SigninDto = {
           email: mockVoter.email,
           password: mockVoter.password,
@@ -171,7 +173,7 @@ describe('App e2e', () => {
         });
       });
 
-      describe('Signin admin', function () {
+      describe('Signin admin [POST auth/signin]', function () {
         const dto: SigninDto = {
           email: admin.email,
           password: admin.hash,
@@ -213,7 +215,7 @@ describe('App e2e', () => {
 
       const baseUrl = 'election/';
 
-      describe('Create election', function () {
+      describe('Create election [POST election/create]', function () {
         const dto: ElectionCreateDto = {
           name: 'US Presidential Election 2020',
           image: 'https://google.de',
@@ -243,7 +245,7 @@ describe('App e2e', () => {
         });
       });
 
-      describe('Get all', function () {
+      describe('Get all [POST election/all]', function () {
         const url = baseUrl + 'all';
 
         it('should be guarded', function () {
@@ -255,7 +257,7 @@ describe('App e2e', () => {
         });
       });
 
-      describe('Get single', function () {
+      describe('Get single [POST election/single/:id]', function () {
         const url = baseUrl + 'single/';
 
         it('should be guarded', function () {
@@ -274,7 +276,7 @@ describe('App e2e', () => {
         });
       });
 
-      describe('Register voter', function () {
+      describe('Register voter [POST election/register]', function () {
         const dto: ElectionRegisterDto = {
           ssn: mockVoter.ssn,
         };
@@ -318,7 +320,51 @@ describe('App e2e', () => {
         });
       });
 
-      describe('Vote', function () {
+      describe('Check eligibility [POST election/eligible/:id', function () {
+        const dto: ElectionEligibleDto = {
+          mnemonic: '$S{Mnemonic}',
+        };
+        const url = baseUrl + 'eligible/';
+
+        it('should be guarded', function () {
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withBody(dto)
+            .expectStatus(401);
+        });
+
+        it('should throw not found error', function () {
+          return spec()
+            .post(url + '2403490')
+            .withHeaders(headersVoter)
+            .withBody(dto)
+            .expectStatus(404);
+        });
+
+        it('should throw invalid mnemonic error', function () {
+          const faultyDto = {
+            mnemonic: 'weijeko dowkedko',
+          };
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .withBody(faultyDto)
+            .expectStatus(400);
+        });
+
+        it('should validate mnemonic', function () {
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .withBody(dto)
+            .expectStatus(200);
+        });
+      });
+
+      describe('Vote [POST election/vote]', function () {
         const dto: ElectionVoteDto = {
           mnemonic: '$S{Mnemonic}',
           candidate: 0,
