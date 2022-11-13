@@ -31,8 +31,18 @@
   "modals": {
     "registerVoter": {
       "header": "Voter registration",
-      "text": "Please enter your social security number to register as a voter. Your social security number is used to determine your eligibility to vote in this election.",
+      "text": "Please enter your social security number to register as a voter. Your social security number is used to determine your eligibility to vote in this election. If you have already registered, you can also enter the mnemonic you received during the registration process by clicking on the button below.",
+      "option": "Mnemonic",
       "submit": "Register"
+    },
+    "mnemonic": {
+      "header": "Mnemonic passphrase",
+      "text": "This is your mnemonic passphrase for this election. Please write it down and store it in a safe location until you have cast your vote. You will have to reenter your passphrase when you submit your vote."
+    },
+    "enterMnemonic": {
+      "header": "Enter mnemonic",
+      "text": "Please enter the mnemonic passphrase you received during the registration process for this election.",
+      "submit": "Submit"
     }
   },
   "controls": {
@@ -48,7 +58,8 @@
       "string": "Some of the characters you entered are invalid.",
       "password": "Minimum eight characters, at least one letter, one number and one special, upper- as well as lower case character.",
       "passwordRepeat": "Passwords do not match.",
-      "email": "Please enter a valid email."
+      "email": "Please enter a valid email.",
+      "mnemonic": "Please enter a valid mnemonic phrase."
     }
   }
 }

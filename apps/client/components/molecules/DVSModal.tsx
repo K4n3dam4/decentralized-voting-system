@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Button,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,7 +11,6 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import DVSFormInput, { DVSFormInputProps } from '../atoms/DVSFormInput';
-import { useTranslation } from 'next-i18next';
 
 export interface DVSModalProps extends Omit<ModalProps, 'children'> {
   header: string;
@@ -23,13 +21,6 @@ export interface DVSModalProps extends Omit<ModalProps, 'children'> {
 }
 
 const DVSModal: React.FC<DVSModalProps> = ({ onClose, header, text, inputs, children, footer, ...modalProps }) => {
-  const { t } = useTranslation();
-  const DefaultFooter = (
-    <Stack direction="row" spacing={5}>
-      <Button onClick={onClose}>{t('controls.close')}</Button>
-    </Stack>
-  );
-
   const CustomFooter = footer && (
     <Stack direction="row" spacing={4}>
       {footer}
@@ -49,7 +40,7 @@ const DVSModal: React.FC<DVSModalProps> = ({ onClose, header, text, inputs, chil
           {Inputs}
           {children}
         </ModalBody>
-        <ModalFooter>{CustomFooter || DefaultFooter}</ModalFooter>
+        <ModalFooter>{CustomFooter}</ModalFooter>
       </ModalContent>
     </Modal>
   );

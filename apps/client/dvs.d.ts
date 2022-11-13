@@ -14,6 +14,15 @@ interface VoterSignin {
   password: string;
 }
 
+interface ElectionRegister {
+  ssn: string;
+}
+
+interface Registered {
+  mnemonic: string;
+  election: Election;
+}
+
 type Role = { role: 'VOTER' } | { serviceNumber: number; role: 'ADMIN' };
 
 type User = {

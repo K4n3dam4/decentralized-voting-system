@@ -10,14 +10,14 @@ interface ValidateParam {
   value: string;
   validationType: validationType[];
 }
-type validationType = 'notEmpty' | 'string' | 'email' | 'password' | 'passwordRepeat';
+type validationType = 'notEmpty' | 'string' | 'email' | 'password' | 'passwordRepeat' | 'mnemonic';
 interface validationFactoryParams {
   fields: Record<string, any>;
   validationTypes: { field: string; validationType: validationType[] }[];
 }
 type buttonType = 'primary' | 'secondary';
 
-type Modal = {
-  type: 'registerVoter';
-  payload: Election;
-};
+type Modal =
+  | { type: 'registerVoter'; payload: Election }
+  | { type: 'mnemonic'; payload: string[] }
+  | { type: 'enterMnemonic'; payload: Election };
