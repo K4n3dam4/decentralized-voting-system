@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, UseGuards, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, Param, HttpCode } from '@nestjs/common';
 import { ElectionService } from './election.service';
-import { ElectionCreateDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
+import { ElectionCreateDto, ElectionEligibleDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
 import { GetUser, Roles } from '../decorators';
-import { RolesGuard } from '../guards/roles.guard';
+import { RolesGuard } from '../guards';
 import { RoleEnum } from '../types';
 
 @Controller('election')
@@ -35,6 +35,14 @@ export class ElectionController {
   @Post('register/:id')
   registerVoter(@Body() dto: ElectionRegisterDto, @Param('id') id: string) {
     return this.electionsService.registerVoter(dto, id);
+  }
+
+  @Roles(RoleEnum.Voter)
+  @UseGuards(RolesGuard)
+  @HttpCode(200)
+  @Post('eligible/:id')
+  eligibleVoter(@Body() dto: ElectionEligibleDto, @Param('id') id: string) {
+    return this.electionsService.eligibleVoter(dto, id);
   }
 
   @Roles(RoleEnum.Voter)

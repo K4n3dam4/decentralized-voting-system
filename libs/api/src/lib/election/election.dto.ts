@@ -1,6 +1,6 @@
 import { IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsObjectArray } from '../decorators';
+import { IsMnemonic, IsObjectArray } from '../decorators';
 
 export class Candidates {
   @IsString()
@@ -47,9 +47,15 @@ export class ElectionRegisterDto {
   ssn: string;
 }
 
+export class ElectionEligibleDto {
+  @IsNotEmpty()
+  @IsMnemonic()
+  mnemonic: string;
+}
+
 export class ElectionVoteDto {
   @IsNotEmpty()
-  @IsString()
+  @IsMnemonic()
   mnemonic: string;
 
   @IsNotEmpty()

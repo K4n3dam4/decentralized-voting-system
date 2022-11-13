@@ -15,9 +15,9 @@ interface State {
 
 interface Actions {
   setSSN: (ssn: string) => void;
-  registerVoter: (electionId: number, router: NextRouter) => void;
+  registerVoter: (electionId: number, router: NextRouter) => Promise<void>;
   setMnemonic: (index: number, value: string) => void;
-  submitMnemonic: VoidFunction;
+  submitMnemonic: (electionId: number, router: NextRouter) => Promise<void>;
 
   setErrors: (errors: Record<string, any>) => void;
   setError: (field?: string, error?: string) => void;
@@ -76,10 +76,11 @@ const useElectionStore = create<State & Actions>()(
         mnemonic[index] = value;
         set({ mnemonic });
       },
-      submitMnemonic: () => {
+      submitMnemonic: async (electionId: number, router: NextRouter) => {
         const { mnemonic } = get();
+        const dto = { mnemonic: mnemonic.join(' ') };
         const factory: validationFactoryParams = {
-          fields: { mnemonic: mnemonic.join(' ') },
+          fields: dto,
           validationTypes: [{ field: 'mnemonic', validationType: ['mnemonic'] }],
         };
         const validation = validate(validationFactory(factory));
@@ -87,6 +88,20 @@ const useElectionStore = create<State & Actions>()(
         if (validation.hasErrors) {
           set({ errors: validation.errors });
           return;
+        }
+
+        try {
+          await makeRequest({
+            url: `election/eligible/${electionId}`,
+            headers: createBearer(useUserStore.getState().access_token),
+            method: 'POST',
+            data: dto,
+          });
+          useModalStore.getState().setClosed();
+          await router.push(`/${Routes.Election}/${electionId}`);
+        } catch (error) {
+          // TODO set exception as error for given field
+          console.error(error);
         }
       },
 

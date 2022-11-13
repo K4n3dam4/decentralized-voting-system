@@ -1,5 +1,5 @@
 import { ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { ElectionCreateDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
+import { ElectionCreateDto, ElectionEligibleDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
 import { PrismaService } from '@dvs/prisma';
 import { EthersContract, EthersSigner, InjectContractProvider, InjectSignerProvider } from 'nestjs-ethers';
 import { ConfigService } from '@nestjs/config';
@@ -100,6 +100,17 @@ export class ElectionService {
       if (error instanceof PrismaClientKnownRequestError) {
         throw new HttpException('db.error', 500);
       }
+    }
+  }
+
+  async eligibleVoter({ mnemonic }: ElectionEligibleDto, electionId: string) {
+    const election = await this.getElectionInternal(electionId);
+    const signer = this.signer.createWalletfromMnemonic(mnemonic);
+
+    const voterIsRegisteredInDb = election.eligibleVoters.indexOf(signer.address);
+    // exception voter is not registered
+    if (voterIsRegisteredInDb < 0) {
+      throw new ForbiddenException('election.voter.unregistered');
     }
   }
 

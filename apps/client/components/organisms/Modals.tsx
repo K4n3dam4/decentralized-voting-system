@@ -92,7 +92,7 @@ const Modals = () => {
               >
                 {t('controls.back')}
               </DVSButton>
-              <DVSButton dvsType="primary" onClick={submitMnemonic}>
+              <DVSButton dvsType="primary" onClick={() => submitMnemonic(modal.payload.id, router)}>
                 {t('modals.enterMnemonic.submit')}
               </DVSButton>
             </>
