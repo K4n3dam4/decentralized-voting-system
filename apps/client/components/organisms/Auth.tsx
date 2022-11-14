@@ -5,10 +5,12 @@ import { DVSFormInputProps } from '../atoms/DVSFormInput';
 import useAuthStore from '../../store/AuthStore';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { DVSToast } from '../atoms/DVSToast';
 
 const Auth = () => {
   const router = useRouter();
   const { t } = useTranslation('common');
+  const { showToast } = DVSToast();
 
   const [displayAuth, firstName, lastName, street, postalCode, city, ssn, email, password, passwordRepeat, errors] =
     useAuthStore((s) => [
@@ -138,8 +140,8 @@ const Auth = () => {
       dvsType: 'primary',
       children: t(`auth.${displayAuth}`),
       onClick: () => {
-        if (displayAuth === 'register') register(router);
-        else login(router);
+        if (displayAuth === 'register') register(router, showToast);
+        else login(router, showToast);
       },
     },
   ];

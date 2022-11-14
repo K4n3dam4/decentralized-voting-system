@@ -52,3 +52,9 @@ interface Election {
   createdAt: string;
   updatedAt: string;
 }
+
+interface APIError {
+  error: string;
+  message: string;
+  statusCode: number;
+}

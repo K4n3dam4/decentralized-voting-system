@@ -25,7 +25,7 @@ export class ElectionService {
   async getElection(electionId: string) {
     const id = Number(electionId);
     const election: Election = await this.prisma.election.findUnique({ where: { id } });
-    if (!election) throw new NotFoundException('election.notFound');
+    if (!election) throw new NotFoundException('error.api.election.notFound');
     return new ElectionEntity({
       ...election,
     });
@@ -33,14 +33,14 @@ export class ElectionService {
 
   async getAllElections() {
     const elections = await this.prisma.election.findMany();
-    if (!elections) throw new NotFoundException('election.notFound');
+    if (!elections) throw new NotFoundException('error.api.election.notFound');
     return elections.map((election) => new ElectionEntity({ ...election }));
   }
 
   async createElection(dto: ElectionCreateDto, id: number) {
     // get admin
     const admin = await this.prisma.user.findUnique({ where: { id } });
-    if (!admin) throw new ForbiddenException('signin.forbidden.wrongServiceNumber');
+    if (!admin) throw new ForbiddenException('error.api.election.wrongServiceNumber');
 
     const signer = this.signer.createWallet(this.config.get('adminPk'));
     const factory = new ContractFactory(Election__factory.abi, Election__factory.bytecode, signer);
@@ -74,7 +74,7 @@ export class ElectionService {
     });
     // exception voter is not eligible
     if (!election) {
-      throw new ForbiddenException('election.voter.uneligible');
+      throw new ForbiddenException('error.api.election.uneligible');
     }
 
     // create voter wallet for the specified election
@@ -88,7 +88,7 @@ export class ElectionService {
     const signer = this.signer.createWallet(this.config.get('adminPk'));
     const contract = this.contract.create(election.contract, Election__factory.abi, signer);
     // register voter
-    await contract.functions.registerVoter(voterWallet.address, { value: ethers.utils.parseEther('0.8') });
+    await contract.functions.registerVoter(voterWallet.address, { value: ethers.utils.parseEther('0.002') });
     // add voting weight
     await contract.functions.addVotingWeight(voterWallet.address);
 
@@ -121,7 +121,7 @@ export class ElectionService {
 
     // exception voter is not registered
     if (!election) {
-      throw new ForbiddenException('election.voter.unregistered');
+      throw new ForbiddenException('error.api.election.unregistered');
     }
   }
 
@@ -132,7 +132,7 @@ export class ElectionService {
     });
     // exception voter is not registered
     if (!election) {
-      throw new ForbiddenException('election.voter.unregistered');
+      throw new ForbiddenException('error.api.election.unregistered');
     }
     // voter
     const voterIsRegisteredInDb = election.eligibleVoters.indexOf(signer.address);

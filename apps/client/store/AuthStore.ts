@@ -1,11 +1,13 @@
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
-import makeRequest from '../utils/makeRequest';
+import makeRequest, { apiError } from '../utils/makeRequest';
 import validate, { validationFactory } from '../utils/validate';
 import useUserStore from './UserStore';
 import { NextRouter } from 'next/router';
 import { setCookie } from 'cookies-next';
 import Routes from '../config/routes';
+import { DVSToastOptions } from '../components/atoms/DVSToast';
+import { i18n } from 'next-i18next';
 
 interface State {
   displayAuth: 'register' | 'login';
@@ -27,8 +29,8 @@ interface Actions {
   setDisplayAuth: () => void;
 
   setAuth: (key: string, value: string | number) => void;
-  register: (router?: NextRouter) => Promise<void>;
-  login: (router?: NextRouter) => Promise<void>;
+  register: (router: NextRouter, showToast: (options: DVSToastOptions) => void) => Promise<void>;
+  login: (router: NextRouter, showToast: (options: DVSToastOptions) => void) => Promise<void>;
 
   setErrors: (errors: Record<string, any>) => void;
   setError: (field?: string, error?: string) => void;
@@ -62,7 +64,7 @@ const useAuthStore = create<State & Actions>()(
       },
 
       setAuth: (key, value) => set({ [key]: value }),
-      register: async (router?: NextRouter) => {
+      register: async (router: NextRouter, showToast: (options: DVSToastOptions) => void) => {
         const { firstName, lastName, street, postalCode, city, ssn, email, password, passwordRepeat } = get();
         const dto: VoterSignup = { firstName, lastName, street, postalCode, city, ssn, email, password };
         const factory: validationFactoryParams = {
@@ -92,15 +94,16 @@ const useAuthStore = create<State & Actions>()(
           if (access_token) {
             useUserStore.getState().setUser(access_token);
             setCookie('access_token', access_token);
-            if (router) await router.push(Routes.ElectionAll);
+
+            await router.push(Routes.ElectionAll);
+
             set(initialState);
           }
         } catch (error) {
-          // TODO set exception as error for given field
-          console.error(error);
+          showToast({ status: 'error', description: i18n.t(apiError(error).message) });
         }
       },
-      login: async (router?: NextRouter) => {
+      login: async (router: NextRouter, showToast: (options: DVSToastOptions) => void) => {
         const { email, password } = get();
         const dto = { email, password };
         const factory: validationFactoryParams = {
@@ -124,12 +127,13 @@ const useAuthStore = create<State & Actions>()(
           if (access_token) {
             useUserStore.getState().setUser(access_token);
             setCookie('access_token', access_token);
-            if (router) await router.push(Routes.ElectionAll);
+
+            await router.push(Routes.ElectionAll);
+
             set(initialState);
           }
         } catch (error) {
-          // TODO set exception as error for given field
-          console.error(error);
+          showToast({ status: 'error', description: i18n.t(apiError(error).message) });
         }
       },
 

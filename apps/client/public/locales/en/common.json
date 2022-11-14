@@ -60,6 +60,13 @@
       "passwordRepeat": "Passwords do not match.",
       "email": "Please enter a valid email.",
       "mnemonic": "Please enter a valid mnemonic phrase."
+    },
+    "api": {
+      "auth": {
+        "wrongEmail": "The email is invalid",
+        "wrongPassword": "The password is invalid",
+        "alreadyRegistered": "A user with the same data already exists"
+      }
     }
   }
 }

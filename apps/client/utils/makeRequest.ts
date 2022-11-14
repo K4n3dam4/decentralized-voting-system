@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { CookieValueTypes } from 'cookies-next';
 
 /**
@@ -40,5 +40,7 @@ const makeRequest = <Res, D = void, QP = void>(
 export const createBearer = (token: CookieValueTypes) => ({
   Authorization: `Bearer ${token}`,
 });
+
+export const apiError = (error: AxiosError<APIError>) => error?.response?.data || null;
 
 export default makeRequest;
