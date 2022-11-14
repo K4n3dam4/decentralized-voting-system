@@ -24,7 +24,7 @@
   - [.envs](#envs)
   - [Smart Contracts](#smart-contracts)
   - [Running the application](#running-the-application)
-- \*\*[Credits](#credits)
+- **[Credits](#credits)**
 
 ## Introduction
 
