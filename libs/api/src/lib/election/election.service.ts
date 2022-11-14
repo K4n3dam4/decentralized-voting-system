@@ -8,6 +8,7 @@ import { Prisma, Election } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { ContractFactory, ethers } from 'ethers';
 import { Election__factory } from '@dvs/smart-contracts';
+import { ElectionEntity } from './election.entity';
 
 @Injectable()
 export class ElectionService {
@@ -22,14 +23,18 @@ export class ElectionService {
   ) {}
 
   async getElection(electionId: string) {
-    const election = await this.getElectionInternal(electionId);
-    return this.sanitizeElections(election);
+    const id = Number(electionId);
+    const election: Election = await this.prisma.election.findUnique({ where: { id } });
+    if (!election) throw new NotFoundException('election.notFound');
+    return new ElectionEntity({
+      ...election,
+    });
   }
 
   async getAllElections() {
     const elections = await this.prisma.election.findMany();
     if (!elections) throw new NotFoundException('election.notFound');
-    return this.sanitizeElections(elections);
+    return elections.map((election) => new ElectionEntity({ ...election }));
   }
 
   async createElection(dto: ElectionCreateDto, id: number) {
@@ -64,8 +69,13 @@ export class ElectionService {
 
   async registerVoter(dto: ElectionRegisterDto, electionId: string) {
     const { ssn } = dto;
-    const election = await this.getElectionInternal(electionId);
-    if (!election.eligibleVoters.includes(ssn)) throw new ForbiddenException('election.voter.uneligible');
+    const election = await this.prisma.election.findFirst({
+      where: { id: Number(electionId), eligibleVoters: { has: ssn } },
+    });
+    // exception voter is not eligible
+    if (!election) {
+      throw new ForbiddenException('election.voter.uneligible');
+    }
 
     // create voter wallet for the specified election
     const voterWallet = this.signer.createRandomWallet();
@@ -94,7 +104,7 @@ export class ElectionService {
 
       return {
         mnemonic: voterWallet.mnemonic.phrase,
-        election: this.sanitizeElections(election),
+        election: new ElectionEntity({ ...election }),
       };
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -104,28 +114,30 @@ export class ElectionService {
   }
 
   async eligibleVoter({ mnemonic }: ElectionEligibleDto, electionId: string) {
-    const election = await this.getElectionInternal(electionId);
     const signer = this.signer.createWalletfromMnemonic(mnemonic);
+    const election = await this.prisma.election.findFirst({
+      where: { id: Number(electionId), eligibleVoters: { has: signer.address } },
+    });
 
-    const voterIsRegisteredInDb = election.eligibleVoters.indexOf(signer.address);
     // exception voter is not registered
-    if (voterIsRegisteredInDb < 0) {
+    if (!election) {
       throw new ForbiddenException('election.voter.unregistered');
     }
   }
 
   async vote({ mnemonic, candidate }: ElectionVoteDto, electionId: string) {
-    const election = await this.getElectionInternal(electionId);
     const signer = this.signer.createWalletfromMnemonic(mnemonic);
-
-    const voterIsRegisteredInDb = election.eligibleVoters.indexOf(signer.address);
+    const election = await this.prisma.election.findFirst({
+      where: { id: Number(electionId), eligibleVoters: { has: signer.address } },
+    });
     // exception voter is not registered
-    if (voterIsRegisteredInDb < 0) {
+    if (!election) {
       throw new ForbiddenException('election.voter.unregistered');
     }
+    // voter
+    const voterIsRegisteredInDb = election.eligibleVoters.indexOf(signer.address);
     // update eligible voters
-    const updatedEligibleVoters = [...election.eligibleVoters];
-    updatedEligibleVoters.splice(voterIsRegisteredInDb, 1);
+    election.eligibleVoters.splice(voterIsRegisteredInDb, 1);
 
     const contract = this.contract.create(election.contract, Election__factory.abi, signer);
 
@@ -134,7 +146,7 @@ export class ElectionService {
       await this.prisma.election.update({
         data: {
           eligibleVoters: {
-            set: updatedEligibleVoters,
+            set: election.eligibleVoters,
           },
         },
         where: { id: election.id },
@@ -146,27 +158,6 @@ export class ElectionService {
         const { reason } = error.error.error.data;
         throw new HttpException(reason, 403);
       }
-    }
-  }
-
-  async getElectionInternal(electionId: string) {
-    const id = Number(electionId);
-    const election: Election = await this.prisma.election.findUnique({ where: { id } });
-    if (!election) throw new NotFoundException('election.notFound');
-    return election;
-  }
-
-  sanitizeElections(elections: Election | Election[]): Partial<Election> | Partial<Election>[] {
-    if (!Array.isArray(elections)) {
-      delete elections.eligibleVoters;
-      delete elections.adminId;
-      return elections;
-    } else {
-      return elections.map((election) => {
-        delete election.eligibleVoters;
-        delete election.adminId;
-        return election;
-      });
     }
   }
 }

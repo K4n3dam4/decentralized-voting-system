@@ -290,14 +290,6 @@ describe('App e2e', () => {
             .expectStatus(401);
         });
 
-        it('should throw not found error', function () {
-          return spec()
-            .post(url + '2403490')
-            .withHeaders(headersVoter)
-            .withBody(dto)
-            .expectStatus(404);
-        });
-
         it('should not register uneligible voters', function () {
           const faultyDto = { ...dto };
           faultyDto.ssn = '2134';
@@ -332,14 +324,6 @@ describe('App e2e', () => {
             .withPathParams('id', '$S{ElectionId}')
             .withBody(dto)
             .expectStatus(401);
-        });
-
-        it('should throw not found error', function () {
-          return spec()
-            .post(url + '2403490')
-            .withHeaders(headersVoter)
-            .withBody(dto)
-            .expectStatus(404);
         });
 
         it('should throw invalid mnemonic error', function () {
@@ -377,14 +361,6 @@ describe('App e2e', () => {
             .withPathParams('id', '$S{ElectionId}')
             .withBody(dto)
             .expectStatus(401);
-        });
-
-        it('should throw not found error', function () {
-          return spec()
-            .post(url + '2403490')
-            .withHeaders(headersVoter)
-            .withBody(dto)
-            .expectStatus(404);
         });
 
         it('should throw not registered error', function () {
