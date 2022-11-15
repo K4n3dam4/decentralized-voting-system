@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Grid, GridItem, Heading, useBreakpointValue } from '@chakra-ui/react';
 import DVSCandidate from '../molecules/DVSCandidate';
 import DVSElectionHeader from '../molecules/DVSElectionHeader';
@@ -6,6 +6,7 @@ import DVSCard from '../atoms/DVSCard';
 import DVSButton from '../atoms/DVSButton';
 import useModalStore from '../../store/ModalStore';
 import { ArrowDownIcon } from '@chakra-ui/icons';
+import useVisibility from '../../hooks/elements';
 
 export interface ElectionProps {
   election: Election;
@@ -13,13 +14,15 @@ export interface ElectionProps {
 
 const Election: React.FC<ElectionProps> = ({ election }) => {
   const setOpen = useModalStore((s) => s.setOpen);
-  const ref = useRef(null);
+  const [refInViewport, ref] = useVisibility<HTMLDivElement>();
 
   const isEven = election.candidates.length % 2 === 0;
   const gridColumns = isEven ? 2 : 3;
   const colSpanCandidate = useBreakpointValue({ base: gridColumns, md: 1 });
 
-  const handleScroll = () => ref.current.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+  const handleScroll = () => {
+    ref.current.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+  };
 
   const CandidateMap = () =>
     election.candidates.map((candidate, index) => (
@@ -41,7 +44,17 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
         </DVSCard>
       </GridItem>
       <GridItem colSpan={gridColumns} display="flex" justifyContent="center">
-        <DVSButton onClick={handleScroll} marginY={150} h={10} w={10} dvsType="secondary" variant="ghost">
+        <DVSButton
+          onClick={handleScroll}
+          mt={150}
+          mb={refInViewport ? 0 : 150}
+          h={10}
+          w={10}
+          dvsType="secondary"
+          variant="ghost"
+          transition="500ms"
+          opacity={refInViewport ? 0 : 1}
+        >
           <ArrowDownIcon h={10} w={10} />
         </DVSButton>
       </GridItem>
