@@ -1,18 +1,22 @@
 import React from 'react';
-import { Grid, GridItem, Heading, useBreakpointValue } from '@chakra-ui/react';
+import { Grid, GridItem, useBreakpointValue } from '@chakra-ui/react';
 import DVSCandidate from '../molecules/DVSCandidate';
 import DVSElectionHeader from '../molecules/DVSElectionHeader';
-import DVSCard from '../atoms/DVSCard';
-import DVSButton from '../atoms/DVSButton';
 import useModalStore from '../../store/ModalStore';
 import { ArrowDownIcon } from '@chakra-ui/icons';
 import useVisibility from '../../hooks/elements';
+import { useTranslation } from 'next-i18next';
+import DVSElectionInfoCard from '../molecules/DVSElectionInfoCard';
+import DVSScrollTo from '../atoms/DVSScrollTo';
+import DVSHeroIcon from '../atoms/DVSHeroIcon';
 
 export interface ElectionProps {
   election: Election;
 }
 
 const Election: React.FC<ElectionProps> = ({ election }) => {
+  const { t } = useTranslation();
+
   const setOpen = useModalStore((s) => s.setOpen);
   const [refInViewport, ref] = useVisibility<HTMLDivElement>();
 
@@ -37,31 +41,29 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
         <DVSElectionHeader name={election.name} description={election.description} image={election.image} />
       </GridItem>
       <GridItem colSpan={gridColumns}>
-        <DVSCard h="100%" display="flex" justifyContent="center" alignItems="center">
-          <DVSButton dvsType="secondary" onClick={() => setOpen({ type: 'registerVoter', payload: election })}>
-            Register to vote
-          </DVSButton>
-        </DVSCard>
+        <DVSHeroIcon
+          position="absolute"
+          display={{ base: 'none', md: 'block' }}
+          zIndex={-10}
+          left={200}
+          style={{ filter: 'blur(70px)' }}
+        />
+        <DVSElectionInfoCard
+          expiration={{ value: election.expires }}
+          button={{
+            children: t('election.register'),
+            onClick: () => setOpen({ type: 'registerVoter', payload: election }),
+          }}
+          text={{ children: t('election.notRegistered') }}
+        />
       </GridItem>
-      <GridItem colSpan={gridColumns} display="flex" justifyContent="center">
-        <DVSButton
+      <GridItem colSpan={gridColumns} position="relative" display="flex" justifyContent="center">
+        <DVSScrollTo
           onClick={handleScroll}
-          mt={150}
-          mb={refInViewport ? 0 : 150}
-          h={10}
-          w={10}
-          dvsType="secondary"
-          variant="ghost"
-          transition="500ms"
-          opacity={refInViewport ? 0 : 1}
-        >
-          <ArrowDownIcon h={10} w={10} />
-        </DVSButton>
-      </GridItem>
-      <GridItem colSpan={gridColumns}>
-        <DVSCard display="flex" justifyContent="center">
-          <Heading size="lg">Candidates</Heading>
-        </DVSCard>
+          inViewPort={refInViewport}
+          icon={<ArrowDownIcon h={10} w={10} />}
+          text={t('election.vote')}
+        />
       </GridItem>
       {CandidateMap()}
     </Grid>

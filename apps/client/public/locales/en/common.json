@@ -24,6 +24,12 @@
   "elections": {
     "elections": "Elections"
   },
+  "election": {
+    "candidates": "Candidates",
+    "notRegistered": "You are not yet registered for this election. Please register as a voter before proceeding to the voting booth.",
+    "register": "Register to vote",
+    "vote": "Vote"
+  },
   "expiration": {
     "closesIn": "Closes in {{days}} days {{hours}} hours {{minutes}} minutes",
     "closed": "Closed"
