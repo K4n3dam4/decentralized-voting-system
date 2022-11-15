@@ -28,6 +28,10 @@ model User {
     postalCode Int
     city String
 
+    // voter
+    registered RegisteredVoter[]
+
+    // admin
     serviceNumber Int? @unique
     elections Election[]
 
@@ -35,6 +39,31 @@ model User {
     hash String
 
     @@map("users")
+}
+
+model RegisteredVoter {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    userId Int
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    electionId Int
+    election Election? @relation(fields: [electionId], references: [id], onDelete: Cascade)
+
+    @@map("registeredVoters")
+}
+
+model EligibleVoter {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    electionId Int
+    election Election? @relation(fields: [electionId], references: [id], onDelete: Cascade)
+
+    ssn String? @unique
+    wallet String? @unique
+
+    @@map("eligibleVoters")
 }
 
 model Election {
@@ -51,7 +80,8 @@ model Election {
     candidates Json
 
     contract String
-    eligibleVoters String[]
+    eligibleVoters EligibleVoter[]
+    registeredVoters RegisteredVoter[]
     expires DateTime
 
     @@map("elections")

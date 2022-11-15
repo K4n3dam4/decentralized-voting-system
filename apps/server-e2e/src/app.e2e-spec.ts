@@ -5,6 +5,7 @@ import {
   CoreModule,
   ElectionCreateDto,
   ElectionEligibleDto,
+  ElectionEligibleUpdateDto,
   ElectionModule,
   ElectionRegisterDto,
   ElectionVoteDto,
@@ -45,6 +46,16 @@ describe('App e2e', () => {
       email: 'johndoe@test.com',
       password: 'testpassword',
     };
+    const mockVoter2: VoterSignupDto = {
+      ssn: '109876543210',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      street: 'Baker Street 2',
+      postalCode: 20095,
+      city: 'Web3 City',
+      email: 'johndoe2@test.com',
+      password: 'testpassword',
+    };
 
     beforeAll(async () => {
       // admin
@@ -60,7 +71,7 @@ describe('App e2e', () => {
 
       // pactum
       request.setBaseUrl(host);
-      request.setDefaultTimeout(60000);
+      request.setDefaultTimeout(100000);
 
       // core
       core = moduleFixture.get(CoreModule);
@@ -225,7 +236,7 @@ describe('App e2e', () => {
           ],
           description:
             'After both parties have chosen their respective candidates, the election process for the 2020 presidential election will commence on November, 3.',
-          eligibleVoters: [mockVoter.ssn, process.env.VOTER_ADDRESS],
+          eligibleVoters: [mockVoter.ssn, mockVoter2.ssn],
           expires: 1677625200,
         };
         const url = baseUrl + 'create';
@@ -276,6 +287,48 @@ describe('App e2e', () => {
         });
       });
 
+      describe('Update eligible voter [PUT eligible/update/:id]', function () {
+        let eligibleId: number;
+
+        beforeEach(async () => {
+          prisma = app.get(PrismaService);
+          const { id } = await prisma.getEligibleVoter();
+          eligibleId = id;
+        });
+
+        const dto: ElectionEligibleUpdateDto = {
+          ssn: undefined,
+          wallet: process.env.VOTER_ADDRESS,
+        };
+        const url = baseUrl + 'eligible/update/';
+
+        it('should be guarded', function () {
+          return spec()
+            .put(url + '{id}')
+            .withPathParams('id', `${eligibleId}`)
+            .expectStatus(401);
+        });
+
+        it('should validate request', function () {
+          const faultyDto = { wallet: 42332 };
+          return spec()
+            .put(url + '{id}')
+            .withPathParams('id', `${eligibleId}`)
+            .withHeaders(headersAdmin)
+            .withBody(faultyDto)
+            .expectStatus(400);
+        });
+
+        it('should update eligible voter', function () {
+          return spec()
+            .put(url + '{id}')
+            .withPathParams('id', `${eligibleId}`)
+            .withHeaders(headersAdmin)
+            .withBody(dto)
+            .expectStatus(200);
+        });
+      });
+
       describe('Register voter [POST election/register]', function () {
         const dto: ElectionRegisterDto = {
           ssn: mockVoter.ssn,
@@ -312,7 +365,7 @@ describe('App e2e', () => {
         });
       });
 
-      describe('Check eligibility [POST election/eligible/:id', function () {
+      describe('Check eligibility [POST election/eligible/:id]', function () {
         const dto: ElectionEligibleDto = {
           mnemonic: '$S{Mnemonic}',
         };
@@ -375,17 +428,6 @@ describe('App e2e', () => {
             .expectStatus(403);
         });
 
-        it('should throw voter.notEligible', function () {
-          const faultyDto = { ...dto };
-          faultyDto.mnemonic = process.env.VOTER_MNEMONIC;
-          return spec()
-            .post(url + '{id}')
-            .withPathParams('id', '$S{ElectionId}')
-            .withHeaders(headersVoter)
-            .withBody(faultyDto)
-            .expectBody({ message: 'voter.notEligible', statusCode: 403 });
-        });
-
         it('should vote', function () {
           return spec()
             .post(url + '{id}')
@@ -393,6 +435,15 @@ describe('App e2e', () => {
             .withHeaders(headersVoter)
             .withBody(dto)
             .expectStatus(201);
+        });
+
+        it('should only allow one vote', function () {
+          return spec()
+            .post(url + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .withBody(dto)
+            .expectStatus(403);
         });
       });
     });
