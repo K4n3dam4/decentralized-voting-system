@@ -110,12 +110,12 @@ export class ElectionService {
     // prepare voter for election
     const signer = this.signer.createWallet(this.config.get('adminPk'));
     const contract = this.contract.create(election.contract, Election__factory.abi, signer);
-    // register voter
-    await contract.functions.registerVoter(voterWallet.address, { value: ethers.utils.parseEther('0.002') });
-    // add voting weight
-    await contract.functions.addVotingWeight(voterWallet.address);
 
     try {
+      // register voter
+      await contract.functions.registerVoter(voterWallet.address, { value: ethers.utils.parseEther('0.002') });
+      // add voting weight
+      await contract.functions.addVotingWeight(voterWallet.address);
       // create voter relation to election
       await this.prisma.registeredVoter.create({
         data: {
@@ -143,6 +143,9 @@ export class ElectionService {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         throw new HttpException('db.error', 500);
+      } else {
+        const { reason } = error.error.error.data;
+        throw new HttpException(reason, 403);
       }
     }
   }

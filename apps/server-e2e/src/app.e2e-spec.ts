@@ -237,7 +237,7 @@ describe('App e2e', () => {
           description:
             'After both parties have chosen their respective candidates, the election process for the 2020 presidential election will commence on November, 3.',
           eligibleVoters: [mockVoter.ssn, mockVoter2.ssn],
-          expires: 1677625200,
+          expires: Math.round(new Date(Date.now() + 24 * 60 * 60 * 1000).getTime() / 1000),
         };
         const url = baseUrl + 'create';
 
