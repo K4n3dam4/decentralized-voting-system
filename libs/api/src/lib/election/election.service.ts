@@ -12,7 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { ContractFactory, ethers } from 'ethers';
+import { ContractFactory } from 'ethers';
 import { Election__factory } from '@dvs/smart-contracts';
 import { ElectionEntity } from './election.entity';
 
@@ -105,15 +105,18 @@ export class ElectionService {
       throw new ForbiddenException('error.api.election.uneligible');
     }
 
-    // create voter wallet for the specified election
-    const voterWallet = this.signer.createRandomWallet();
-    // prepare voter for election
-    const signer = this.signer.createWallet(this.config.get('adminPk'));
-    const contract = this.contract.create(election.contract, Election__factory.abi, signer);
-
     try {
+      // create voter wallet for the specified election
+      const voterWallet = this.signer.createRandomWallet();
+      // get signer and contract instance
+      const signer = this.signer.createWallet(this.config.get('adminPk'));
+      const contract = this.contract.create(election.contract, Election__factory.abi, signer);
+      // estimate current gas
+      const { gasPrice, lastBaseFeePerGas } = await contract.provider.getFeeData();
+      const fee = gasPrice.mul(lastBaseFeePerGas).mul(2);
+
       // register voter
-      await contract.functions.registerVoter(voterWallet.address, { value: ethers.utils.parseEther('0.002') });
+      await contract.functions.registerVoter(voterWallet.address, { value: fee });
       // add voting weight
       await contract.functions.addVotingWeight(voterWallet.address);
       // create voter relation to election
