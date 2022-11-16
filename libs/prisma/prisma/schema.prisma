@@ -50,6 +50,8 @@ model RegisteredVoter {
     electionId Int
     election Election? @relation(fields: [electionId], references: [id], onDelete: Cascade)
 
+    hasVoted Boolean @default(false)
+
     @@map("registeredVoters")
 }
 

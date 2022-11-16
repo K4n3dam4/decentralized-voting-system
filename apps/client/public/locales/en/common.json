@@ -27,6 +27,7 @@
   "election": {
     "candidates": "Candidates",
     "notRegistered": "You are not yet registered for this election. Please register as a voter before proceeding to the voting booth.",
+    "registered": "You are registered to vote in this election. Please proceed to the voting booth to cast your vote.",
     "register": "Register to vote",
     "vote": "Vote"
   },

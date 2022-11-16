@@ -15,6 +15,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { ContractFactory } from 'ethers';
 import { Election__factory } from '@dvs/smart-contracts';
 import { ElectionEntity } from './election.entity';
+import * as argon from 'argon2';
 
 @Injectable()
 export class ElectionService {
@@ -56,29 +57,43 @@ export class ElectionService {
 
     const signer = this.signer.createWallet(this.config.get('adminPk'));
     const factory = new ContractFactory(Election__factory.abi, Election__factory.bytecode, signer);
-    const contract = await factory.deploy(dto.name, dto.eligibleVoters, dto.expires);
 
-    // add election to db
-    const election = await this.prisma.election.create({
-      data: {
-        name: dto.name,
-        image: dto.image,
-        description: dto.description,
-        candidates: dto.candidates as unknown as Prisma.JsonArray,
-        contract: contract.address,
-        expires: new Date(dto.expires * 1000),
-        eligibleVoters: {
-          create: dto.eligibleVoters.map((ssn) => ({ ssn })),
-        },
-        admin: {
-          connect: {
-            id: admin.id,
+    try {
+      // deploy contract
+      const contract = await factory.deploy(
+        dto.name,
+        dto.candidates.map(({ name }) => name),
+        dto.expires,
+      );
+      // add election to db
+      const election = await this.prisma.election.create({
+        data: {
+          name: dto.name,
+          image: dto.image,
+          description: dto.description,
+          candidates: dto.candidates as unknown as Prisma.JsonArray,
+          contract: contract.address,
+          expires: new Date(dto.expires * 1000),
+          eligibleVoters: {
+            create: dto.eligibleVoters.map((ssn) => ({ ssn })),
+          },
+          admin: {
+            connect: {
+              id: admin.id,
+            },
           },
         },
-      },
-    });
+      });
 
-    return { ...election };
+      return { ...election };
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        throw new HttpException('db.error', 500);
+      } else {
+        const { reason } = error.error.error.data;
+        throw new HttpException(reason, 403);
+      }
+    }
   }
 
   async updateEligibleVoter(dto: ElectionEligibleUpdateDto, eligibleId: string) {
@@ -93,6 +108,12 @@ export class ElectionService {
 
   async registerVoter(dto: ElectionRegisterDto, userId: number, electionId: string) {
     const { ssn } = dto;
+    // get user
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    // verify ssn
+    const matchHash = await argon.verify(user.ssn, ssn);
+    // mismatched hash
+    if (!matchHash) throw new ForbiddenException('error.api.election.wrongSSN');
 
     // get election with eligible voter relation equal to voter ssn
     const election = await this.prisma.election.findFirst({
@@ -168,16 +189,25 @@ export class ElectionService {
   }
 
   async vote({ mnemonic, candidate }: ElectionVoteDto, userId: number, electionId: string) {
-    // check eligibility and get signer
-    const signer = await this.eligibleVoter({ mnemonic }, electionId);
     // get election
-    const election = await this.prisma.election.findUnique({ where: { id: Number(electionId) } });
+    const election = await this.prisma.election.findUnique({
+      where: { id: Number(electionId) },
+      include: {
+        registeredVoters: { where: { userId, electionId: Number(electionId) } },
+      },
+    });
     // create contract instance
+    const signer = this.signer.createWalletfromMnemonic(mnemonic);
     const contract = this.contract.create(election.contract, Election__factory.abi, signer);
 
     try {
       // vote
       await contract.functions.vote(candidate);
+      // update registered Voter
+      await this.prisma.registeredVoter.update({
+        data: { hasVoted: true },
+        where: { id: election.registeredVoters[0].id },
+      });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         throw new HttpException('db.error', 500);

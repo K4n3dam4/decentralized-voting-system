@@ -49,12 +49,12 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
           style={{ filter: 'blur(70px)' }}
         />
         <DVSElectionInfoCard
+          registered={election.registered}
           expiration={{ value: election.expires }}
           button={{
             children: t('election.register'),
             onClick: () => setOpen({ type: 'registerVoter', payload: election }),
           }}
-          text={{ children: t('election.notRegistered') }}
         />
       </GridItem>
       <GridItem colSpan={gridColumns} position="relative" display="flex" justifyContent="center">
