@@ -50,17 +50,7 @@ describe('Test contracts', function () {
           value: ethers.utils.parseEther('0.121434'),
         });
         expect(ethers.utils.formatEther(res.value)).to.be.equal('0.121434');
-        // const gasPrice = await provider.getGasPrice();
-        // const gasUnits = await electionInstance.estimateGas.registerVoter(wallet.address, [1]);
-        // const transactionFee = gasPrice.mul(gasUnits);
-        // console.log('transactionFee in wei: ' + transactionFee.toString());
-        // console.log('transactionFee in ether: ' + ethers.utils.formatUnits(transactionFee, 'ether'));
       });
-
-      // it('should destroy contract', async function () {
-      //   const res = await election.discardContract();
-      //   expect(res.confirmations).to.be.greaterThan(0);
-      // });
     });
 
     describe('Voting', function () {

@@ -10,6 +10,7 @@
     "test:contracts": "nx test smart-contracts",
     "dpl:election:testnet": "nx dpl-election-test smart-contracts",
     "dpl:election:mainnet": "dotenv -e .env -- nx dpl-election-main smart-contracts",
+    "get:signer:testnet": "nx get-signer-test smart-contracts",
     "build:client": "nx build client",
     "build:server": "nx build server",
     "build:client:prod": "nx build client --prod",
