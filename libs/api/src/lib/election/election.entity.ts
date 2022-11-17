@@ -8,6 +8,8 @@ export class RegisteredVoter {
   updatedAt: Date;
   userId: number;
   electionId: number;
+
+  hasVoted: boolean;
 }
 
 export class EligibleVoter {
@@ -38,6 +40,7 @@ export class ElectionEntity {
   @Exclude()
   registeredVoters: RegisteredVoter[];
   registered: boolean;
+  hasVoted?: boolean;
   expires: Date;
 
   constructor(partial: Partial<ElectionEntity>) {

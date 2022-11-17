@@ -32,6 +32,9 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
     ref.current.scrollIntoView({ behavior: 'smooth', inline: 'center' });
   };
 
+  // handles register voter
+  const handleRegister = () => setOpen({ type: 'registerVoter', payload: election });
+
   // handles vote
   const handleVote = (index: number, candidate: Candidate) => {
     if (election.registered) {
@@ -52,37 +55,72 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
       </GridItem>
     ));
 
+  const PageContent = () => {
+    let type: 'notRegistered' | 'registered' | 'hasVoted' | 'closed' = 'notRegistered';
+    const closed = new Date(election.expires).getTime() < Date.now();
+
+    if (election.registered) type = 'registered';
+    if (election.hasVoted) type = 'hasVoted';
+    if (closed) type = 'closed';
+
+    switch (type) {
+      case 'notRegistered':
+      case 'registered': {
+        return (
+          <>
+            <GridItem ref={electionInfo} colSpan={gridColumns}>
+              <DVSHeroIcon
+                position="absolute"
+                display={{ base: 'none', md: 'block' }}
+                zIndex={-10}
+                left={200}
+                style={{ filter: 'blur(70px)' }}
+              />
+              <DVSElectionInfoCard
+                expiration={{ value: election.expires }}
+                button={type === 'notRegistered' && { onClick: handleRegister, children: t('election.register') }}
+                text={t(`election.${type}`)}
+              />
+            </GridItem>
+            <GridItem colSpan={gridColumns} position="relative" display="flex" justifyContent="center">
+              <DVSScrollTo
+                onClick={handleScroll}
+                inViewPort={refInViewport}
+                icon={<ArrowDownIcon h={10} w={10} />}
+                text={t('election.vote')}
+              />
+            </GridItem>
+            {CandidateMap()}
+          </>
+        );
+      }
+      case 'hasVoted':
+      case 'closed': {
+        // TODO: add election results
+        return (
+          <>
+            <GridItem ref={electionInfo} colSpan={gridColumns}>
+              <DVSHeroIcon
+                position="absolute"
+                display={{ base: 'none', md: 'block' }}
+                zIndex={-10}
+                left={200}
+                style={{ filter: 'blur(70px)' }}
+              />
+              <DVSElectionInfoCard expiration={{ value: election.expires }} text={t(`election.${type}`)} />
+            </GridItem>
+          </>
+        );
+      }
+    }
+  };
+
   return (
     <Grid templateColumns={`repeat(${gridColumns}, 1fr)`} gap={5}>
       <GridItem colSpan={gridColumns}>
         <DVSElectionHeader name={election.name} description={election.description} image={election.image} />
       </GridItem>
-      <GridItem ref={electionInfo} colSpan={gridColumns}>
-        <DVSHeroIcon
-          position="absolute"
-          display={{ base: 'none', md: 'block' }}
-          zIndex={-10}
-          left={200}
-          style={{ filter: 'blur(70px)' }}
-        />
-        <DVSElectionInfoCard
-          registered={election.registered}
-          expiration={{ value: election.expires }}
-          button={{
-            children: t('election.register'),
-            onClick: () => setOpen({ type: 'registerVoter', payload: election }),
-          }}
-        />
-      </GridItem>
-      <GridItem colSpan={gridColumns} position="relative" display="flex" justifyContent="center">
-        <DVSScrollTo
-          onClick={handleScroll}
-          inViewPort={refInViewport}
-          icon={<ArrowDownIcon h={10} w={10} />}
-          text={t('election.vote')}
-        />
-      </GridItem>
-      {CandidateMap()}
+      {PageContent()}
     </Grid>
   );
 };

@@ -52,6 +52,7 @@ interface Election {
   createdAt: string;
   updatedAt: string;
   registered?: boolean;
+  hasVoted?: boolean;
 }
 
 interface APIError {

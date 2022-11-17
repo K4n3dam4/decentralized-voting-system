@@ -37,10 +37,12 @@ export class ElectionService {
     });
 
     if (!election) throw new NotFoundException({ message: 'error.api.election.notFound' });
-
+    const registered = election.registeredVoters.length === 1;
+    const hasVoted = registered && election.registeredVoters[0].hasVoted;
     return new ElectionEntity({
       ...election,
-      registered: election.registeredVoters.length === 1,
+      registered,
+      hasVoted,
     });
   }
 
@@ -172,7 +174,6 @@ export class ElectionService {
         mnemonic: voterWallet.mnemonic.phrase,
       };
     } catch (error) {
-      console.log(error);
       if (error instanceof PrismaClientKnownRequestError) {
         throw new HttpException({ message: 'error.api.server.error' }, 500);
       } else {
