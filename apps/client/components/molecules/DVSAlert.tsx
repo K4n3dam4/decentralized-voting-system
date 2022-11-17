@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { Alert, AlertDescription, AlertIcon, AlertProps, CloseButton } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertProps, Box, CloseButton } from '@chakra-ui/react';
 
 export interface DVSAlertProps extends AlertProps {
   customIcon?: FunctionComponent;
@@ -12,14 +12,17 @@ const DVSAlert: React.FC<DVSAlertProps> = ({ customIcon, children, status, onClo
       <AlertIcon />
       <AlertDescription>{children}</AlertDescription>
       {onClose && (
-        <CloseButton
-          color="white"
-          position="absolute"
-          right={2}
-          top="50%"
-          transform="translateY(-50%)"
-          onClick={onClose}
-        />
+        <>
+          <Box w={6} />
+          <CloseButton
+            color="white"
+            position="absolute"
+            right={2}
+            top="50%"
+            transform="translateY(-50%)"
+            onClick={onClose}
+          />
+        </>
       )}
     </Alert>
   );

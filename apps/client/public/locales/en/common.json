@@ -46,10 +46,11 @@
       "header": "Mnemonic passphrase",
       "text": "This is your mnemonic passphrase for this election. Please write it down and store it in a safe location until you have cast your vote. You will have to reenter your passphrase when you submit your vote."
     },
-    "enterMnemonic": {
-      "header": "Enter mnemonic",
-      "text": "Please enter the mnemonic passphrase you received during the registration process for this election.",
-      "submit": "Submit"
+    "vote": {
+      "header": "Vote for {{name}}",
+      "text": "You will cast your vote for {{name}}. Please enter the mnemonic passphrase you received after completing the registration process.",
+      "warning": "This action is final and can not be reversed.",
+      "submit": "Cast your vote"
     }
   },
   "controls": {
@@ -70,10 +71,30 @@
     },
     "api": {
       "auth": {
-        "wrongEmail": "The email is invalid",
-        "wrongPassword": "The password is invalid",
-        "alreadyRegistered": "A user with the same data already exists"
-      }
+        "wrongEmail": "Invalid email.",
+        "wrongPassword": "Invalid password.",
+        "alreadyRegistered": "Email address taken."
+      },
+      "election": {
+        "wrongSSN": "Invalid social security number.",
+        "uneligible": "You are not eligible to vote.",
+        "notFound": "Election could not be found.",
+        "wrongServiceNumber": "Your service number does not exist."
+      },
+      "server": {
+        "error": "Something went wrong."
+      },
+      "mnemonic": {
+        "invalid": "Invalid mnemonic."
+      },
+      "unknown": "An unknown error occurred."
+    },
+    "contract": {
+      "expired": "The election is closed.",
+      "unexpired": "The election is not closed, yet.",
+      "alreadyRegistered": "You have already registered.",
+      "uneligible": "You are not eligible to vote.",
+      "hasVoted": "You have already voted."
     }
   }
 }

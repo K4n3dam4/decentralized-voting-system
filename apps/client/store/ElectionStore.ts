@@ -1,11 +1,13 @@
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
 import validate, { validationFactory } from '../utils/validate';
-import makeRequest, { createBearer } from '../utils/makeRequest';
+import makeRequest, { apiError, createBearer } from '../utils/makeRequest';
 import useUserStore from './UserStore';
 import { NextRouter } from 'next/router';
 import Routes from '../config/routes';
 import useModalStore from './ModalStore';
+import { DVSToastOptions } from '../components/atoms/DVSToast';
+import { i18n } from 'next-i18next';
 
 interface State {
   ssn: string;
@@ -15,9 +17,19 @@ interface State {
 
 interface Actions {
   setSSN: (ssn: string) => void;
-  registerVoter: (electionId: number, router: NextRouter) => Promise<void>;
+  registerVoter: (
+    electionId: number,
+    router: NextRouter,
+    showToast: (options: DVSToastOptions) => void,
+  ) => Promise<void>;
   setMnemonic: (index: number, value: string) => void;
   submitMnemonic: (electionId: number, router: NextRouter) => Promise<void>;
+  vote: (
+    electionId: number,
+    candidate: number,
+    router: NextRouter,
+    showToast: (options: DVSToastOptions) => void,
+  ) => Promise<void>;
 
   setErrors: (errors: Record<string, any>) => void;
   setError: (field?: string, error?: string) => void;
@@ -36,7 +48,7 @@ const useElectionStore = create<State & Actions>()(
       ...JSON.parse(JSON.stringify(initialState)),
 
       setSSN: (ssn: string) => set({ ssn }),
-      registerVoter: async (electionId: number, router: NextRouter) => {
+      registerVoter: async (electionId: number, router: NextRouter, showToast: (options: DVSToastOptions) => void) => {
         const { ssn } = get();
         const dto: ElectionRegister = { ssn };
         const factory: validationFactoryParams = {
@@ -66,21 +78,24 @@ const useElectionStore = create<State & Actions>()(
             payload: mnemonic,
           });
         } catch (error) {
-          // TODO set exception as error for given field
-          console.error(error);
+          showToast({ status: 'error', description: i18n.t(apiError(error)) });
         }
       },
-
       setMnemonic: (index: number, value) => {
         const mnemonic = get().mnemonic;
         mnemonic[index] = value;
         set({ mnemonic });
       },
-      submitMnemonic: async (electionId: number, router: NextRouter) => {
+      vote: async (
+        electionId: number,
+        candidate: number,
+        router: NextRouter,
+        showToast: (options: DVSToastOptions) => void,
+      ) => {
         const { mnemonic } = get();
-        const dto = { mnemonic: mnemonic.join(' ') };
+        const dto = { mnemonic: mnemonic.join(' '), candidate };
         const factory: validationFactoryParams = {
-          fields: dto,
+          fields: { mnemonic: dto.mnemonic },
           validationTypes: [{ field: 'mnemonic', validationType: ['mnemonic'] }],
         };
         const validation = validate(validationFactory(factory));
@@ -92,7 +107,7 @@ const useElectionStore = create<State & Actions>()(
 
         try {
           await makeRequest({
-            url: `election/eligible/${electionId}`,
+            url: `election/vote/${electionId}`,
             headers: createBearer(useUserStore.getState().access_token),
             method: 'POST',
             data: dto,
@@ -100,8 +115,8 @@ const useElectionStore = create<State & Actions>()(
           useModalStore.getState().setClosed();
           await router.push(`/${Routes.Election}/${electionId}`);
         } catch (error) {
-          // TODO set exception as error for given field
-          console.error(error);
+          console.log(error);
+          showToast({ status: 'error', description: i18n.t(apiError(error)) });
         }
       },
 
