@@ -425,8 +425,7 @@ describe('App e2e', () => {
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
             .withBody(faultyDto)
-            .expectStatus(403)
-            .inspect();
+            .expectStatus(403);
         });
 
         it('should vote', function () {
@@ -444,7 +443,8 @@ describe('App e2e', () => {
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
             .withBody(dto)
-            .expectStatus(403);
+            .expectStatus(403)
+            .inspect();
         });
       });
     });

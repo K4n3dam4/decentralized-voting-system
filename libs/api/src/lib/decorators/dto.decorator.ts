@@ -40,7 +40,7 @@ export function IsMnemonic(validationOptions?: ValidationOptions) {
             return false;
           }
         },
-        defaultMessage: (): string => 'mnemonic.invalid',
+        defaultMessage: (): string => 'error.api.mnemonic.invalid',
       },
     });
   };

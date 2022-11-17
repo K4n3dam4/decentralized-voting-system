@@ -88,15 +88,23 @@ contract Election is Ownable {
      * @param _candidate index of candidate in the candidates array
      */
     function vote(uint _candidate) external checkExpired {
-        Voter storage voter = voters[msg.sender];
-        require(voter.weight != 0, "error.contract.uneligible");
-        require(voter.voted != true, "error.contract.hasVoted");
-        voter.voted = true;
-        voter.candidate = _candidate;
+        if (msg.sender != owner()) {
+            Voter storage voter = voters[msg.sender];
+            require(voter.weight != 0, "error.contract.uneligible");
+            require(voter.voted != true, "error.contract.hasVoted");
+            voter.voted = true;
+            voter.candidate = _candidate;
 
-        candidates[_candidate].voteCount += voter.weight;
+            candidates[_candidate].voteCount += voter.weight;
+        }
     }
 
+    /**
+     * @dev Close election, return funds to owner, return results
+     */
+    function closeElection() external onlyOwner {
+        expires = block.timestamp;
+    }
 
     /**
      * @dev Calculate election results. May only be called by owner once the election has expired

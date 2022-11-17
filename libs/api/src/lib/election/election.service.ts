@@ -12,7 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { ContractFactory } from 'ethers';
+import { ContractFactory, ethers } from 'ethers';
 import { Election__factory } from '@dvs/smart-contracts';
 import { ElectionEntity } from './election.entity';
 import * as argon from 'argon2';
@@ -36,7 +36,7 @@ export class ElectionService {
       include: { registeredVoters: { where: { userId } } },
     });
 
-    if (!election) throw new NotFoundException('error.api.election.notFound');
+    if (!election) throw new NotFoundException({ message: 'error.api.election.notFound' });
 
     return new ElectionEntity({
       ...election,
@@ -46,7 +46,7 @@ export class ElectionService {
 
   async getAllElections() {
     const elections = await this.prisma.election.findMany();
-    if (!elections) throw new NotFoundException('error.api.election.notFound');
+    if (!elections) throw new NotFoundException({ message: 'error.api.election.notFound' });
     return elections.map((election) => new ElectionEntity({ ...election }));
   }
 
@@ -88,10 +88,16 @@ export class ElectionService {
       return { ...election };
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
-        throw new HttpException('db.error', 500);
+        throw new HttpException({ message: 'error.api.server.error' }, 500);
       } else {
-        const { reason } = error.error.error.data;
-        throw new HttpException(reason, 403);
+        if (error?.error?.error?.data?.reason) {
+          throw new HttpException({ message: error.error.error.data.reason }, 403);
+        } else if (error?.error?.reason) {
+          const code = error.error.reason.split(': ')[1];
+          throw new HttpException({ message: code }, 403);
+        } else {
+          throw new HttpException({ message: 'error.contract.unknown' }, 500);
+        }
       }
     }
   }
@@ -101,7 +107,7 @@ export class ElectionService {
       where: { id: Number(eligibleId) },
       data: { ssn: dto.ssn ?? null, wallet: dto.wallet ?? null },
     });
-    if (!eligibleVoter) throw new NotFoundException('error.api.eligibleVoter.notFound');
+    if (!eligibleVoter) throw new NotFoundException({ message: 'error.api.eligibleVoter.notFound' });
 
     return { ...eligibleVoter };
   }
@@ -113,7 +119,7 @@ export class ElectionService {
     // verify ssn
     const matchHash = await argon.verify(user.ssn, ssn);
     // mismatched hash
-    if (!matchHash) throw new ForbiddenException('error.api.election.wrongSSN');
+    if (!matchHash) throw new ForbiddenException({ message: 'error.api.election.wrongSSN' });
 
     // get election with eligible voter relation equal to voter ssn
     const election = await this.prisma.election.findFirst({
@@ -123,7 +129,7 @@ export class ElectionService {
 
     // exception voter is not eligible
     if (election.eligibleVoters.length !== 1) {
-      throw new ForbiddenException('error.api.election.uneligible');
+      throw new ForbiddenException({ message: 'error.api.election.uneligible' });
     }
 
     try {
@@ -132,11 +138,12 @@ export class ElectionService {
       // get signer and contract instance
       const signer = this.signer.createWallet(this.config.get('adminPk'));
       const contract = this.contract.create(election.contract, Election__factory.abi, signer);
-      // estimate current gas
-      const { gasPrice, lastBaseFeePerGas } = await contract.provider.getFeeData();
-      const fee = gasPrice.mul(lastBaseFeePerGas).mul(2);
+      // calc fee
+      const gasPrice = await signer.getGasPrice();
+      const gasLimit = await contract.estimateGas.vote(0);
+      const fee = gasPrice.mul(gasLimit).mul(5);
 
-      // register voter
+      // // register voter
       await contract.functions.registerVoter(voterWallet.address, { value: fee });
       // add voting weight
       await contract.functions.addVotingWeight(voterWallet.address);
@@ -165,11 +172,18 @@ export class ElectionService {
         mnemonic: voterWallet.mnemonic.phrase,
       };
     } catch (error) {
+      console.log(error);
       if (error instanceof PrismaClientKnownRequestError) {
-        throw new HttpException('db.error', 500);
+        throw new HttpException({ message: 'error.api.server.error' }, 500);
       } else {
-        const { reason } = error.error.error.data;
-        throw new HttpException(reason, 403);
+        if (error?.error?.error?.data?.reason) {
+          throw new HttpException({ message: error.error.error.data.reason }, 403);
+        } else if (error?.error?.reason) {
+          const code = error.error.reason.split(': ')[1];
+          throw new HttpException({ message: code }, 403);
+        } else {
+          throw new HttpException({ message: 'error.contract.unknown' }, 500);
+        }
       }
     }
   }
@@ -182,7 +196,7 @@ export class ElectionService {
 
     // exception voter is not registered
     if (!eligibleVoter) {
-      throw new ForbiddenException('error.api.election.uneligible');
+      throw new ForbiddenException({ message: 'error.api.election.uneligible' });
     }
 
     return signer;
@@ -208,12 +222,26 @@ export class ElectionService {
         data: { hasVoted: true },
         where: { id: election.registeredVoters[0].id },
       });
+      // transfer remaining funds to admin
+      const admin = this.signer.createWallet(this.config.get('adminPk'));
+      const balance = await signer.getBalance();
+      const gasLimit = ethers.BigNumber.from(21000);
+      const gasPrice = await signer.getGasPrice();
+      const fee = gasPrice.mul(gasLimit);
+      const value = balance.sub(fee);
+      await signer.sendTransaction({ to: admin.address, value, gasPrice, gasLimit });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
-        throw new HttpException('db.error', 500);
+        throw new HttpException({ message: 'error.api.server.error' }, 500);
       } else {
-        const { reason } = error.error.error.data;
-        throw new HttpException(reason, 403);
+        if (error?.error?.error?.data?.reason) {
+          throw new HttpException({ message: error.error.error.data.reason }, 403);
+        } else if (error?.error?.reason) {
+          const code = error.error.reason.split(': ')[1];
+          throw new HttpException({ message: code }, 403);
+        } else {
+          throw new HttpException({ message: 'error.contract.unknown' }, 500);
+        }
       }
     }
   }
