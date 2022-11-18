@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { GetUser, Roles } from '../decorators';
 import { RoleEnum } from '../types';
 import { RolesGuard } from '../guards';
-import { ElectionCreateDto, ElectionEligibleUpdateDto } from './admin.dto';
+import { ElectionCreateDto, EligibleCreateDto, EligibleDeleteDto, EligibleUpdateDto } from './admin.dto';
 
 @Roles(RoleEnum.Admin)
 @UseGuards(RolesGuard)
@@ -26,8 +26,20 @@ export class AdminElectionController {
     return this.adminService.createElection(dto, id);
   }
 
+  @Post('add/voter')
+  addEligibleVoter(@Body() dto: EligibleCreateDto) {
+    return this.adminService.addEligibleVoter(dto);
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Put('update/voter/:id')
-  updateEligibleVoter(@Body() dto: ElectionEligibleUpdateDto, @Param('id') eligibleId: string) {
+  updateEligibleVoter(@Body() dto: EligibleUpdateDto, @Param('id') eligibleId: string) {
     return this.adminService.updateEligibleVoter(dto, eligibleId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Delete('delete/voter')
+  deleteEligibleVoter(@Body() dto: EligibleDeleteDto) {
+    return this.adminService.deleteEligibleVoter(dto);
   }
 }

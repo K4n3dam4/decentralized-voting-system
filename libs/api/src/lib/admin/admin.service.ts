@@ -1,11 +1,11 @@
-import { ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ContractFactory, EthersSigner, InjectSignerProvider } from 'nestjs-ethers';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@dvs/prisma';
 import { Election__factory } from '@dvs/smart-contracts';
-import { ElectionCreateDto, ElectionEligibleUpdateDto } from './admin.dto';
+import { ElectionCreateDto, EligibleCreateDto, EligibleDeleteDto, EligibleUpdateDto } from './admin.dto';
 
 @Injectable()
 export class AdminService {
@@ -82,13 +82,41 @@ export class AdminService {
     }
   }
 
-  async updateEligibleVoter(dto: ElectionEligibleUpdateDto, eligibleId: string) {
-    const eligibleVoter = await this.prisma.eligibleVoter.update({
-      where: { id: Number(eligibleId) },
-      data: { ssn: dto.ssn ?? null, wallet: dto.wallet ?? null },
-    });
-    if (!eligibleVoter) throw new NotFoundException({ message: 'error.api.eligibleVoter.notFound' });
+  async addEligibleVoter(dto: EligibleCreateDto) {
+    try {
+      return dto.eligibleVoters.map(async (voter) => {
+        return await this.prisma.eligibleVoter.create({
+          data: {
+            ssn: voter.ssn,
+            election: {
+              connect: {
+                id: voter.electionId,
+              },
+            },
+          },
+        });
+      });
+    } catch (error) {
+      throw new HttpException({ message: 'error.api.server.error' }, 500);
+    }
+  }
 
-    return { ...eligibleVoter };
+  async updateEligibleVoter(dto: EligibleUpdateDto, eligibleId: string) {
+    try {
+      await this.prisma.eligibleVoter.update({
+        where: { id: Number(eligibleId) },
+        data: { ssn: dto.ssn ?? null, wallet: dto.wallet ?? null },
+      });
+    } catch (error) {
+      throw new HttpException({ message: 'error.api.server.error' }, 500);
+    }
+  }
+
+  async deleteEligibleVoter(dto: EligibleDeleteDto) {
+    try {
+      await this.prisma.eligibleVoter.deleteMany({ where: { id: { in: dto.ids } } });
+    } catch (error) {
+      throw new HttpException({ message: 'error.api.server.error' }, 500);
+    }
   }
 }

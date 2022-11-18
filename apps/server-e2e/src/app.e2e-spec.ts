@@ -5,10 +5,12 @@ import {
   CoreModule,
   ElectionCreateDto,
   ElectionEligibleDto,
-  ElectionEligibleUpdateDto,
   ElectionModule,
   ElectionRegisterDto,
   ElectionVoteDto,
+  EligibleCreateDto,
+  EligibleDeleteDto,
+  EligibleUpdateDto,
   SigninDto,
   VoterSignupDto,
 } from '@dvs/api';
@@ -47,7 +49,7 @@ describe('App e2e', () => {
       password: 'testpassword',
     };
     const mockVoter2: VoterSignupDto = {
-      ssn: '109876543210',
+      ssn: '654321',
       firstName: 'Jane',
       lastName: 'Doe',
       street: 'Baker Street 2',
@@ -235,7 +237,9 @@ describe('App e2e', () => {
         const createUrl = electionUrl + 'create';
         const getAllUrl = electionUrl + 'all';
         const getSingleUrl = electionUrl + 'single/';
+        const addVoterUrl = electionUrl + 'add/voter';
         const updateVoterUrl = electionUrl + 'update/voter/';
+        const deleteVoterUrl = electionUrl + 'delete/voter';
 
         describe(`Create election [POST ${createUrl}]`, function () {
           const dto: ElectionCreateDto = {
@@ -261,7 +265,7 @@ describe('App e2e', () => {
             return spec().post(createUrl).withHeaders(headersAdmin).withBody(faultyDto).expectStatus(400);
           });
 
-          it('should create election', function () {
+          it('should create election', async function () {
             return spec()
               .post(createUrl)
               .withHeaders(headersAdmin)
@@ -271,16 +275,81 @@ describe('App e2e', () => {
           });
         });
 
+        describe(`Get all [GET ${getAllUrl}]`, function () {
+          it('should be guarded', function () {
+            return spec().get(getAllUrl).withHeaders(headersVoter).expectStatus(403);
+          });
+
+          it('should get all elections', function () {
+            return spec().get(getAllUrl).withHeaders(headersAdmin).expectStatus(200);
+          });
+        });
+
+        describe(`Get single [POST ${getSingleUrl}:id]`, function () {
+          it('should be guarded', function () {
+            return spec()
+              .get(getSingleUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersVoter)
+              .expectStatus(403);
+          });
+
+          it('should get single election', function () {
+            return spec()
+              .get(getSingleUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersAdmin)
+              .expectStatus(200);
+          });
+        });
+
+        describe(`Add eligible voters [POST ${addVoterUrl}]`, function () {
+          let dto: EligibleCreateDto;
+          beforeAll(async () => {
+            prisma = app.get(PrismaService);
+            const res = await prisma.getEligibleVoter();
+            const { electionId } = res[0];
+            dto = {
+              eligibleVoters: [
+                { electionId, ssn: '34435984943' },
+                { electionId, ssn: '34293200293' },
+              ],
+            };
+          });
+
+          it('should be guarded', function () {
+            return spec().post(addVoterUrl).withHeaders(headersVoter).withBody(dto).expectStatus(403);
+          });
+
+          it('should validate request', function () {
+            const faultyDto: EligibleCreateDto = {
+              eligibleVoters: [{ ...dto.eligibleVoters[0] }],
+            };
+            faultyDto.eligibleVoters[0].ssn = '';
+            return spec().post(addVoterUrl).withHeaders(headersAdmin).withBody(faultyDto).expectStatus(400);
+          });
+
+          it('should add eligible voters', function () {
+            return spec()
+              .post(addVoterUrl)
+              .withHeaders(headersAdmin)
+              .withPathParams('id', '$S{ElectionId}')
+              .withBody(dto)
+              .expectStatus(201);
+          });
+        });
+
         describe(`Update eligible voter [PUT ${updateVoterUrl}:id]`, function () {
           let eligibleId: number;
 
-          beforeEach(async () => {
+          beforeAll(async () => {
             prisma = app.get(PrismaService);
-            const { id } = await prisma.getEligibleVoter();
+            const res = await prisma.getEligibleVoter();
+            const { id } = res.find(({ ssn }) => ssn === mockVoter2.ssn);
             eligibleId = id;
           });
 
-          const dto: ElectionEligibleUpdateDto = {
+          const dto: EligibleUpdateDto = {
             ssn: undefined,
             wallet: process.env.VOTER_ADDRESS,
           };
@@ -313,31 +382,28 @@ describe('App e2e', () => {
           });
         });
 
-        describe(`Get all [GET ${getAllUrl}]`, function () {
+        describe(`Delete eligible voters [DELETE ${deleteVoterUrl}]`, function () {
+          let dto: EligibleDeleteDto;
+          beforeAll(async () => {
+            prisma = app.get(PrismaService);
+            const res = await prisma.getEligibleVoter();
+            const { id } = res.find(({ ssn }) => ssn !== mockVoter.ssn && ssn !== mockVoter2.ssn);
+            dto = {
+              ids: [id],
+            };
+          });
+
           it('should be guarded', function () {
-            return spec().get(getAllUrl).withHeaders(headersVoter).expectStatus(403);
+            return spec().delete(deleteVoterUrl).withHeaders(headersVoter).expectStatus(403);
           });
 
-          it('should get all elections', function () {
-            return spec().get(getAllUrl).withHeaders(headersAdmin).expectStatus(200);
-          });
-        });
-
-        describe(`Get single [POST ${getSingleUrl}:id]`, function () {
-          it('should be guarded', function () {
-            return spec()
-              .get(getSingleUrl + '{id}')
-              .withPathParams('id', '$S{ElectionId}')
-              .withHeaders(headersVoter)
-              .expectStatus(403);
+          it('should validate request', function () {
+            const faultyDto = { ids: [''] };
+            return spec().delete(deleteVoterUrl).withHeaders(headersAdmin).withBody(faultyDto).expectStatus(400);
           });
 
-          it('should get single election', function () {
-            return spec()
-              .get(getSingleUrl + '{id}')
-              .withPathParams('id', '$S{ElectionId}')
-              .withHeaders(headersAdmin)
-              .expectStatus(200);
+          it('should update eligible voter', function () {
+            return spec().delete(deleteVoterUrl).withHeaders(headersAdmin).withBody(dto).expectStatus(200);
           });
         });
       });

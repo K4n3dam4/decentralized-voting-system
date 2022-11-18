@@ -43,7 +43,25 @@ export class ElectionCreateDto {
   expires: number;
 }
 
-export class ElectionEligibleUpdateDto {
+class EligibleVoter {
+  @IsNotEmpty()
+  @IsNumber()
+  electionId: number;
+
+  @IsNotEmpty()
+  @IsString()
+  ssn: string;
+}
+
+export class EligibleCreateDto {
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => EligibleVoter)
+  eligibleVoters: EligibleVoter[];
+}
+
+export class EligibleUpdateDto {
   @IsString()
   @IsOptional()
   ssn?: string;
@@ -51,4 +69,9 @@ export class ElectionEligibleUpdateDto {
   @IsString()
   @IsOptional()
   wallet?: string;
+}
+
+export class EligibleDeleteDto {
+  @IsNumber({}, { each: true })
+  ids: number[];
 }
