@@ -41,6 +41,11 @@ export const createBearer = (token: CookieValueTypes) => ({
   Authorization: `Bearer ${token}`,
 });
 
-export const apiError = (error: AxiosError<APIError>) => error?.response?.data || null;
+export const apiError = (error: AxiosError<APIError>) => {
+  const { message } = error.response.data;
+  if (typeof message === 'string') return message;
+  if (!message) return 'error.api.unknown';
+  else return message[0];
+};
 
 export default makeRequest;

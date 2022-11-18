@@ -46,11 +46,11 @@ contract Election is Ownable {
      * @dev Check whether election is open or expired.
      */
     modifier checkExpired {
-        require(block.timestamp <= expires, "election.expired");
+        require(block.timestamp <= expires, "error.contract.expired");
         _;
     }
     modifier checkUnexpired {
-        require(block.timestamp >= expires, "election.notexpired");
+        require(block.timestamp >= expires, "error.contract.unexpired");
         _;
     }
 
@@ -59,7 +59,7 @@ contract Election is Ownable {
      * @param _voter address of voter
      */
     function registerVoter(address _voter) payable external onlyOwner checkExpired {
-        require(voters[_voter].id == address(0x000), "voter.isAlreadyRegistered");
+        require(voters[_voter].id == address(0x000), "error.contract.isAlreadyRegistered");
 
         // create voter
         voters[_voter] = Voter({
@@ -88,15 +88,27 @@ contract Election is Ownable {
      * @param _candidate index of candidate in the candidates array
      */
     function vote(uint _candidate) external checkExpired {
-        Voter storage voter = voters[msg.sender];
-        require(voter.weight != 0, "voter.notEligible");
-        require(voter.voted != true, "voter.hasVoted");
-        voter.voted = true;
-        voter.candidate = _candidate;
+        if (msg.sender != owner()) {
+            Voter storage voter = voters[msg.sender];
+            require(voter.weight != 0, "error.contract.uneligible");
+            require(voter.voted != true, "error.contract.hasVoted");
+            voter.voted = true;
+            voter.candidate = _candidate;
 
-        candidates[_candidate].voteCount += voter.weight;
+            candidates[_candidate].voteCount += voter.weight;
+        }
     }
 
+    /**
+     * @dev Close election, return funds to owner, return results
+     */
+    function closeElection() external onlyOwner {
+        expires = block.timestamp;
+    }
+
+    /**
+     * @dev Calculate election results. May only be called by owner once the election has expired
+     */
     function calcResult() external onlyOwner checkUnexpired {
         for(uint i = 0; i < candidates.length; i++) {
             result.push(Result({
@@ -106,10 +118,16 @@ contract Election is Ownable {
         }
     }
 
+    /**
+     * @dev Get election results
+     */
     function getResults() public view returns(Result[] memory result_) {
         result_ = result;
     }
 
+    /**
+     * @dev Get registered voters. May only be called by owner
+     */
     function getVoters(address _voter) external view onlyOwner returns(Voter memory voter_) {
         voter_ = voters[_voter];
     }

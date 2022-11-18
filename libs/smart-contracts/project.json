@@ -38,6 +38,13 @@
         "command": "npx hardhat dpl-election-main --name {args.name} --candidates {args.candidates} --expiration {args.expiration} --network mainnet",
         "cwd": "libs/smart-contracts"
       }
+    },
+    "get-signer-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx hardhat get-signer-test --mnemonic {args.mnemonic} --network testnet",
+        "cwd": "libs/smart-contracts"
+      }
     }
   },
   "tags": ["scope:shared"]

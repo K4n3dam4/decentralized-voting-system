@@ -1,5 +1,5 @@
 import { Body, Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, EligibleVoter } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { AdminDto } from './prisma.dto';
 
@@ -24,5 +24,10 @@ export class PrismaService extends PrismaClient {
       data: { ...dto, role: 'ADMIN' as any },
     };
     await this.user.create(admin);
+  }
+
+  async getEligibleVoter(): Promise<EligibleVoter> {
+    const voters = await this.eligibleVoter.findMany();
+    return voters[1];
   }
 }

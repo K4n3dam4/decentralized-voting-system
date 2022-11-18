@@ -3,6 +3,7 @@ import path from 'path';
 import { HardhatUserConfig, task } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import { deployAndUpdate } from './src/lib/scripts/deploy';
+import { getSignerFromMnemonic } from './src/lib/scripts/helpers';
 
 task('dpl-election-test', 'deploys Election.sol to testnet')
   .addParam('name', 'election name')
@@ -34,6 +35,13 @@ task('dpl-election-main', 'deploys Election.sol to mainnet')
     const args = Object.values(taskArgs);
 
     await deployAndUpdate(file, env, 'Election', hre, args);
+  });
+
+task('get-signer', 'gets signer from mnemonic')
+  .addParam('mnemonic', 'mnemonic passphrase (comma-seperated)')
+  .setAction(async (taskArgs, hre) => {
+    const mnemonic = taskArgs.mnemonic.split(',').join(' ');
+    getSignerFromMnemonic(mnemonic, hre);
   });
 
 const config: HardhatUserConfig = {

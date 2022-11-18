@@ -30,7 +30,7 @@ export class AuthService {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new ForbiddenException('error.api.auth.alreadyRegistered');
+          throw new ForbiddenException({ message: 'error.api.auth.alreadyRegistered' });
         }
       }
       throw error;
@@ -40,11 +40,11 @@ export class AuthService {
     // find user
     const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
     // voter does not exist
-    if (!user) throw new ForbiddenException('error.api.auth.wrongEmail');
+    if (!user) throw new ForbiddenException({ message: 'error.api.auth.wrongEmail' });
     // compare password
     const matchHash = await argon.verify(user.hash, dto.password);
     // mismatched hash
-    if (!matchHash) throw new ForbiddenException('error.api.auth.wrongPassword');
+    if (!matchHash) throw new ForbiddenException({ message: 'error.api.auth.wrongPassword' });
 
     // return voter
     return this.signJwtToken({ id: user.id, email: user.email, role: user.role });

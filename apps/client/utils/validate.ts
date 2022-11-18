@@ -58,7 +58,6 @@ const validate = (params: ValidateParam[]) => {
 
     if (validationType.includes('mnemonic')) {
       value.split(' ').forEach((word) => {
-        console.log(i18n.t('error.validate.notEmpty'));
         if (word.length === 0) setError(field, i18n.t('error.validate.mnemonic'));
       });
     }

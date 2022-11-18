@@ -3,7 +3,8 @@ import { NextPageContext } from 'next';
 import { getServerSideProps as dvsGetServerSideProps } from '../_app';
 import makeRequest, { createBearer } from '../../utils/makeRequest';
 import { ssrTranslations } from '../../utils/i18next';
-import { Box } from '@chakra-ui/react';
+import { Container } from '@chakra-ui/react';
+import Election from '../../components/organisms/Election';
 
 export const getServerSideProps = async (ctx: NextPageContext) => {
   const dvsProps = dvsGetServerSideProps(ctx).props;
@@ -21,7 +22,7 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
         ...dvsProps,
         // locales
         ...(await ssrTranslations(ctx.locale, ['common'])),
-        elections: election.data,
+        election: election.data,
       },
     };
   } catch (e) {
@@ -36,11 +37,15 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
 };
 
 interface ElectionPageProps {
-  elections: any;
+  election: Election;
 }
 
-const ElectionPage = ({ elections }: ElectionPageProps) => {
-  return <Box height="calc(100vh - 64px)" width="100vw" position="relative"></Box>;
+const ElectionPage = ({ election }: ElectionPageProps) => {
+  return (
+    <Container maxW="7xl" alignItems="center" minH="100%" overflow="hidden" py={12}>
+      <Election election={election} />
+    </Container>
+  );
 };
 
 export default ElectionPage;

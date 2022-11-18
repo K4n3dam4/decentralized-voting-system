@@ -35,11 +35,11 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   }
 };
 
-interface ElectionPageProps {
+interface ElectionsPageProps {
   elections: any;
 }
 
-const ElectionsPage = ({ elections }: ElectionPageProps) => {
+const ElectionsPage = ({ elections }: ElectionsPageProps) => {
   return (
     <Box height="calc(100vh - 64px)" width="100vw" position="relative">
       <DVSHeroIcon

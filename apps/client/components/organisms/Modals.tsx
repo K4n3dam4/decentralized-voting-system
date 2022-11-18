@@ -8,19 +8,22 @@ import { SimpleGrid } from '@chakra-ui/react';
 import useElectionStore from '../../store/ElectionStore';
 import { useRouter } from 'next/router';
 import DVSAlert from '../molecules/DVSAlert';
+import { DVSToast } from '../atoms/DVSToast';
 
 const Modals = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const [isOpen, modal, setOpen, setClosed] = useModalStore((s) => [s.isOpen, s.modal, s.setOpen, s.setClosed]);
-  const [mnemonic, errors, setSSN, registerVoter, setMnemonic, submitMnemonic, resetElectionStore, setElectionError] =
+  const { showToast } = DVSToast();
+
+  const [isOpen, modal, setClosed] = useModalStore((s) => [s.isOpen, s.modal, s.setClosed]);
+  const [mnemonic, errors, setSSN, registerVoter, setMnemonic, vote, resetElectionStore, setElectionError] =
     useElectionStore((s) => [
       s.mnemonic,
       s.errors,
       s.setSSN,
       s.registerVoter,
       s.setMnemonic,
-      s.submitMnemonic,
+      s.vote,
       s.reset,
       s.setError,
     ]);
@@ -34,6 +37,8 @@ const Modals = () => {
     let inputs: DVSFormInputProps[];
     let footer: React.ReactNode;
     let children: React.ReactNode;
+    let headerArgs: Record<string, any>;
+    let textArgs: Record<string, any>;
 
     switch (modal?.type) {
       case 'registerVoter':
@@ -49,70 +54,64 @@ const Modals = () => {
             },
           ];
           footer = (
-            <>
-              <DVSButton dvsType="secondary" onClick={() => setOpen({ type: 'enterMnemonic', payload: modal.payload })}>
-                {t('modals.registerVoter.option')}
-              </DVSButton>
-              <DVSButton dvsType="primary" onClick={() => registerVoter(modal.payload.id, router)}>
-                {t('modals.registerVoter.submit')}
-              </DVSButton>
-            </>
+            <DVSButton dvsType="primary" onClick={() => registerVoter(modal.payload.id, router, showToast)}>
+              {t('modals.registerVoter.submit')}
+            </DVSButton>
           );
         }
         break;
-      case 'enterMnemonic':
+      case 'mnemonic':
         {
           children = (
-            <>
-              <SimpleGrid columns={4} spacing={4}>
-                {mnemonic.map((word, index) => (
-                  <DVSFormInput
-                    key={`mnemonic-word-${index}`}
-                    placeholder={`${index + 1}`}
-                    value={mnemonic[index]}
-                    onChange={(e) => setMnemonic(index, e.target.value)}
-                    onFocus={() => setElectionError('mnemonic')}
-                    variant="modal"
-                  />
-                ))}
-              </SimpleGrid>
-              {errors['mnemonic'] && (
-                <DVSAlert mt={5} status="error">
-                  {errors['mnemonic']}
-                </DVSAlert>
-              )}
-            </>
-          );
-          footer = (
-            <>
-              <DVSButton
-                dvsType="secondary"
-                colorScheme="gray"
-                onClick={() => setOpen({ type: 'registerVoter', payload: modal.payload })}
-              >
-                {t('controls.back')}
-              </DVSButton>
-              <DVSButton dvsType="primary" onClick={() => submitMnemonic(modal.payload.id, router)}>
-                {t('modals.enterMnemonic.submit')}
-              </DVSButton>
-            </>
+            <SimpleGrid columns={4} spacing={4}>
+              {modal.payload.map((word, index) => (
+                <DVSFormInput key={`mnemonic-word-${index}`} isDisabled value={word} variant="modal" />
+              ))}
+            </SimpleGrid>
           );
         }
         break;
-      case 'mnemonic': {
+      case 'vote': {
+        headerArgs = { name: modal.payload.candidate.name };
+        textArgs = { name: modal.payload.candidate.name };
         children = (
-          <SimpleGrid columns={4} spacing={4}>
-            {modal.payload.map((word, index) => (
-              <DVSFormInput key={`mnemonic-word-${index}`} isDisabled value={word} variant="modal" />
-            ))}
-          </SimpleGrid>
+          <>
+            <SimpleGrid columns={4} spacing={4}>
+              {mnemonic.map((word, index) => (
+                <DVSFormInput
+                  key={`mnemonic-word-${index}`}
+                  placeholder={`${index + 1}`}
+                  value={mnemonic[index]}
+                  onChange={(e) => setMnemonic(index, e.target.value)}
+                  onFocus={() => setElectionError('mnemonic')}
+                  variant="modal"
+                />
+              ))}
+            </SimpleGrid>
+            {errors['mnemonic'] && (
+              <DVSAlert mt={5} status="error">
+                {errors['mnemonic']}
+              </DVSAlert>
+            )}
+            <DVSAlert mt={5} status="info">
+              {t('modals.vote.warning')}
+            </DVSAlert>
+          </>
+        );
+        footer = (
+          <DVSButton
+            dvsType="primary"
+            onClick={() => vote(modal.payload.electionId, modal.payload.index, router, showToast)}
+          >
+            {t('modals.vote.submit')}
+          </DVSButton>
         );
       }
     }
 
     return {
-      header: t(`modals.${modal?.type}.header`),
-      text: t(`modals.${modal?.type}.text`),
+      header: t(`modals.${modal?.type}.header`, { ...(headerArgs && headerArgs) }),
+      text: t(`modals.${modal?.type}.text`, { ...(textArgs && textArgs) }),
       inputs,
       children,
       footer,

@@ -100,7 +100,7 @@ const useAuthStore = create<State & Actions>()(
             set(initialState);
           }
         } catch (error) {
-          showToast({ status: 'error', description: i18n.t(apiError(error).message) });
+          showToast({ status: 'error', description: i18n.t(apiError(error)) });
         }
       },
       login: async (router: NextRouter, showToast: (options: DVSToastOptions) => void) => {
@@ -133,7 +133,7 @@ const useAuthStore = create<State & Actions>()(
             set(initialState);
           }
         } catch (error) {
-          showToast({ status: 'error', description: i18n.t(apiError(error).message) });
+          showToast({ status: 'error', description: i18n.t(apiError(error)) });
         }
       },
 

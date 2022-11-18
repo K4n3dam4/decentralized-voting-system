@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsMnemonic, IsObjectArray } from '../decorators';
 
@@ -7,9 +7,11 @@ export class Candidates {
   name: string;
 
   @IsString()
+  @IsOptional()
   image?: string;
 
   @IsString()
+  @IsOptional()
   party?: string;
 }
 
@@ -39,6 +41,16 @@ export class ElectionCreateDto {
   @IsNotEmpty()
   @IsNumber()
   expires: number;
+}
+
+export class ElectionEligibleUpdateDto {
+  @IsString()
+  @IsOptional()
+  ssn?: string;
+
+  @IsString()
+  @IsOptional()
+  wallet?: string;
 }
 
 export class ElectionRegisterDto {

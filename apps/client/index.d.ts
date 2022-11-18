@@ -20,4 +20,4 @@ type buttonType = 'primary' | 'secondary';
 type Modal =
   | { type: 'registerVoter'; payload: Election }
   | { type: 'mnemonic'; payload: string[] }
-  | { type: 'enterMnemonic'; payload: Election };
+  | { type: 'vote'; payload: { index: number; electionId: number; candidate: Candidate } };
