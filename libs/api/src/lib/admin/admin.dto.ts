@@ -43,6 +43,20 @@ export class ElectionCreateDto {
   expires: number;
 }
 
+export class ElectionUpdateDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsString()
+  @IsOptional()
+  image?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+}
+
 class EligibleVoter {
   @IsNotEmpty()
   @IsNumber()

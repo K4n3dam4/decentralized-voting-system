@@ -100,16 +100,10 @@ contract Election is Ownable {
     }
 
     /**
-     * @dev Close election, return funds to owner, return results
+     * @dev Close election, calculate results
      */
     function closeElection() external onlyOwner {
         expires = block.timestamp;
-    }
-
-    /**
-     * @dev Calculate election results. May only be called by owner once the election has expired
-     */
-    function calcResult() external onlyOwner checkUnexpired {
         for(uint i = 0; i < candidates.length; i++) {
             result.push(Result({
             name: candidates[i].name,

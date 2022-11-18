@@ -7,6 +7,7 @@ import {
   ElectionEligibleDto,
   ElectionModule,
   ElectionRegisterDto,
+  ElectionUpdateDto,
   ElectionVoteDto,
   EligibleCreateDto,
   EligibleDeleteDto,
@@ -235,6 +236,7 @@ describe('App e2e', () => {
         const electionUrl = baseUrl + 'election/';
 
         const createUrl = electionUrl + 'create';
+        const updateUrl = electionUrl + 'update/';
         const getAllUrl = electionUrl + 'all';
         const getSingleUrl = electionUrl + 'single/';
         const addVoterUrl = electionUrl + 'add/voter';
@@ -272,6 +274,39 @@ describe('App e2e', () => {
               .withBody(dto)
               .expectStatus(201)
               .stores('ElectionId', 'id');
+          });
+        });
+
+        describe(`Update election [PUT ${updateUrl}:id]`, function () {
+          const dto: ElectionUpdateDto = {
+            image: 'https://www.google.com',
+          };
+
+          it('should be guarded', function () {
+            return spec()
+              .put(updateUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersVoter)
+              .expectStatus(403);
+          });
+
+          it('should validate request', function () {
+            const faultyDto = { image: 234 };
+            return spec()
+              .put(updateUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersAdmin)
+              .withBody(faultyDto)
+              .expectStatus(400);
+          });
+
+          it('should update election', function () {
+            return spec()
+              .put(updateUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersAdmin)
+              .withBody(dto)
+              .expectStatus(200);
           });
         });
 
@@ -559,6 +594,38 @@ describe('App e2e', () => {
             .withHeaders(headersVoter)
             .withBody(dto)
             .expectStatus(403);
+        });
+      });
+    });
+
+    // Test admin module
+    describe('Admin 2', function () {
+      const headersAdmin = { Authorization: 'Bearer $S{access_tokenA}' };
+      const headersVoter = { Authorization: 'Bearer $S{access_tokenV}' };
+      const baseUrl = 'admin/';
+
+      describe('Election', function () {
+        const electionUrl = baseUrl + 'election/';
+
+        const closeUrl = electionUrl + 'close/';
+
+        describe(`Close election [POST ${closeUrl}:id]`, function () {
+          it('should be guarded', function () {
+            return spec()
+              .put(closeUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersVoter)
+              .expectStatus(403);
+          });
+
+          it('should close election', function () {
+            return spec()
+              .put(closeUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersAdmin)
+              .expectStatus(200)
+              .inspect();
+          });
         });
       });
     });

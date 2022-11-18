@@ -3,7 +3,13 @@ import { AdminService } from './admin.service';
 import { GetUser, Roles } from '../decorators';
 import { RoleEnum } from '../types';
 import { RolesGuard } from '../guards';
-import { ElectionCreateDto, EligibleCreateDto, EligibleDeleteDto, EligibleUpdateDto } from './admin.dto';
+import {
+  ElectionCreateDto,
+  ElectionUpdateDto,
+  EligibleCreateDto,
+  EligibleDeleteDto,
+  EligibleUpdateDto,
+} from './admin.dto';
 
 @Roles(RoleEnum.Admin)
 @UseGuards(RolesGuard)
@@ -24,6 +30,16 @@ export class AdminElectionController {
   @Post('create')
   createElection(@Body() dto: ElectionCreateDto, @GetUser('id') id: number) {
     return this.adminService.createElection(dto, id);
+  }
+
+  @Put('update/:id')
+  updateElection(@Body() dto: ElectionUpdateDto, @Param('id') electionId: string) {
+    return this.adminService.updateElection(dto, electionId);
+  }
+
+  @Put('close/:id')
+  closeElection(@Param('id') electionId: string) {
+    return this.adminService.closeElection(electionId);
   }
 
   @Post('add/voter')
