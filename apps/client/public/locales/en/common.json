@@ -37,6 +37,30 @@
     "closesIn": "Closes in {{days}} days {{hours}} hours {{minutes}} minutes",
     "closed": "Closed"
   },
+  "dates": {
+    "day": "Day",
+    "hour": "Hour",
+    "Minute": "Minute",
+    "Second": "Seconds",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    }
+  },
   "modals": {
     "registerVoter": {
       "header": "Voter registration",

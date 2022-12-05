@@ -12,8 +12,9 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
 
   try {
     const elections = await makeRequest({ url: 'admin/election/all', headers: createBearer(dvsProps.token) }, {}, true);
+    const users = await makeRequest({ url: 'admin/user/all', headers: createBearer(dvsProps.token) }, {}, true);
 
-    console.log(elections.data);
+    console.log(users.data);
 
     return {
       props: {
@@ -21,9 +22,11 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
         // locales
         ...(await ssrTranslations(ctx.locale, ['common'])),
         elections: elections.data,
+        users: users.data,
       },
     };
   } catch (e) {
+    console.log(e);
     return {
       redirect: {
         permanent: false,
@@ -35,13 +38,16 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
 
 interface AdminPageProps {
   elections: any;
+  users: any;
 }
 
-const AdminPage: React.FC<AdminPageProps> = ({ elections }) => {
+const AdminPage: React.FC<AdminPageProps> = ({ elections, users }) => {
   return (
     <Box height="calc(100vh - 64px)" width="100vw" display="flex" overflow="hidden">
       <Sidebar />
-      <AdminOverview elections={elections} />
+      <Box h="full" w="full" p={10} overflowY="auto">
+        <AdminOverview elections={elections} users={users} />
+      </Box>
     </Box>
   );
 };
