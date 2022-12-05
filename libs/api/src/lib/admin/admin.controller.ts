@@ -13,48 +13,48 @@ import {
 
 @Roles(RoleEnum.Admin)
 @UseGuards(RolesGuard)
-@Controller('admin/election')
+@Controller('admin')
 export class AdminElectionController {
   constructor(private adminService: AdminService) {}
 
-  @Get('single/:id')
+  @Get('election/single/:id')
   getElection(@Param('id') electionId: string) {
     return this.adminService.getElection(electionId);
   }
 
-  @Get('all')
+  @Get('election/all')
   getElections() {
     return this.adminService.getElections();
   }
 
-  @Post('create')
+  @Post('election/create')
   createElection(@Body() dto: ElectionCreateDto, @GetUser('id') id: number) {
     return this.adminService.createElection(dto, id);
   }
 
-  @Put('update/:id')
+  @Put('election/update/:id')
   updateElection(@Body() dto: ElectionUpdateDto, @Param('id') electionId: string) {
     return this.adminService.updateElection(dto, electionId);
   }
 
-  @Put('close/:id')
+  @Put('election/close/:id')
   closeElection(@Param('id') electionId: string) {
     return this.adminService.closeElection(electionId);
   }
 
-  @Post('add/voter')
+  @Post('election/add/voter')
   addEligibleVoter(@Body() dto: EligibleCreateDto) {
     return this.adminService.addEligibleVoter(dto);
   }
 
   @HttpCode(HttpStatus.OK)
-  @Put('update/voter/:id')
+  @Put('election/update/voter/:id')
   updateEligibleVoter(@Body() dto: EligibleUpdateDto, @Param('id') eligibleId: string) {
     return this.adminService.updateEligibleVoter(dto, eligibleId);
   }
 
   @HttpCode(HttpStatus.OK)
-  @Delete('delete/voter')
+  @Delete('election/delete/voter')
   deleteEligibleVoter(@Body() dto: EligibleDeleteDto) {
     return this.adminService.deleteEligibleVoter(dto);
   }

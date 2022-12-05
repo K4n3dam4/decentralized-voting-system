@@ -41,7 +41,7 @@ export class AdminService {
   }
 
   async getElections() {
-    await this.prisma.election.findMany({
+    return await this.prisma.election.findMany({
       include: { registeredVoters: true, eligibleVoters: true },
     });
   }

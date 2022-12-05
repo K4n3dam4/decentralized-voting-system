@@ -161,6 +161,7 @@ export class ElectionService {
       const gasPrice = await signer.getGasPrice();
       const fee = gasPrice.mul(gasLimit);
       const value = balance.sub(fee);
+
       await signer.sendTransaction({ to: admin.address, value, gasPrice, gasLimit });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
