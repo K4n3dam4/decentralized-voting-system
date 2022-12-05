@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { GetUser, Roles } from '../decorators';
 import { RoleEnum } from '../types';
@@ -10,6 +23,7 @@ import {
   EligibleDeleteDto,
   EligibleUpdateDto,
 } from './admin.dto';
+import { UserEntity } from './admin.entity';
 
 @Roles(RoleEnum.Admin)
 @UseGuards(RolesGuard)
@@ -57,5 +71,11 @@ export class AdminElectionController {
   @Delete('election/delete/voter')
   deleteEligibleVoter(@Body() dto: EligibleDeleteDto) {
     return this.adminService.deleteEligibleVoter(dto);
+  }
+
+  @Get('user/all')
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getUsers(): Promise<UserEntity[]> {
+    return this.adminService.getUsers();
   }
 }

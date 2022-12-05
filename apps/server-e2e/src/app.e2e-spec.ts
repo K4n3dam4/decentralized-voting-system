@@ -441,6 +441,22 @@ describe('App e2e', () => {
             return spec().delete(deleteVoterUrl).withHeaders(headersAdmin).withBody(dto).expectStatus(200);
           });
         });
+
+        describe('Users', function () {
+          const userUrl = baseUrl + 'users/';
+
+          const getAllUrl = userUrl + 'all';
+
+          describe(`Get all [GET ${getAllUrl}]`, function () {
+            it('should be guarded', function () {
+              return spec().get(getAllUrl).withHeaders(headersVoter).expectStatus(403);
+            });
+
+            it('should get all users', function () {
+              return spec().get(getAllUrl).withHeaders(headersAdmin).expectStatus(200);
+            });
+          });
+        });
       });
     });
 

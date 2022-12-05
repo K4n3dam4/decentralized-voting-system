@@ -18,6 +18,8 @@ import {
   EligibleDeleteDto,
   EligibleUpdateDto,
 } from './admin.dto';
+import { RoleEnum } from '../types/role.enum';
+import { UserEntity } from './admin.entity';
 
 @Injectable()
 export class AdminService {
@@ -180,5 +182,11 @@ export class AdminService {
     } catch (error) {
       throw new HttpException({ message: 'error.api.server.error' }, 500);
     }
+  }
+
+  async getUsers() {
+    const users = await this.prisma.user.findMany({ where: { role: RoleEnum.Voter } });
+    if (!users) throw new NotFoundException('error.api.users.notFound');
+    return users.map((user) => new UserEntity({ ...user }));
   }
 }
