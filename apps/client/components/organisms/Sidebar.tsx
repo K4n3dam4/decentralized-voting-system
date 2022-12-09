@@ -54,12 +54,51 @@ const Sidebar = () => {
             index: 3,
           },
         ];
+        break;
+      case '/admin/election/create':
+        menuLinks = [
+          {
+            href: 'admin/',
+            children: 'Overview',
+            icon: <Icon as={IoIosAnalytics} />,
+          },
+          {
+            href: 'admin/election/overview',
+            children: 'List',
+            icon: <Icon as={GiPapers} />,
+          },
+          {
+            href: 'admin/election/create',
+            children: 'Create',
+            icon: <Icon as={IoMdCreate} />,
+          },
+          {
+            href: 'admin/users/overview',
+            children: 'List',
+            icon: <Icon as={FaUsers} />,
+          },
+          {
+            href: 'admin/users/create',
+            children: 'Create',
+            icon: <Icon as={IoMdCreate} />,
+          },
+        ];
+        dividers = [
+          {
+            name: 'Elections',
+            index: 1,
+          },
+          {
+            name: 'Users',
+            index: 3,
+          },
+        ];
     }
 
     return { menuLinks, dividers };
   };
 
-  return <DVSSidebar {...sidebarProps()} />;
+  return sidebarProps().menuLinks && <DVSSidebar {...sidebarProps()} />;
 };
 
 export default Sidebar;

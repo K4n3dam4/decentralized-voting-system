@@ -110,6 +110,9 @@ const AdminOverview: React.FC<AdminOverviewProps> = ({ elections, users }) => {
       <Box display="flex" justifyContent="center" w="100%" h="500px">
         <Line options={analyticsOptions} data={analyticsData} />
       </Box>
+      <Box display="flex" justifyContent="center" w="100%" h="500px">
+        <Line options={analyticsOptions} data={analyticsData} />
+      </Box>
     </Stack>
   );
 };

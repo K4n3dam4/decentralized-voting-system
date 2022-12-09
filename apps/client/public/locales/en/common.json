@@ -37,6 +37,25 @@
     "closesIn": "Closes in {{days}} days {{hours}} hours {{minutes}} minutes",
     "closed": "Closed"
   },
+  "admin": {
+    "common": {
+      "candidate": "Candidate name",
+      "party": "Candidate party",
+      "image": "Candidate image"
+    },
+    "create": {
+      "election": {
+        "heading": "Create election",
+        "descr": "Create a new election using this panel. Please double-check your input before submitting it. Some of the entered election data can not be changed once the election has been deployed as a smart contract.",
+        "name": "Name",
+        "image": "Election image",
+        "description": "Description",
+        "candidates": "Candidates",
+        "eligibleVoters": "Eligible voters",
+        "expires": "Expires on"
+      }
+    }
+  },
   "dates": {
     "day": "Day",
     "hour": "Hour",

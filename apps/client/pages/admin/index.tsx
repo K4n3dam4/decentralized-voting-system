@@ -3,7 +3,6 @@ import { NextPageContext } from 'next';
 import { getServerSideProps as dvsGetServerSideProps } from '../../config/DVS';
 import { ssrTranslations } from '../../utils/i18next';
 import { Box } from '@chakra-ui/react';
-import Sidebar from '../../components/organisms/Sidebar';
 import AdminOverview from '../../components/organisms/AdminOverview';
 import makeRequest, { createBearer } from '../../utils/makeRequest';
 
@@ -43,11 +42,8 @@ interface AdminPageProps {
 
 const AdminPage: React.FC<AdminPageProps> = ({ elections, users }) => {
   return (
-    <Box height="calc(100vh - 64px)" width="100vw" display="flex" overflow="hidden">
-      <Sidebar />
-      <Box h="full" w="full" p={10} overflowY="auto">
-        <AdminOverview elections={elections} users={users} />
-      </Box>
+    <Box h="calc(100vh - 64px)" w="full" p={10} overflowY="auto">
+      <AdminOverview elections={elections} users={users} />
     </Box>
   );
 };

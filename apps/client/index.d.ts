@@ -21,3 +21,5 @@ type Modal =
   | { type: 'registerVoter'; payload: Election }
   | { type: 'mnemonic'; payload: string[] }
   | { type: 'vote'; payload: { index: number; electionId: number; candidate: Candidate } };
+
+type Modify<T, R> = Omit<T, keyof R> & R;

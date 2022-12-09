@@ -1,15 +1,17 @@
 import React from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import Modals from '../components/organisms/Modals';
+import Sidebar from '../components/organisms/Sidebar';
 
 const Layout = ({ children }) => {
   return (
-    <>
-      <Box pt="64px">
+    <Box pt="64px">
+      <Flex width="100vw" overflowY="hidden">
+        <Sidebar />
         {children}
-        <Modals />
-      </Box>
-    </>
+      </Flex>
+      <Modals />
+    </Box>
   );
 };
 

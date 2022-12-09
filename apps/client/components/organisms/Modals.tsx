@@ -47,10 +47,10 @@ const Modals = () => {
             {
               name: 'ssn',
               placeholder: t('auth.ssn'),
-              variant: 'modal',
               onChange: (e) => setSSN(e.target.value),
               onFocus: (e) => setElectionError(e.target.name),
               error: errors['ssn'],
+              variant: 'lighter',
             },
           ];
           footer = (
@@ -65,7 +65,7 @@ const Modals = () => {
           children = (
             <SimpleGrid columns={4} spacing={4}>
               {modal.payload.map((word, index) => (
-                <DVSFormInput key={`mnemonic-word-${index}`} isDisabled value={word} variant="modal" />
+                <DVSFormInput key={`mnemonic-word-${index}`} isDisabled value={word} variant="lighter" />
               ))}
             </SimpleGrid>
           );
@@ -84,7 +84,7 @@ const Modals = () => {
                   value={mnemonic[index]}
                   onChange={(e) => setMnemonic(index, e.target.value)}
                   onFocus={() => setElectionError('mnemonic')}
-                  variant="modal"
+                  variant="lighter"
                 />
               ))}
             </SimpleGrid>

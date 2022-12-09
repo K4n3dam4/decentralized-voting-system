@@ -29,7 +29,11 @@ const DVSSidebar: React.FC<DVSSidebarProps> = ({ menuLinks, dividers = [] }) => 
   }, [isWide]);
 
   return (
-    <Box bg={useColorModeValue('gray.100', 'gray.900')} w={{ base: 'auto', md: isOpen ? 60 : 'auto' }} h="full">
+    <Box
+      bg={useColorModeValue('gray.100', 'gray.900')}
+      w={{ base: 'auto', md: isOpen ? 60 : 'auto' }}
+      height="calc(100vh - 64px)"
+    >
       <Flex p={5} h="full" flexDirection="column" justifyContent="space-between">
         <Stack spacing={4}>
           {menuLinks.map((link, index) => {
