@@ -105,9 +105,18 @@
     "close": "Close",
     "cancel": "Cancel"
   },
+  "success": {
+    "admin": {
+      "election": {
+        "create": "{{name}} created successfully."
+      }
+    }
+  },
   "error": {
     "validate": {
       "notEmpty": "This field must not be empty.",
+      "notEmptyObjArray": "These fields must not be empty.",
+      "notEmptyArray": "These fields must not be empty.",
       "string": "Some of the characters you entered are invalid.",
       "password": "Minimum eight characters, at least one letter, one number and one special, upper- as well as lower case character.",
       "passwordRepeat": "Passwords do not match.",

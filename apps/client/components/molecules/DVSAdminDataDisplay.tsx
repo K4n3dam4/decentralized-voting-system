@@ -17,7 +17,7 @@ import {
   TextProps,
 } from '@chakra-ui/react';
 import DVSCard, { DVSCardProps } from '../atoms/DVSCard';
-import { config } from 'apps/client/config/config';
+import { config } from '../../config/config';
 import DVSButton, { DVSButtonProps } from '../atoms/DVSButton';
 
 const HeaderImage: React.FC<ImageProps> = (props) => (

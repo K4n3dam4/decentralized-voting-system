@@ -13,8 +13,6 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
     const elections = await makeRequest({ url: 'admin/election/all', headers: createBearer(dvsProps.token) }, {}, true);
     const users = await makeRequest({ url: 'admin/user/all', headers: createBearer(dvsProps.token) }, {}, true);
 
-    console.log(users.data);
-
     return {
       props: {
         ...dvsProps,
@@ -25,7 +23,7 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
       },
     };
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return {
       redirect: {
         permanent: false,

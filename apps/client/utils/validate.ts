@@ -64,11 +64,11 @@ const validate = (params: ValidateParam[]) => {
 
     if (validationType.includes('notEmptyObjArray')) {
       if (value.length < 1) {
-        setError(field, i18n.t('error.validate.notEmpty'));
+        setError(field, i18n.t('error.validate.notEmptyObjArray'));
       } else {
         value.forEach((obj) => {
           Object.values(obj).forEach((vl: string) => {
-            if (vl.length === 0) setError(field, i18n.t('error.validate.notEmpty'));
+            if (vl.length === 0) setError(field, i18n.t('error.validate.notEmptyObjArray'));
           });
         });
       }
@@ -76,10 +76,10 @@ const validate = (params: ValidateParam[]) => {
 
     if (validationType.includes('notEmptyArray')) {
       if (value.length < 1) {
-        setError(field, i18n.t('error.validate.notEmpty'));
+        setError(field, i18n.t('error.validate.notEmptyArray'));
       } else {
         value.forEach((vl: string) => {
-          if (vl.length === 0) setError(field, i18n.t('error.validate.notEmpty'));
+          if (vl.length === 0) setError(field, i18n.t('error.validate.notEmptyArray'));
         });
       }
     }

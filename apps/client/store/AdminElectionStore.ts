@@ -4,7 +4,8 @@ import { NextRouter } from 'next/router';
 import { DVSToastOptions } from '../components/atoms/DVSToast';
 import validate, { validationFactory } from '../utils/validate';
 import { i18n } from 'next-i18next';
-import makeRequest, { apiError } from '../utils/makeRequest';
+import makeRequest, { apiError, createBearer } from '../utils/makeRequest';
+import useUserStore from './UserStore';
 
 interface State {
   name: string;
@@ -55,9 +56,9 @@ const useAdminElectionStore = create<State & Actions>()(
       setElection: (key, value) => set({ [key]: value }),
       // api
       createElection: async (router, showToast) => {
-        const dto = get().getValues();
+        const values = get().getValues();
         const factory: validationFactoryParams = {
-          fields: { ...dto },
+          fields: { ...values },
           validationTypes: [
             { field: 'name', validationType: ['notEmpty'] },
             { field: 'image', validationType: ['notEmpty'] },
@@ -75,8 +76,24 @@ const useAdminElectionStore = create<State & Actions>()(
           return;
         }
 
+        // create dto
+        const dto = {
+          ...values,
+          // timestamp in seconds
+          expires: new Date(values.expires).getTime() / 1000,
+          eligibleVoters: values.eligibleVoters.split(' '),
+        } as ElectionCreate;
+
         try {
-          console.log(validation.hasErrors);
+          await makeRequest<any, ElectionCreate>({
+            url: 'admin/election/create',
+            headers: createBearer(useUserStore.getState().access_token),
+            method: 'POST',
+            data: dto,
+          });
+
+          showToast({ status: 'success', description: i18n.t('success.admin.election.create', { name: values.name }) });
+          get().reset();
         } catch (error) {
           showToast({ status: 'error', description: i18n.t(apiError(error)) });
         }

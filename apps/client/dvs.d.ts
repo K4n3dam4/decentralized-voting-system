@@ -20,7 +20,7 @@ interface ElectionCreate {
   image: string;
   candidates: Candidate[];
   eligibleVoters: string[];
-  expires: string;
+  expires: number;
 }
 
 interface ElectionRegister {
