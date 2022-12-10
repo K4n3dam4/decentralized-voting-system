@@ -1,5 +1,5 @@
 import { ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { ElectionEligibleDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
+import { ElectionEligibleDto, ElectionRegisterDto, ElectionVoteDto, ElectionEntity } from '.';
 import { PrismaService } from '@dvs/prisma';
 import { EthersContract, EthersSigner, InjectContractProvider, InjectSignerProvider } from 'nestjs-ethers';
 import { ConfigService } from '@nestjs/config';
@@ -7,7 +7,6 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { ethers } from 'ethers';
 import { Election__factory } from '@dvs/smart-contracts';
-import { ElectionEntity } from './election.entity';
 import * as argon from 'argon2';
 
 @Injectable()

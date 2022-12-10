@@ -1,4 +1,32 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
+import { IsObjectArray } from '../decorators';
+import { EligibleVoter, RegisteredVoter } from '../../';
+import { Election } from '@prisma/client';
+
+export class AdminElectionEntity {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  adminId: number;
+
+  name: string;
+  image: string;
+  candidates: Election['candidates'];
+  contract: string;
+  @Exclude()
+  @IsObjectArray()
+  @Type(() => EligibleVoter)
+  eligibleVoters: EligibleVoter[];
+  totalEligibleVoters: number;
+  @Exclude()
+  registeredVoters: RegisteredVoter[];
+  totalRegisteredVoters: number;
+  expires: Date;
+
+  constructor(partial: Partial<AdminElectionEntity>) {
+    Object.assign(this, partial);
+  }
+}
 
 export class UserEntity {
   id: number;

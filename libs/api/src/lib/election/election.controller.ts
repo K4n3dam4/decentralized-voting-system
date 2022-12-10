@@ -10,8 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ElectionService } from './election.service';
-import { ElectionEligibleDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
-import { ElectionEntity } from './election.entity';
+import { ElectionEligibleDto, ElectionRegisterDto, ElectionVoteDto, ElectionEntity } from '.';
 import { GetUser, Roles } from '../decorators';
 import { RolesGuard } from '../guards';
 import { RoleEnum } from '../types';
@@ -38,7 +37,6 @@ export class ElectionController {
 
   @Roles(RoleEnum.Voter)
   @UseGuards(RolesGuard)
-  @UseInterceptors(ClassSerializerInterceptor)
   @Post('register/:id')
   registerVoter(@Body() dto: ElectionRegisterDto, @GetUser('id') userId: number, @Param('id') id: string) {
     return this.electionsService.registerVoter(dto, userId, id);

@@ -11,15 +11,9 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@dvs/prisma';
 import { Election__factory } from '@dvs/smart-contracts';
-import {
-  ElectionCreateDto,
-  ElectionUpdateDto,
-  EligibleCreateDto,
-  EligibleDeleteDto,
-  EligibleUpdateDto,
-} from './admin.dto';
-import { RoleEnum } from '../types/role.enum';
-import { UserEntity } from './admin.entity';
+import { ElectionCreateDto, ElectionUpdateDto, EligibleCreateDto, EligibleDeleteDto, EligibleUpdateDto } from '.';
+import { RoleEnum } from '../types';
+import { AdminElectionEntity, UserEntity } from './admin.entity';
 
 @Injectable()
 export class AdminService {
@@ -39,12 +33,27 @@ export class AdminService {
       include: { registeredVoters: true, eligibleVoters: true },
     });
     if (!election) throw new NotFoundException({ message: 'error.api.election.notFound' });
-    return election;
+    return new AdminElectionEntity({
+      ...election,
+      totalEligibleVoters: election.eligibleVoters.length,
+      totalRegisteredVoters: election.registeredVoters.length,
+    });
   }
 
   async getElections() {
-    return await this.prisma.election.findMany({
+    const elections = await this.prisma.election.findMany({
       include: { registeredVoters: true, eligibleVoters: true },
+    });
+    if (!elections) throw new NotFoundException({ message: 'error.api.election.notFound' });
+
+    return elections.map((election) => {
+      const totalRegisteredVoters = election.registeredVoters.length;
+      const totalEligibleVoters = election.eligibleVoters.length;
+      return new AdminElectionEntity({
+        ...election,
+        totalEligibleVoters,
+        totalRegisteredVoters,
+      });
     });
   }
 

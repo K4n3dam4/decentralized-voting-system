@@ -16,14 +16,8 @@ import { AdminService } from './admin.service';
 import { GetUser, Roles } from '../decorators';
 import { RoleEnum } from '../types';
 import { RolesGuard } from '../guards';
-import {
-  ElectionCreateDto,
-  ElectionUpdateDto,
-  EligibleCreateDto,
-  EligibleDeleteDto,
-  EligibleUpdateDto,
-} from './admin.dto';
-import { UserEntity } from './admin.entity';
+import { ElectionCreateDto, ElectionUpdateDto, EligibleCreateDto, EligibleDeleteDto, EligibleUpdateDto } from '.';
+import { AdminElectionEntity, UserEntity } from './admin.entity';
 
 @Roles(RoleEnum.Admin)
 @UseGuards(RolesGuard)
@@ -31,14 +25,15 @@ import { UserEntity } from './admin.entity';
 export class AdminElectionController {
   constructor(private adminService: AdminService) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get('election/single/:id')
-  getElection(@Param('id') electionId: string) {
-    return this.adminService.getElection(electionId);
+  async getElection(@Param('id') electionId: string): Promise<AdminElectionEntity> {
+    return await this.adminService.getElection(electionId);
   }
-
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get('election/all')
-  getElections() {
-    return this.adminService.getElections();
+  async getElections(): Promise<AdminElectionEntity[]> {
+    return await this.adminService.getElections();
   }
 
   @Post('election/create')
