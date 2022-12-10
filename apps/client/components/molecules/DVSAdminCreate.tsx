@@ -3,10 +3,12 @@ import DVSCard, { DVSCardProps } from '../atoms/DVSCard';
 import DVSFormInput, { DVSFormInputProps } from '../atoms/DVSFormInput';
 import { Box, Heading, Stack, Text } from '@chakra-ui/react';
 import DVSCandidates, { DVSCandidatesProps } from './DVSCandidates';
+import DVSFormTextarea, { DVSFormTextareaProps } from '../atoms/DVSFormTextarea';
 
 type InputProps =
-  | (DVSFormInputProps & { customType?: 'textArea' | 'input' })
-  | (DVSCandidatesProps & { customType: 'candidates' });
+  | (DVSFormInputProps & { customType?: 'input' })
+  | (DVSCandidatesProps & { customType: 'candidates' })
+  | (DVSFormTextareaProps & { customType: 'textarea' });
 
 export interface DVSAdminCreateProps extends DVSCardProps {
   inputs: InputProps[];
@@ -16,10 +18,8 @@ export interface DVSAdminCreateProps extends DVSCardProps {
 
 const DVSAdminCreate: React.FC<DVSAdminCreateProps> = ({ inputs, heading = '', description, ...restProps }) => {
   const Inputs = inputs.map((input) => {
-    if (input.customType === 'candidates') {
-      return <DVSCandidates {...input} />;
-    }
-
+    if (input?.customType === 'candidates') return <DVSCandidates {...input} />;
+    if (input?.customType === 'textarea') return <DVSFormTextarea {...input} />;
     return <DVSFormInput dvsVariant="formCard" {...input} />;
   });
 

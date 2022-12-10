@@ -7,10 +7,18 @@ declare module '*.svg' {
 
 interface ValidateParam {
   field: string;
-  value: string;
+  value: any;
   validationType: validationType[];
 }
-type validationType = 'notEmpty' | 'string' | 'email' | 'password' | 'passwordRepeat' | 'mnemonic';
+type validationType =
+  | 'notEmpty'
+  | 'notEmptyObjArray'
+  | 'notEmptyArray'
+  | 'string'
+  | 'email'
+  | 'password'
+  | 'passwordRepeat'
+  | 'mnemonic';
 interface validationFactoryParams {
   fields: Record<string, any>;
   validationTypes: { field: string; validationType: validationType[] }[];

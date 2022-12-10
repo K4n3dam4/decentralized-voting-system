@@ -14,6 +14,15 @@ interface VoterSignin {
   password: string;
 }
 
+interface ElectionCreate {
+  name: string;
+  description: string;
+  image: string;
+  candidates: Candidate[];
+  eligibleVoters: string[];
+  expires: string;
+}
+
 interface ElectionRegister {
   ssn: string;
 }

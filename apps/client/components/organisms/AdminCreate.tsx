@@ -8,6 +8,8 @@ import { Box, Heading, Stack } from '@chakra-ui/react';
 import DVSAdminDataDisplay from '../molecules/DVSAdminDataDisplay';
 import DVSExpiration from '../atoms/DVSExpiration';
 import { config } from '../../config/config';
+import { useRouter } from 'next/router';
+import { DVSToast } from '../atoms/DVSToast';
 
 export interface AdminCreateProps {
   type: 'election' | 'user';
@@ -15,8 +17,10 @@ export interface AdminCreateProps {
 
 const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const { showToast } = DVSToast();
 
-  const [name, image, description, candidates, eligibleVoters, expires, setElection, resetElection] =
+  const [name, image, description, candidates, eligibleVoters, expires, setElection, createElection, resetElection] =
     useAdminElectionStore((s) => [
       s.name,
       s.image,
@@ -25,6 +29,7 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
       s.eligibleVoters,
       s.expires,
       s.setElection,
+      s.createElection,
       s.reset,
     ]);
   const [electionErrors, setElectionError] = useAdminElectionStore((s) => [s.errors, s.setError]);
@@ -67,11 +72,10 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
           name: 'description',
           placeholder: t('admin.create.election.description'),
           value: description,
-          customType: 'input',
+          customType: 'textarea',
           onChange: ({ target }) => setElection(target.name, target.value),
           onFocus: ({ target }) => setElectionError(target.name),
           error: electionErrors['description'],
-          variant: 'lighter',
         },
         {
           name: 'image',
@@ -98,12 +102,10 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
           name: 'eligibleVoters',
           placeholder: t('admin.create.election.eligibleVoters'),
           value: eligibleVoters,
-          customType: 'input',
+          customType: 'textarea',
           onChange: ({ target }) => setElection(target.name, target.value),
           onFocus: ({ target }) => setElectionError(target.name),
           error: electionErrors['eligibleVoters'],
-          type: 'textArea',
-          variant: 'lighter',
         },
         {
           name: 'expires',
@@ -231,6 +233,7 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
           {
             dvsType: 'primary',
             children: 'Create',
+            onClick: () => createElection(router, showToast),
           },
         ];
         const empty = !name && !expires && !description && candidates.length < 1;

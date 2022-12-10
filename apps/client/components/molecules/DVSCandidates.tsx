@@ -1,17 +1,26 @@
 import React from 'react';
-import { IconButton, Stack, Text } from '@chakra-ui/react';
+import { IconButton, Button, Stack, Text } from '@chakra-ui/react';
 import DVSFormInput, { DVSFormInputProps } from '../atoms/DVSFormInput';
 import { Icon } from '@chakra-ui/icons';
 import { AiFillPlusCircle, AiFillMinusCircle } from 'react-icons/ai';
 import { useTranslation } from 'next-i18next';
+import DVSAlert from './DVSAlert';
 
-export interface DVSCandidatesProps extends Omit<DVSFormInputProps, 'value' | 'onChange'> {
+export interface DVSCandidatesProps extends Omit<DVSFormInputProps, 'value' | 'onChange' | 'onFocus'> {
   name: string;
   value: Candidate[];
   onChange: (event: { target: { name: string; value: Candidate[] } }) => void;
+  onFocus: (event: { target: { name: string } }) => void;
 }
 
-const DVSCandidates: React.FC<DVSCandidatesProps> = ({ value: candidates, placeholder, onChange, variant }) => {
+const DVSCandidates: React.FC<DVSCandidatesProps> = ({
+  value: candidates,
+  placeholder,
+  onChange,
+  onFocus,
+  error,
+  variant,
+}) => {
   const { t } = useTranslation();
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -22,9 +31,12 @@ const DVSCandidates: React.FC<DVSCandidatesProps> = ({ value: candidates, placeh
     onChange({ target: { name: 'candidates', value: newCandidates } });
   };
   const handeAddCandidate = () => {
+    onFocus({ target: { name: 'candidates' } });
     onChange({ target: { name: 'candidates', value: [...candidates, { name: '', party: '', image: '' }] } });
   };
   const handleRemoveCandidate = (index) => {
+    onFocus({ target: { name: 'candidates' } });
+
     const newCandidates = JSON.parse(JSON.stringify(candidates));
 
     newCandidates.splice(index, 1);
@@ -41,6 +53,7 @@ const DVSCandidates: React.FC<DVSCandidatesProps> = ({ value: candidates, placeh
             name="name"
             value={name}
             onChange={(event) => handleChange(event, index)}
+            onFocus={() => onFocus({ target: { name: 'candidates' } })}
             variant={variant}
           />
           <DVSFormInput
@@ -48,6 +61,7 @@ const DVSCandidates: React.FC<DVSCandidatesProps> = ({ value: candidates, placeh
             name="party"
             value={party}
             onChange={(event) => handleChange(event, index)}
+            onFocus={() => onFocus({ target: { name: 'candidates' } })}
             variant={variant}
           />
           <DVSFormInput
@@ -55,6 +69,7 @@ const DVSCandidates: React.FC<DVSCandidatesProps> = ({ value: candidates, placeh
             name="image"
             value={image}
             onChange={(event) => handleChange(event, index)}
+            onFocus={() => onFocus({ target: { name: 'candidates' } })}
             variant={variant}
           />
         </Stack>
@@ -74,15 +89,17 @@ const DVSCandidates: React.FC<DVSCandidatesProps> = ({ value: candidates, placeh
     <Stack position="relative" spacing={6} pt={6}>
       {placeholder && <Text>{placeholder}</Text>}
       {CandidateInput}
-      <IconButton
-        w={10}
+      {error && <DVSAlert variant="error">{error}</DVSAlert>}
+      <Button
         alignSelf="flex-start"
-        variant="ghost"
+        variant="outline"
         aria-label="add-candidate"
         colorScheme="green"
-        icon={<Icon as={AiFillPlusCircle} />}
+        leftIcon={<Icon as={AiFillPlusCircle} />}
         onClick={handeAddCandidate}
-      />
+      >
+        Add candidate
+      </Button>
     </Stack>
   );
 };
