@@ -1,6 +1,6 @@
 const configuration = {
   electionImageFallback:
-    'https://img.freepik.com/free-vector/wallpaper-2020-us-presidential-election_52683-48919.jpg?w=1800&t=st=1668600330~exp=1668600930~hmac=23b84d7309640eb9d6d5e261a6bda7c5e478728d8db0b94957f9a3860c79bd2f',
+    'https://img.freepik.com/free-vector/data-network-businessman_24908-57856.jpg?w=996&t=st=1670630635~exp=1670631235~hmac=013a8ead93aa571b59ef638e14c0fc3696a93302e5bcb6f9a99b41bab6855b0b',
   imageFallback: 'https://avatars.dicebear.com/api/male/username.svg',
 };
 

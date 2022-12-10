@@ -64,16 +64,6 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
           variant: 'lighter',
         },
         {
-          name: 'image',
-          placeholder: t('admin.create.election.image'),
-          value: image,
-          customType: 'input',
-          onChange: ({ target }) => setElection(target.name, target.value),
-          onFocus: ({ target }) => setElectionError(target.name),
-          error: electionErrors['image'],
-          variant: 'lighter',
-        },
-        {
           name: 'description',
           placeholder: t('admin.create.election.description'),
           value: description,
@@ -81,6 +71,16 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
           onChange: ({ target }) => setElection(target.name, target.value),
           onFocus: ({ target }) => setElectionError(target.name),
           error: electionErrors['description'],
+          variant: 'lighter',
+        },
+        {
+          name: 'image',
+          placeholder: t('admin.create.election.image'),
+          value: image,
+          customType: 'input',
+          onChange: ({ target }) => setElection(target.name, target.value),
+          onFocus: ({ target }) => setElectionError(target.name),
+          error: electionErrors['image'],
           variant: 'lighter',
         },
         {
@@ -243,7 +243,7 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
               heading={t(`admin.create.${type}.heading`)}
               description={t(`admin.create.${type}.descr`)}
               inputs={renderCreateInputs()}
-              transition="500ms ease"
+              transition="500ms"
             />
             <DVSAdminDataDisplay
               w={empty ? '0%' : '40%'}
@@ -253,7 +253,7 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
                 <DVSAdminDataDisplay.HeaderImage src={image} fallbackSrc={config.get('electionImageFallback')} />
               }
               buttons={buttons}
-              transition="500ms ease"
+              transition="500ms"
             >
               <Stack>
                 <Heading size="lg">{name}</Heading>

@@ -43,7 +43,7 @@ const Data: React.FC<DVSAdminDataDisplayDataProps> = ({ children, ...props }) =>
 const Candidate: React.FC<Candidate> = ({ image, name, party }) => (
   <Popover variant="candidates">
     <PopoverTrigger>
-      <Button disabled={!name || !party} variant="unstyled" height="auto">
+      <Button disabled={!name || !party || !image} variant="unstyled" height="auto">
         <Image borderRadius={5} w="full" objectFit="cover" src={image} fallbackSrc={config.get('imageFallback')} />
       </Button>
     </PopoverTrigger>

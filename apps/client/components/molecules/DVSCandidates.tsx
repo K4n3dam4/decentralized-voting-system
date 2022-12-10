@@ -11,7 +11,7 @@ export interface DVSCandidatesProps extends Omit<DVSFormInputProps, 'value' | 'o
   onChange: (event: { target: { name: string; value: Candidate[] } }) => void;
 }
 
-const DVSCandidates: React.FC<DVSCandidatesProps> = ({ value: candidates, placeholder, onChange }) => {
+const DVSCandidates: React.FC<DVSCandidatesProps> = ({ value: candidates, placeholder, onChange, variant }) => {
   const { t } = useTranslation();
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -41,18 +41,21 @@ const DVSCandidates: React.FC<DVSCandidatesProps> = ({ value: candidates, placeh
             name="name"
             value={name}
             onChange={(event) => handleChange(event, index)}
+            variant={variant}
           />
           <DVSFormInput
             placeholder={t('admin.common.party')}
             name="party"
             value={party}
             onChange={(event) => handleChange(event, index)}
+            variant={variant}
           />
           <DVSFormInput
             placeholder={t('admin.common.image')}
             name="image"
             value={image}
             onChange={(event) => handleChange(event, index)}
+            variant={variant}
           />
         </Stack>
         <IconButton
