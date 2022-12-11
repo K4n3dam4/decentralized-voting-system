@@ -43,6 +43,14 @@
       "party": "Candidate party",
       "image": "Candidate image"
     },
+    "list": {
+      "election": {
+        "totalEligibleVoters": "Eligible voters",
+        "totalRegisteredVoters": "Registered voters",
+        "close": "Close election",
+        "edit": "Edit election"
+      }
+    },
     "create": {
       "election": {
         "heading": "Create election",

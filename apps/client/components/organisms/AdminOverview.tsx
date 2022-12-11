@@ -19,8 +19,8 @@ import { useTranslation } from 'next-i18next';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Colors);
 
 interface AdminOverviewProps {
-  elections: any[];
-  users: any[];
+  elections: AdminElection[];
+  users: AdminUser[];
 }
 
 const AdminOverview: React.FC<AdminOverviewProps> = ({ elections, users }) => {

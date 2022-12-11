@@ -240,7 +240,7 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
         return (
           <Stack spacing={empty ? 0 : 5} direction="row">
             <DVSAdminCreate
-              maxH="80vh"
+              maxH="620px"
               w={empty ? '100%' : '60%'}
               overflowY="auto"
               heading={t(`admin.create.${type}.heading`)}
@@ -249,14 +249,16 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
               transition="500ms"
             />
             <DVSAdminDataDisplay
-              w={empty ? '0%' : '40%'}
-              maxH="80vh"
-              overflowY="auto"
+              card={{
+                w: empty ? '0%' : '40%',
+                maxH: '620px',
+                overflowY: 'auto',
+                transition: '500ms',
+              }}
               headerImage={
                 <DVSAdminDataDisplay.HeaderImage src={image} fallbackSrc={config.get('electionImageFallback')} />
               }
               buttons={buttons}
-              transition="500ms"
             >
               <Stack>
                 <Heading size="lg">{name}</Heading>

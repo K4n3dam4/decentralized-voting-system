@@ -34,8 +34,8 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
 };
 
 interface AdminPageProps {
-  elections: any;
-  users: any;
+  elections: AdminElection[];
+  users: AdminUser[];
 }
 
 const AdminPage: React.FC<AdminPageProps> = ({ elections, users }) => {

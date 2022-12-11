@@ -14,19 +14,6 @@ interface VoterSignin {
   password: string;
 }
 
-interface ElectionCreate {
-  name: string;
-  description: string;
-  image: string;
-  candidates: Candidate[];
-  eligibleVoters: string[];
-  expires: number;
-}
-
-interface ElectionRegister {
-  ssn: string;
-}
-
 interface Registered {
   mnemonic: string;
   election: Election;
@@ -51,6 +38,19 @@ interface Candidate {
   party?: string;
 }
 
+interface ElectionCreate {
+  name: string;
+  description: string;
+  image: string;
+  candidates: Candidate[];
+  eligibleVoters: string[];
+  expires: number;
+}
+
+interface ElectionRegister {
+  ssn: string;
+}
+
 interface Election {
   id: number;
   name: string;
@@ -62,6 +62,24 @@ interface Election {
   updatedAt: string;
   registered?: boolean;
   hasVoted?: boolean;
+}
+
+interface AdminElection extends Election {
+  adminId: number;
+  totalEligibleVoters: number;
+  totalRegisteredVoters: number;
+}
+
+interface AdminUser {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  street: string;
+  city: string;
+  postalCode: number;
 }
 
 interface APIError {

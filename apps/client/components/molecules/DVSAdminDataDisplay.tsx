@@ -1,7 +1,10 @@
 import React from 'react';
 import {
   Box,
+  BoxProps,
   Button,
+  ButtonProps,
+  Flex,
   Grid,
   GridItem,
   Heading,
@@ -12,6 +15,7 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  SimpleGrid,
   Stack,
   Text,
   TextProps,
@@ -61,8 +65,8 @@ const Candidates: React.FC<{ candidates: Candidate[]; placeholder?: React.ReactN
     <Box>
       {candidates.length > 0 ? (
         <Grid h="auto" templateColumns={`repeat(${candidates.length > 2 ? '3' : '2'}, 1fr)`} gap={5}>
-          {candidates.map((candidate) => (
-            <GridItem height="auto" colSpan={1}>
+          {candidates.map((candidate, index) => (
+            <GridItem key={`admin-data-candidates-item-${index}`} height="auto" colSpan={1}>
               <Candidate {...candidate} />
             </GridItem>
           ))}
@@ -74,33 +78,88 @@ const Candidates: React.FC<{ candidates: Candidate[]; placeholder?: React.ReactN
   );
 };
 
-export interface DVSAdminDataDisplayProps extends DVSCardProps {
-  headerImage?: React.ReactNode;
-  buttons?: DVSButtonProps[];
+export interface DVSAdminDataDisplayActionsProps {
+  buttons: ButtonProps[];
+  show: boolean;
+  children?: React.ReactNode | React.ReactNode[];
 }
 
-const DVSAdminDataDisplay = ({ headerImage, children, buttons, ...cardProps }: DVSAdminDataDisplayProps) => {
+const Actions: React.FC<DVSAdminDataDisplayActionsProps> = ({ buttons, show, children }) => {
   return (
-    <DVSCard display="flex" flexDirection="column" justifyContent="space-between" px={0} pt={0} pb={5} {...cardProps}>
-      <Box>
-        {headerImage}
-        <Stack px={5} pt={5} spacing={5}>
-          {children}
-        </Stack>
-      </Box>
-      {buttons && (
-        <Stack px={5} pt={5} direction="row" justifyContent="flex-end" spacing={2}>
-          {buttons.map((button) => (
-            <DVSButton size="md" {...button} />
-          ))}
-        </Stack>
-      )}
+    <DVSCard
+      h="80px"
+      w="full"
+      transition="500ms ease"
+      position="absolute"
+      overflowY="hidden"
+      bottom={!show ? '-100px' : 0}
+      right={0}
+      borderTopRadius={0}
+      p={5}
+    >
+      <Flex h="full" w="full" alignItems="center" justifyContent="flex-end">
+        {children}
+        {buttons && (
+          <SimpleGrid columns={2}>
+            {buttons.map((button, index) => (
+              <Button key={`admin-data-actions-btn-${index}`} {...button} />
+            ))}
+          </SimpleGrid>
+        )}
+      </Flex>
     </DVSCard>
   );
 };
 
+export interface DVSAdminDataDisplayProps extends BoxProps {
+  card?: DVSCardProps;
+  headerImage?: React.ReactNode;
+  buttons?: DVSButtonProps[];
+  actions?: React.ReactNode;
+}
+
+const DVSAdminDataDisplay = ({
+  headerImage,
+  children,
+  buttons,
+  card,
+  actions,
+  ...boxProps
+}: DVSAdminDataDisplayProps) => {
+  const WrappedContent = () => {
+    const content = (
+      <DVSCard display="flex" flexDirection="column" justifyContent="space-between" px={0} pt={0} pb={5} {...card}>
+        <Box>
+          {headerImage}
+          <Stack px={5} pt={5} spacing={5}>
+            {children}
+          </Stack>
+        </Box>
+        {buttons && (
+          <Stack px={5} pt={5} direction="row" justifyContent="flex-end" spacing={2}>
+            {buttons.map((button, index) => (
+              <DVSButton key={`admin-data-prop-btn-${index}`} size="md" {...button} />
+            ))}
+          </Stack>
+        )}
+      </DVSCard>
+    );
+    if (Object.keys(boxProps).length > 0)
+      return (
+        <Box position="relative" overflow="hidden" h={{ base: 'auto', lg: '620px' }} {...boxProps}>
+          {content}
+          {actions && actions}
+        </Box>
+      );
+    return content;
+  };
+
+  return WrappedContent();
+};
+
 DVSAdminDataDisplay.HeaderImage = HeaderImage;
 DVSAdminDataDisplay.Data = Data;
+DVSAdminDataDisplay.Actions = Actions;
 DVSAdminDataDisplay.Canidate = Candidate;
 DVSAdminDataDisplay.Candidates = Candidates;
 

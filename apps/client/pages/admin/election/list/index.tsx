@@ -3,21 +3,45 @@ import { getServerSideProps as dvsGetServerSideProps } from '../../../../config/
 import { ssrTranslations } from '../../../../utils/i18next';
 import { Box } from '@chakra-ui/react';
 import AdminList from '../../../../components/organisms/AdminList';
+import makeRequest, { createBearer } from '../../../../utils/makeRequest';
 
 export const getServerSideProps = async (ctx) => {
-  return {
-    props: {
-      ...dvsGetServerSideProps(ctx).props,
-      // locales
-      ...(await ssrTranslations(ctx.locale, ['common'])),
-    },
-  };
+  const dvsProps = dvsGetServerSideProps(ctx).props;
+
+  try {
+    const { data: elections } = await makeRequest(
+      { url: 'admin/election/all', headers: createBearer(dvsProps.token) },
+      {},
+      true,
+    );
+
+    return {
+      props: {
+        ...dvsProps,
+        // locales
+        ...(await ssrTranslations(ctx.locale, ['common'])),
+        elections,
+      },
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    };
+  }
 };
 
-const AdminListPage = () => {
+interface AdminListPageProps {
+  elections: AdminElection[];
+}
+
+const AdminListPage: React.FC<AdminListPageProps> = ({ elections }) => {
   return (
     <Box h="calc(100vh - 64px)" w="full" p={10} overflowY="auto">
-      <AdminList type="election" />
+      <AdminList type="election" list={elections} />
     </Box>
   );
 };
