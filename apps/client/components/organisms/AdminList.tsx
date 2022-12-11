@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Heading, Stack, SimpleGrid, Tooltip, Text } from '@chakra-ui/react';
-import DVSAdminDataDisplay, { DVSAdminDataDisplayActionsProps } from '../molecules/DVSAdminDataDisplay';
+import { Heading, Stack, SimpleGrid, Tooltip, Text, Button } from '@chakra-ui/react';
+import DVSAdminDataDisplay from '../molecules/DVSAdminDataDisplay';
 import { config } from '../../config/config';
 import DVSExpiration from '../atoms/DVSExpiration';
 import { FaPersonBooth, FaUniversalAccess, FaLock } from 'react-icons/fa';
@@ -21,38 +21,42 @@ const AdminList: React.FC<AdminListProps> = ({ type, list }) => {
       case 'election': {
         return list.map(
           ({ image, name, expires, description, candidates, totalEligibleVoters, totalRegisteredVoters }, index) => {
-            const buttonProps: DVSAdminDataDisplayActionsProps['buttons'] = [
-              {
-                mr: 2,
-                colorScheme: 'red',
-                variant: 'outline',
-                leftIcon: <Icon as={FaLock} />,
-                children: t('admin.list.election.close'),
-              },
-              {
-                mr: 2,
-                colorScheme: 'green',
-                variant: 'outline',
-                leftIcon: <Icon as={IoMdCreate} />,
-                children: t('admin.list.election.edit'),
-              },
-            ];
             const actions = (
-              <DVSAdminDataDisplay.Actions show={showActions === index} buttons={buttonProps}>
-                <SimpleGrid columns={{ base: 2, md: 2, lg: 1, xl: 2 }} spacing={3} mr={6}>
+              <DVSAdminDataDisplay.Actions
+                show={showActions === index}
+                display="flex"
+                flexDirection={{ base: 'row', lg: 'column', xl: 'row' }}
+                justifyContent="space-between"
+                h={{ base: '80px', lg: '120px', xl: '80px' }}
+              >
+                <Stack direction="row" spacing={3}>
                   <Tooltip mr={2} hasArrow label={t('admin.list.election.totalEligibleVoters')}>
-                    <Stack direction="row" spacing={2} alignItems="center">
+                    <Stack direction="row" spacing={1} alignItems="center">
                       <Icon as={FaUniversalAccess} />
                       <Text>{totalEligibleVoters}</Text>
                     </Stack>
                   </Tooltip>
                   <Tooltip hasArrow label={t('admin.list.election.totalRegisteredVoters')}>
-                    <Stack direction="row" spacing={2} alignItems="center">
+                    <Stack direction="row" spacing={1} alignItems="center">
                       <Icon as={FaPersonBooth} />
                       <Text>{totalRegisteredVoters}</Text>
                     </Stack>
                   </Tooltip>
-                </SimpleGrid>
+                </Stack>
+                <Stack direction="row" spacing={2}>
+                  {/*<IconButton*/}
+                  {/*  aria-label="Statistics"*/}
+                  {/*  variant="outline"*/}
+                  {/*  icon={<Icon as={IoIosStats} />}*/}
+                  {/*  colorScheme="blue"*/}
+                  {/*/>*/}
+                  <Button colorScheme="red" variant="outline" leftIcon={<Icon as={FaLock} />}>
+                    {t('admin.list.election.close')}
+                  </Button>
+                  <Button colorScheme="green" variant="outline" leftIcon={<Icon as={IoMdCreate} />}>
+                    {t('admin.list.election.edit')}
+                  </Button>
+                </Stack>
               </DVSAdminDataDisplay.Actions>
             );
 

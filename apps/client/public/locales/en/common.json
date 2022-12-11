@@ -47,8 +47,8 @@
       "election": {
         "totalEligibleVoters": "Eligible voters",
         "totalRegisteredVoters": "Registered voters",
-        "close": "Close election",
-        "edit": "Edit election"
+        "close": "Close",
+        "edit": "Edit"
       }
     },
     "create": {

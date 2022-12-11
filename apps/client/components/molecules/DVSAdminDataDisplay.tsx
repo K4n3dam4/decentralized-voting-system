@@ -3,8 +3,6 @@ import {
   Box,
   BoxProps,
   Button,
-  ButtonProps,
-  Flex,
   Grid,
   GridItem,
   Heading,
@@ -15,10 +13,10 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
-  SimpleGrid,
   Stack,
   Text,
   TextProps,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import DVSCard, { DVSCardProps } from '../atoms/DVSCard';
 import { config } from '../../config/config';
@@ -78,13 +76,11 @@ const Candidates: React.FC<{ candidates: Candidate[]; placeholder?: React.ReactN
   );
 };
 
-export interface DVSAdminDataDisplayActionsProps {
-  buttons: ButtonProps[];
+export interface DVSAdminDataDisplayActionsProps extends DVSCardProps {
   show: boolean;
-  children?: React.ReactNode | React.ReactNode[];
 }
 
-const Actions: React.FC<DVSAdminDataDisplayActionsProps> = ({ buttons, show, children }) => {
+const Actions: React.FC<DVSAdminDataDisplayActionsProps> = ({ show, children, ...restProps }) => {
   return (
     <DVSCard
       h="80px"
@@ -95,18 +91,12 @@ const Actions: React.FC<DVSAdminDataDisplayActionsProps> = ({ buttons, show, chi
       bottom={!show ? '-100px' : 0}
       right={0}
       borderTopRadius={0}
+      bg={useColorModeValue('rgba(237, 242, 246, 0.95)', 'rgba(23, 25, 35, 0.8)')}
+      backdropFilter="blur(5px)"
       p={5}
+      {...restProps}
     >
-      <Flex h="full" w="full" alignItems="center" justifyContent="flex-end">
-        {children}
-        {buttons && (
-          <SimpleGrid columns={2}>
-            {buttons.map((button, index) => (
-              <Button key={`admin-data-actions-btn-${index}`} {...button} />
-            ))}
-          </SimpleGrid>
-        )}
-      </Flex>
+      {children}
     </DVSCard>
   );
 };
