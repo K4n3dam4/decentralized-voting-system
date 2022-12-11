@@ -9,6 +9,7 @@ import { Election__factory } from '@dvs/smart-contracts';
 import * as argon from 'argon2';
 import { ElectionEligibleDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
 import { ElectionEntity } from './election.entity';
+import { AdminService } from '../admin/admin.service';
 
 @Injectable()
 export class ElectionService {
@@ -20,16 +21,31 @@ export class ElectionService {
     private readonly contract: EthersContract,
     @InjectSignerProvider()
     private readonly signer: EthersSigner,
+    private readonly adminService: AdminService,
   ) {}
 
   async getElection(userId: number, electionId: string) {
     const id = Number(electionId);
-    const election = await this.prisma.election.findUnique({
+    let election = await this.prisma.election.findUnique({
       where: { id },
       include: { registeredVoters: { where: { userId } } },
     });
 
     if (!election) throw new NotFoundException({ message: 'error.api.election.notFound' });
+
+    if (
+      election.expires.getTime() <= new Date().getTime() &&
+      !{}.hasOwnProperty.call(election.candidates[0], 'winner')
+    ) {
+      const closedElection = await this.adminService.closeElection(electionId);
+
+      if (closedElection)
+        election = {
+          ...closedElection,
+          registeredVoters: election.registeredVoters,
+        };
+    }
+
     const registered = election.registeredVoters.length === 1;
     const hasVoted = registered && election.registeredVoters[0].hasVoted;
     return new ElectionEntity({

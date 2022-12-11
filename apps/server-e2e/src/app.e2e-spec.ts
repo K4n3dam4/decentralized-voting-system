@@ -74,7 +74,7 @@ describe('App e2e', () => {
 
       // pactum
       request.setBaseUrl(host);
-      request.setDefaultTimeout(100000);
+      request.setDefaultTimeout(10 * 1000);
 
       // core
       core = moduleFixture.get(CoreModule);
@@ -639,8 +639,7 @@ describe('App e2e', () => {
               .put(closeUrl + '{id}')
               .withPathParams('id', '$S{ElectionId}')
               .withHeaders(headersAdmin)
-              .expectStatus(200)
-              .inspect();
+              .expectStatus(200);
           });
         });
       });

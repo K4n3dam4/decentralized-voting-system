@@ -28,11 +28,26 @@ export class AdminService {
 
   async getElection(electionId: string) {
     const id = Number(electionId);
-    const election = await this.prisma.election.findUnique({
+    let election = await this.prisma.election.findUnique({
       where: { id },
       include: { registeredVoters: true, eligibleVoters: true },
     });
     if (!election) throw new NotFoundException({ message: 'error.api.election.notFound' });
+
+    if (
+      election.expires.getTime() <= new Date().getTime() &&
+      !{}.hasOwnProperty.call(election.candidates[0], 'winner')
+    ) {
+      const closedElection = await this.closeElection(electionId);
+
+      if (closedElection)
+        election = {
+          ...closedElection,
+          registeredVoters: election.registeredVoters,
+          eligibleVoters: election.eligibleVoters,
+        };
+    }
+
     return new AdminElectionEntity({
       ...election,
       totalEligibleVoters: election.eligibleVoters.length,
@@ -126,7 +141,7 @@ export class AdminService {
 
   async closeElection(electionId: string) {
     // get election
-    const election = await this.getElection(electionId);
+    const election = await this.prisma.election.findUnique({ where: { id: Number(electionId) } });
     // create signer and contract instance
     const signer = this.signer.createWallet(this.config.get('adminPk'));
     const contract = this.contract.create(election.contract, Election__factory.abi, signer);
@@ -135,10 +150,44 @@ export class AdminService {
       // close election
       await contract.functions.closeElection();
       const expires = await contract.callStatic.expires();
-      const results = await contract.callStatic.getResults();
-      const decodedResults = results.map(([name, voteCount]) => ({ name, voteCount: voteCount.toNumber() }));
+      const result = await contract.callStatic.getResults();
+      // calc result
+      let candidates = JSON.parse(JSON.stringify(election.candidates));
+      type candidate = {
+        name: string;
+        party: string;
+        voteCount: number;
+        winner: boolean;
+        draw: boolean;
+        image?: string;
+      };
 
-      // TODO update db entry
+      const decodedResult = result.map(([name, voteCount]) => ({
+        ...candidates.find((candidate) => candidate.name === name),
+        voteCount: voteCount.toNumber(),
+      }));
+      const draw: candidate[] = [];
+      const hasDraw = (candidate: candidate) => draw.some((draw) => draw.name === candidate.name);
+
+      const winner = decodedResult.reduce((prev: candidate, current: candidate) => {
+        if (prev.voteCount === current.voteCount) {
+          if (!hasDraw(prev)) draw.push(prev);
+          if (!hasDraw(current)) draw.push(current);
+          return prev;
+        }
+        return prev.voteCount > current.voteCount ? prev : current;
+      });
+      candidates = decodedResult.map((candidate) => ({
+        ...candidate,
+        winner: !hasDraw(candidate) && candidate.name === winner.name,
+        draw: hasDraw(candidate),
+      }));
+
+      // update db
+      return await this.prisma.election.update({
+        where: { id: election.id },
+        data: { candidates, expires: new Date(expires * 1000) },
+      });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         throw new HttpException({ message: 'error.api.server.error' }, 500);
