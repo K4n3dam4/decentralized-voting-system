@@ -16,7 +16,13 @@ import { AdminService } from './admin.service';
 import { GetUser, Roles } from '../decorators';
 import { RoleEnum } from '../types';
 import { RolesGuard } from '../guards';
-import { ElectionCreateDto, ElectionUpdateDto, EligibleCreateDto, EligibleDeleteDto, EligibleUpdateDto } from '.';
+import {
+  ElectionCreateDto,
+  ElectionUpdateDto,
+  EligibleCreateDto,
+  EligibleDeleteDto,
+  EligibleUpdateDto,
+} from './admin.dto';
 import { AdminElectionEntity, UserEntity } from './admin.entity';
 
 @Roles(RoleEnum.Admin)

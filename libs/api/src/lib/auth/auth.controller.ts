@@ -1,9 +1,9 @@
 import { Body, Controller, Get, HttpCode, Post, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SigninDto, VoterSignupDto } from '.';
 import { GetUser, Public, Roles } from '../decorators';
 import { JwtPayload, RoleEnum } from '../types';
 import { RolesGuard } from '../guards';
+import { SigninDto, VoterSignupDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {

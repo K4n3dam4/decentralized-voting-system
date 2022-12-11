@@ -5,7 +5,7 @@ import * as argon from 'argon2';
 import { PrismaService } from '@dvs/prisma';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../types';
-import { SigninDto, VoterSignupDto } from '.';
+import { SigninDto, VoterSignupDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {

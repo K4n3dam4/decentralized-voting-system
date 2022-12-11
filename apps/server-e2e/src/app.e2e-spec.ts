@@ -443,7 +443,7 @@ describe('App e2e', () => {
         });
 
         describe('Users', function () {
-          const userUrl = baseUrl + 'users/';
+          const userUrl = baseUrl + 'user/';
 
           const getAllUrl = userUrl + 'all';
 

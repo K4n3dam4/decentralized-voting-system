@@ -1,6 +1,6 @@
 import { Exclude, Type } from 'class-transformer';
 import { IsObjectArray } from '../decorators';
-import { EligibleVoter, RegisteredVoter } from '../../';
+import { EligibleVoter, RegisteredVoter } from '../election/election.entity';
 import { Election } from '@prisma/client';
 
 export class AdminElectionEntity {

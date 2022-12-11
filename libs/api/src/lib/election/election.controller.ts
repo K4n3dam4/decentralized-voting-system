@@ -10,7 +10,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ElectionService } from './election.service';
-import { ElectionEligibleDto, ElectionRegisterDto, ElectionVoteDto, ElectionEntity } from '.';
+import { ElectionEligibleDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
+import { ElectionEntity } from './election.entity';
 import { GetUser, Roles } from '../decorators';
 import { RolesGuard } from '../guards';
 import { RoleEnum } from '../types';
