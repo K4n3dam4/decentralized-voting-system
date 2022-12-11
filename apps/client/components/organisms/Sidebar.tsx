@@ -15,9 +15,13 @@ const Sidebar = () => {
     let menuLinks: DVSMenuLinkProps[];
     let dividers: DVSSidebarProps['dividers'];
 
-    switch (asPath) {
+    // trim id parameters if present
+    const path = asPath.replace(/\d+/g, '');
+
+    switch (path) {
       case '/admin':
       case '/admin/election/list':
+      case '/admin/election/edit/':
       case '/admin/election/create':
       case '/admin/users/list':
       case '/admin/users/create':

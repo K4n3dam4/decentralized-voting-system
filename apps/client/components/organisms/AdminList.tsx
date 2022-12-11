@@ -7,20 +7,43 @@ import { FaPersonBooth, FaUniversalAccess, FaLock } from 'react-icons/fa';
 import { IoMdCreate } from 'react-icons/io';
 import { Icon } from '@chakra-ui/icons';
 import { useTranslation } from 'next-i18next';
+import makeRequest, { apiError, createBearer } from '../../utils/makeRequest';
+import useUserStore from '../../store/UserStore';
+import { useRouter } from 'next/router';
+import { DVSToast } from '../atoms/DVSToast';
 
 export type AdminListProps = { type: 'election'; list: AdminElection[] } | { type: 'user'; list: [] };
 
 const AdminList: React.FC<AdminListProps> = ({ type, list }) => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const { showToast } = DVSToast();
+
   const [showActions, setShowActions] = useState<number>(null);
+  const [token] = useUserStore((s) => [s.access_token]);
 
   const handleMouseEnter = (index: number) => setShowActions(index);
+  const handleCloseElection = async (id: number) => {
+    try {
+      // await makeRequest({ url: `admin/election/close/${id}`, method: 'PUT', headers: createBearer(token) });
+      const { asPath } = router;
+      await router.push(asPath);
+    } catch (error) {
+      showToast({ status: 'error', description: t(apiError(error)) });
+    }
+  };
+  const handleEditElection = async (id: number) => {
+    await router.push(`/admin/election/edit/${id}`);
+  };
 
   const List = () => {
     switch (type) {
       case 'election': {
         return list.map(
-          ({ image, name, expires, description, candidates, totalEligibleVoters, totalRegisteredVoters }, index) => {
+          (
+            { id, image, name, expires, description, candidates, totalEligibleVoters, totalRegisteredVoters },
+            index,
+          ) => {
             const actions = (
               <DVSAdminDataDisplay.Actions
                 show={showActions === index}
@@ -50,10 +73,20 @@ const AdminList: React.FC<AdminListProps> = ({ type, list }) => {
                   {/*  icon={<Icon as={IoIosStats} />}*/}
                   {/*  colorScheme="blue"*/}
                   {/*/>*/}
-                  <Button colorScheme="red" variant="outline" leftIcon={<Icon as={FaLock} />}>
+                  <Button
+                    onClick={() => handleCloseElection(id)}
+                    colorScheme="red"
+                    variant="outline"
+                    leftIcon={<Icon as={FaLock} />}
+                  >
                     {t('admin.list.election.close')}
                   </Button>
-                  <Button colorScheme="green" variant="outline" leftIcon={<Icon as={IoMdCreate} />}>
+                  <Button
+                    onClick={() => handleEditElection(id)}
+                    colorScheme="green"
+                    variant="outline"
+                    leftIcon={<Icon as={IoMdCreate} />}
+                  >
                     {t('admin.list.election.edit')}
                   </Button>
                 </Stack>
