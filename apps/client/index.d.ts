@@ -7,10 +7,18 @@ declare module '*.svg' {
 
 interface ValidateParam {
   field: string;
-  value: string;
+  value: any;
   validationType: validationType[];
 }
-type validationType = 'notEmpty' | 'string' | 'email' | 'password' | 'passwordRepeat' | 'mnemonic';
+type validationType =
+  | 'notEmpty'
+  | 'notEmptyObjArray'
+  | 'notEmptyArray'
+  | 'string'
+  | 'email'
+  | 'password'
+  | 'passwordRepeat'
+  | 'mnemonic';
 interface validationFactoryParams {
   fields: Record<string, any>;
   validationTypes: { field: string; validationType: validationType[] }[];
@@ -20,4 +28,7 @@ type buttonType = 'primary' | 'secondary';
 type Modal =
   | { type: 'registerVoter'; payload: Election }
   | { type: 'mnemonic'; payload: string[] }
-  | { type: 'vote'; payload: { index: number; electionId: number; candidate: Candidate } };
+  | { type: 'vote'; payload: { index: number; electionId: number; candidate: Candidate } }
+  | { type: 'closeElection'; payload: Partial<Election> };
+
+type Modify<T, R> = Omit<T, keyof R> & R;

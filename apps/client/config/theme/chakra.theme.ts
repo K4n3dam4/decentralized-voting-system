@@ -1,7 +1,7 @@
 import { ChakraTheme, extendTheme } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 
-import { AlertStyle, InputStyle, LinkStyle, ModalStyle } from './component';
+import { AlertStyle, InputStyle, LinkStyle, ModalStyle, PopoverStyle, TextareaStyle } from './component';
 
 const override: Partial<ChakraTheme> = extendTheme({
   config: {
@@ -36,6 +36,8 @@ const override: Partial<ChakraTheme> = extendTheme({
     Input: InputStyle,
     Link: LinkStyle,
     Modal: ModalStyle,
+    Popover: PopoverStyle,
+    Textarea: TextareaStyle,
   },
 });
 

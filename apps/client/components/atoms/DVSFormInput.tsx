@@ -1,11 +1,10 @@
 import React from 'react';
 import { FormControl, FormErrorMessage, FormLabel, Input, InputProps } from '@chakra-ui/react';
-import { DVSVariant } from '../../config/theme/chakra.theme';
 
 export interface DVSFormInputProps extends InputProps {
   label?: string;
   error?: string;
-  dvsVariant?: DVSVariant;
+  dvsVariant?: string;
 }
 
 const DVSFormInput: React.FC<DVSFormInputProps> = ({ label, error, dvsVariant, ...props }) => {

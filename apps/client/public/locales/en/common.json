@@ -37,6 +37,63 @@
     "closesIn": "Closes in {{days}} days {{hours}} hours {{minutes}} minutes",
     "closed": "Closed"
   },
+  "admin": {
+    "overview": {
+      "allElections": "All elections",
+      "closedElections": "Closed elections",
+      "openElections": "Open elections"
+    },
+    "common": {
+      "candidate": "Candidate name",
+      "party": "Candidate party",
+      "image": "Candidate image"
+    },
+    "list": {
+      "election": {
+        "totalEligibleVoters": "Eligible voters",
+        "totalRegisteredVoters": "Registered voters",
+        "close": "Close",
+        "edit": "Edit",
+        "results": "Show results"
+      }
+    },
+    "create": {
+      "election": {
+        "heading": "Create election",
+        "descr": "Create a new election using this panel. Please double-check your input before submitting it. Some of the entered election data can not be changed once the election has been deployed as a smart contract.",
+        "name": "Name",
+        "image": "Election image",
+        "description": "Description",
+        "candidates": "Candidates",
+        "eligibleVoters": "Eligible voters",
+        "expires": "Expires on"
+      }
+    }
+  },
+  "dates": {
+    "day": "Day",
+    "hour": "Hour",
+    "Minute": "Minute",
+    "Second": "Seconds",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    }
+  },
   "modals": {
     "registerVoter": {
       "header": "Voter registration",
@@ -51,8 +108,14 @@
     "vote": {
       "header": "Vote for {{name}}",
       "text": "You will cast your vote for {{name}}. Please enter the mnemonic passphrase you received after completing the registration process.",
-      "warning": "This action is final and can not be reversed.",
+      "warning": "This action is final and can not be reverted.",
       "submit": "Cast your vote"
+    },
+    "closeElection": {
+      "header": "Close {{name}}",
+      "text": "This will close {{name}}. Are you sure?",
+      "warning": "This action is final and can not be reverted.",
+      "submit": "Close election"
     }
   },
   "controls": {
@@ -62,9 +125,19 @@
     "close": "Close",
     "cancel": "Cancel"
   },
+  "success": {
+    "admin": {
+      "election": {
+        "create": "{{name}} created successfully.",
+        "close": "{{name}} was closed successfully."
+      }
+    }
+  },
   "error": {
     "validate": {
       "notEmpty": "This field must not be empty.",
+      "notEmptyObjArray": "These fields must not be empty.",
+      "notEmptyArray": "These fields must not be empty.",
       "string": "Some of the characters you entered are invalid.",
       "password": "Minimum eight characters, at least one letter, one number and one special, upper- as well as lower case character.",
       "passwordRepeat": "Passwords do not match.",

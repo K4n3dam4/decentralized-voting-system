@@ -14,7 +14,7 @@ const formCard = () =>
     },
   });
 
-const modal = ({ colorMode }) =>
+const lighter = ({ colorMode }) =>
   definePartsStyle({
     field: {
       px: '0',
@@ -54,7 +54,7 @@ const InputStyle = defineMultiStyleConfig({
       },
     },
   }),
-  variants: { formCard, modal },
+  variants: { formCard, lighter },
 });
 
 export default InputStyle;

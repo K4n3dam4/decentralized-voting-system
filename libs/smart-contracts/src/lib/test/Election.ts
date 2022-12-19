@@ -79,11 +79,6 @@ describe('Test contracts', function () {
         expect(res.confirmations).to.be.greaterThan(0);
       });
 
-      it('should calculate results', async function () {
-        const res = await election.calcResult();
-        expect(res.confirmations).to.be.greaterThan(0);
-      });
-
       it('should have correct results', async function () {
         const results = await election.getResults();
         expect(results[0].voteCount).to.be.equal(1);

@@ -8,16 +8,9 @@ import {
   HttpCode,
   ClassSerializerInterceptor,
   UseInterceptors,
-  Put,
 } from '@nestjs/common';
 import { ElectionService } from './election.service';
-import {
-  ElectionCreateDto,
-  ElectionEligibleDto,
-  ElectionEligibleUpdateDto,
-  ElectionRegisterDto,
-  ElectionVoteDto,
-} from './election.dto';
+import { ElectionEligibleDto, ElectionRegisterDto, ElectionVoteDto } from './election.dto';
 import { ElectionEntity } from './election.entity';
 import { GetUser, Roles } from '../decorators';
 import { RolesGuard } from '../guards';
@@ -43,29 +36,14 @@ export class ElectionController {
     return await this.electionsService.getAllElections();
   }
 
-  @Roles(RoleEnum.Admin)
-  @UseGuards(RolesGuard)
-  @Post('create')
-  createElection(@Body() dto: ElectionCreateDto, @GetUser('id') id: number) {
-    return this.electionsService.createElection(dto, id);
-  }
-
-  @Roles(RoleEnum.Admin)
-  @UseGuards(RolesGuard)
-  @Put('eligible/update/:id')
-  updateEligibleVoter(@Body() dto: ElectionEligibleUpdateDto, @Param('id') eligibleId: string) {
-    return this.electionsService.updateEligibleVoter(dto, eligibleId);
-  }
-
   @Roles(RoleEnum.Voter)
   @UseGuards(RolesGuard)
-  @UseInterceptors(ClassSerializerInterceptor)
   @Post('register/:id')
   registerVoter(@Body() dto: ElectionRegisterDto, @GetUser('id') userId: number, @Param('id') id: string) {
     return this.electionsService.registerVoter(dto, userId, id);
   }
 
-  @Roles(RoleEnum.Voter)
+  @Roles(RoleEnum.Voter, RoleEnum.Admin)
   @UseGuards(RolesGuard)
   @HttpCode(200)
   @Post('eligible/:id')

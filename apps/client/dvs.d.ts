@@ -1,3 +1,8 @@
+declare namespace Chart {
+  import { ChartDataset } from 'chart.js';
+  type dataset = ChartDataset;
+}
+
 interface VoterSignup {
   firstName: string;
   lastName: string;
@@ -12,10 +17,6 @@ interface VoterSignup {
 interface VoterSignin {
   email: string;
   password: string;
-}
-
-interface ElectionRegister {
-  ssn: string;
 }
 
 interface Registered {
@@ -40,6 +41,22 @@ interface Candidate {
   name: string;
   image?: string;
   party?: string;
+  draw?: boolean;
+  winner?: boolean;
+  voteCount?: number;
+}
+
+interface ElectionCreate {
+  name: string;
+  description: string;
+  image: string;
+  candidates: Candidate[];
+  eligibleVoters: string[];
+  expires: number;
+}
+
+interface ElectionRegister {
+  ssn: string;
 }
 
 interface Election {
@@ -53,6 +70,40 @@ interface Election {
   updatedAt: string;
   registered?: boolean;
   hasVoted?: boolean;
+}
+
+interface AdminElection extends Election {
+  adminId: number;
+  totalEligibleVoters: number;
+  totalRegisteredVoters: number;
+}
+
+interface AdminUser {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  street: string;
+  city: string;
+  postalCode: number;
+}
+
+interface AdminStats {
+  all: {
+    months: number[];
+    dataSets: Chart.dataset<'line'>;
+    users: {
+      dataSets: Chart.dataset<'doughnut'>;
+    };
+    elections: {
+      dataSets: Chart.dataset<'bar'>;
+    };
+  };
+  latestElection: {
+    dataSets: Chart.dataset<'bar'>;
+  };
 }
 
 interface APIError {

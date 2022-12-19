@@ -61,6 +61,28 @@ const validate = (params: ValidateParam[]) => {
         if (word.length === 0) setError(field, i18n.t('error.validate.mnemonic'));
       });
     }
+
+    if (validationType.includes('notEmptyObjArray')) {
+      if (value.length < 1) {
+        setError(field, i18n.t('error.validate.notEmptyObjArray'));
+      } else {
+        value.forEach((obj) => {
+          Object.values(obj).forEach((vl: string) => {
+            if (vl.length === 0) setError(field, i18n.t('error.validate.notEmptyObjArray'));
+          });
+        });
+      }
+    }
+
+    if (validationType.includes('notEmptyArray')) {
+      if (value.length < 1) {
+        setError(field, i18n.t('error.validate.notEmptyArray'));
+      } else {
+        value.forEach((vl: string) => {
+          if (vl.length === 0) setError(field, i18n.t('error.validate.notEmptyArray'));
+        });
+      }
+    }
   });
 
   return { errors, hasErrors };

@@ -5,10 +5,13 @@ import {
   CoreModule,
   ElectionCreateDto,
   ElectionEligibleDto,
-  ElectionEligibleUpdateDto,
   ElectionModule,
   ElectionRegisterDto,
+  ElectionUpdateDto,
   ElectionVoteDto,
+  EligibleCreateDto,
+  EligibleDeleteDto,
+  EligibleUpdateDto,
   SigninDto,
   VoterSignupDto,
 } from '@dvs/api';
@@ -47,7 +50,7 @@ describe('App e2e', () => {
       password: 'testpassword',
     };
     const mockVoter2: VoterSignupDto = {
-      ssn: '109876543210',
+      ssn: '654321',
       firstName: 'Jane',
       lastName: 'Doe',
       street: 'Baker Street 2',
@@ -71,7 +74,7 @@ describe('App e2e', () => {
 
       // pactum
       request.setBaseUrl(host);
-      request.setDefaultTimeout(100000);
+      request.setDefaultTimeout(10 * 1000);
 
       // core
       core = moduleFixture.get(CoreModule);
@@ -100,6 +103,10 @@ describe('App e2e', () => {
       });
 
       it('should load AuthModule', function () {
+        expect(app.get(AuthModule)).toBeDefined();
+      });
+
+      it('should load AdminModule', function () {
         expect(app.get(AuthModule)).toBeDefined();
       });
 
@@ -219,112 +226,274 @@ describe('App e2e', () => {
       });
     });
 
-    // Test elections module
-    describe('Elections', function () {
-      const headersVoter = { Authorization: 'Bearer $S{access_tokenV}' };
+    // Test admin module
+    describe('Admin', function () {
       const headersAdmin = { Authorization: 'Bearer $S{access_tokenA}' };
+      const headersVoter = { Authorization: 'Bearer $S{access_tokenV}' };
+      const baseUrl = 'admin/';
 
-      const baseUrl = 'election/';
+      describe('Election', function () {
+        const electionUrl = baseUrl + 'election/';
 
-      describe('Create election [POST election/create]', function () {
-        const dto: ElectionCreateDto = {
-          name: 'US Presidential Election 2020',
-          image: 'https://google.de',
-          candidates: [
-            { name: 'Donald J. Trump', image: '', party: 'GOP' },
-            { name: 'Joe Biden', image: '', party: 'Democrats' },
-          ],
-          description:
-            'After both parties have chosen their respective candidates, the election process for the 2020 presidential election will commence on November, 3.',
-          eligibleVoters: [mockVoter.ssn, mockVoter2.ssn],
-          expires: Math.round(new Date(Date.now() + 24 * 60 * 60 * 1000).getTime() / 1000),
-        };
-        const url = baseUrl + 'create';
+        const createUrl = electionUrl + 'create';
+        const updateUrl = electionUrl + 'update/';
+        const getAllUrl = electionUrl + 'all';
+        const getSingleUrl = electionUrl + 'single/';
+        const addVoterUrl = electionUrl + 'add/voter';
+        const updateVoterUrl = electionUrl + 'update/voter/';
+        const deleteVoterUrl = electionUrl + 'delete/voter';
 
-        it('should be guarded', function () {
-          return spec().post(url).withHeaders(headersVoter).expectStatus(403);
+        describe(`Create election [POST ${createUrl}]`, function () {
+          const dto: ElectionCreateDto = {
+            name: 'US Presidential Election 2020',
+            image: 'https://google.de',
+            candidates: [
+              { name: 'Donald J. Trump', image: '', party: 'GOP' },
+              { name: 'Joe Biden', image: '', party: 'Democrats' },
+            ],
+            description:
+              'After both parties have chosen their respective candidates, the election process for the 2020 presidential election will commence on November, 3.',
+            eligibleVoters: [mockVoter.ssn, mockVoter2.ssn],
+            expires: Math.round(new Date(Date.now() + 24 * 60 * 60 * 1000).getTime() / 1000),
+          };
+
+          it('should be guarded', function () {
+            return spec().post(createUrl).withHeaders(headersVoter).expectStatus(403);
+          });
+
+          it('should validate request', function () {
+            const faultyDto = { ...dto };
+            faultyDto.name = '';
+            return spec().post(createUrl).withHeaders(headersAdmin).withBody(faultyDto).expectStatus(400);
+          });
+
+          it('should create election', async function () {
+            return spec()
+              .post(createUrl)
+              .withHeaders(headersAdmin)
+              .withBody(dto)
+              .expectStatus(201)
+              .stores('ElectionId', 'id');
+          });
         });
 
-        it('should validate request', function () {
-          const faultyDto = { ...dto };
-          faultyDto.name = '';
-          return spec().post(url).withHeaders(headersAdmin).withBody(faultyDto).expectStatus(400);
+        describe(`Update election [PUT ${updateUrl}:id]`, function () {
+          const dto: ElectionUpdateDto = {
+            image: 'https://www.google.com',
+          };
+
+          it('should be guarded', function () {
+            return spec()
+              .put(updateUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersVoter)
+              .expectStatus(403);
+          });
+
+          it('should validate request', function () {
+            const faultyDto = { image: 234 };
+            return spec()
+              .put(updateUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersAdmin)
+              .withBody(faultyDto)
+              .expectStatus(400);
+          });
+
+          it('should update election', function () {
+            return spec()
+              .put(updateUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersAdmin)
+              .withBody(dto)
+              .expectStatus(200);
+          });
         });
 
-        it('should create election', function () {
-          return spec().post(url).withHeaders(headersAdmin).withBody(dto).expectStatus(201).stores('ElectionId', 'id');
+        describe(`Get all [GET ${getAllUrl}]`, function () {
+          it('should be guarded', function () {
+            return spec().get(getAllUrl).withHeaders(headersVoter).expectStatus(403);
+          });
+
+          it('should get all elections', function () {
+            return spec().get(getAllUrl).withHeaders(headersAdmin).expectStatus(200);
+          });
+        });
+
+        describe(`Get single [POST ${getSingleUrl}:id]`, function () {
+          it('should be guarded', function () {
+            return spec()
+              .get(getSingleUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersVoter)
+              .expectStatus(403);
+          });
+
+          it('should get single election', function () {
+            return spec()
+              .get(getSingleUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersAdmin)
+              .expectStatus(200);
+          });
+        });
+
+        describe(`Add eligible voters [POST ${addVoterUrl}]`, function () {
+          let dto: EligibleCreateDto;
+          beforeAll(async () => {
+            prisma = app.get(PrismaService);
+            const res = await prisma.getEligibleVoter();
+            const { electionId } = res[0];
+            dto = {
+              eligibleVoters: [
+                { electionId, ssn: '34435984943' },
+                { electionId, ssn: '34293200293' },
+              ],
+            };
+          });
+
+          it('should be guarded', function () {
+            return spec().post(addVoterUrl).withHeaders(headersVoter).withBody(dto).expectStatus(403);
+          });
+
+          it('should validate request', function () {
+            const faultyDto: EligibleCreateDto = {
+              eligibleVoters: [{ ...dto.eligibleVoters[0] }],
+            };
+            faultyDto.eligibleVoters[0].ssn = '';
+            return spec().post(addVoterUrl).withHeaders(headersAdmin).withBody(faultyDto).expectStatus(400);
+          });
+
+          it('should add eligible voters', function () {
+            return spec()
+              .post(addVoterUrl)
+              .withHeaders(headersAdmin)
+              .withPathParams('id', '$S{ElectionId}')
+              .withBody(dto)
+              .expectStatus(201);
+          });
+        });
+
+        describe(`Update eligible voter [PUT ${updateVoterUrl}:id]`, function () {
+          let eligibleId: number;
+
+          beforeAll(async () => {
+            prisma = app.get(PrismaService);
+            const res = await prisma.getEligibleVoter();
+            const { id } = res.find(({ ssn }) => ssn === mockVoter2.ssn);
+            eligibleId = id;
+          });
+
+          const dto: EligibleUpdateDto = {
+            ssn: undefined,
+            wallet: process.env.VOTER_ADDRESS,
+          };
+
+          it('should be guarded', function () {
+            return spec()
+              .put(updateVoterUrl + '{id}')
+              .withPathParams('id', `${eligibleId}`)
+              .withHeaders(headersVoter)
+              .expectStatus(403);
+          });
+
+          it('should validate request', function () {
+            const faultyDto = { wallet: 42332 };
+            return spec()
+              .put(updateVoterUrl + '{id}')
+              .withPathParams('id', `${eligibleId}`)
+              .withHeaders(headersAdmin)
+              .withBody(faultyDto)
+              .expectStatus(400);
+          });
+
+          it('should update eligible voter', function () {
+            return spec()
+              .put(updateVoterUrl + '{id}')
+              .withPathParams('id', `${eligibleId}`)
+              .withHeaders(headersAdmin)
+              .withBody(dto)
+              .expectStatus(200);
+          });
+        });
+
+        describe(`Delete eligible voters [DELETE ${deleteVoterUrl}]`, function () {
+          let dto: EligibleDeleteDto;
+          beforeAll(async () => {
+            prisma = app.get(PrismaService);
+            const res = await prisma.getEligibleVoter();
+            const { id } = res.find(({ ssn }) => ssn !== mockVoter.ssn && ssn !== mockVoter2.ssn);
+            dto = {
+              ids: [id],
+            };
+          });
+
+          it('should be guarded', function () {
+            return spec().delete(deleteVoterUrl).withHeaders(headersVoter).expectStatus(403);
+          });
+
+          it('should validate request', function () {
+            const faultyDto = { ids: [''] };
+            return spec().delete(deleteVoterUrl).withHeaders(headersAdmin).withBody(faultyDto).expectStatus(400);
+          });
+
+          it('should update eligible voter', function () {
+            return spec().delete(deleteVoterUrl).withHeaders(headersAdmin).withBody(dto).expectStatus(200);
+          });
         });
       });
 
-      describe('Get all [POST election/all]', function () {
-        const url = baseUrl + 'all';
+      describe('Users', function () {
+        const userUrl = baseUrl + 'user/';
 
+        const getAllUrl = userUrl + 'all';
+
+        describe(`Get all [GET ${getAllUrl}]`, function () {
+          it('should be guarded', function () {
+            return spec().get(getAllUrl).withHeaders(headersVoter).expectStatus(403);
+          });
+
+          it('should get all users', function () {
+            return spec().get(getAllUrl).withHeaders(headersAdmin).expectStatus(200);
+          });
+        });
+      });
+    });
+
+    // Test elections module
+    describe('Election', function () {
+      const headersVoter = { Authorization: 'Bearer $S{access_tokenV}' };
+      const baseUrl = 'election/';
+
+      const getALlUrl = baseUrl + 'all';
+      const getSingleUrl = baseUrl + 'single/';
+      const registerUrl = baseUrl + 'register/';
+      const eligibleUrl = baseUrl + 'eligible/';
+      const voteUrl = baseUrl + 'vote/';
+
+      describe(`Get all [GET ${getALlUrl}]`, function () {
         it('should be guarded', function () {
-          return spec().get(url).expectStatus(401);
+          return spec().get(getALlUrl).expectStatus(401);
         });
 
         it('should get all elections', function () {
-          return spec().get(url).withHeaders(headersVoter).expectStatus(200);
+          return spec().get(getALlUrl).withHeaders(headersVoter).expectStatus(200);
         });
       });
 
-      describe('Get single [POST election/single/:id]', function () {
-        const url = baseUrl + 'single/';
-
+      describe(`Get single [POST ${getSingleUrl}:id]`, function () {
         it('should be guarded', function () {
           return spec()
-            .get(url + '{id}')
+            .get(getSingleUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .expectStatus(401);
         });
 
         it('should get single election', function () {
           return spec()
-            .get(url + '{id}')
+            .get(getSingleUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
-            .expectStatus(200);
-        });
-      });
-
-      describe('Update eligible voter [PUT eligible/update/:id]', function () {
-        let eligibleId: number;
-
-        beforeEach(async () => {
-          prisma = app.get(PrismaService);
-          const { id } = await prisma.getEligibleVoter();
-          eligibleId = id;
-        });
-
-        const dto: ElectionEligibleUpdateDto = {
-          ssn: undefined,
-          wallet: process.env.VOTER_ADDRESS,
-        };
-        const url = baseUrl + 'eligible/update/';
-
-        it('should be guarded', function () {
-          return spec()
-            .put(url + '{id}')
-            .withPathParams('id', `${eligibleId}`)
-            .expectStatus(401);
-        });
-
-        it('should validate request', function () {
-          const faultyDto = { wallet: 42332 };
-          return spec()
-            .put(url + '{id}')
-            .withPathParams('id', `${eligibleId}`)
-            .withHeaders(headersAdmin)
-            .withBody(faultyDto)
-            .expectStatus(400);
-        });
-
-        it('should update eligible voter', function () {
-          return spec()
-            .put(url + '{id}')
-            .withPathParams('id', `${eligibleId}`)
-            .withHeaders(headersAdmin)
-            .withBody(dto)
             .expectStatus(200);
         });
       });
@@ -333,11 +502,10 @@ describe('App e2e', () => {
         const dto: ElectionRegisterDto = {
           ssn: mockVoter.ssn,
         };
-        const url = baseUrl + 'register/';
 
         it('should be guarded', function () {
           return spec()
-            .post(url + '{id}')
+            .post(registerUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withBody(dto)
             .expectStatus(401);
@@ -347,7 +515,7 @@ describe('App e2e', () => {
           const faultyDto = { ...dto };
           faultyDto.ssn = '2134';
           return spec()
-            .post(url + '{id}')
+            .post(registerUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
             .withBody(faultyDto)
@@ -356,7 +524,7 @@ describe('App e2e', () => {
 
         it('should register eligible voters', function () {
           return spec()
-            .post(url + '{id}')
+            .post(registerUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
             .withBody(dto)
@@ -365,15 +533,14 @@ describe('App e2e', () => {
         });
       });
 
-      describe('Check eligibility [POST election/eligible/:id]', function () {
+      describe(`Check eligibility [POST ${eligibleUrl}:id]`, function () {
         const dto: ElectionEligibleDto = {
           mnemonic: '$S{Mnemonic}',
         };
-        const url = baseUrl + 'eligible/';
 
         it('should be guarded', function () {
           return spec()
-            .post(url + '{id}')
+            .post(eligibleUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withBody(dto)
             .expectStatus(401);
@@ -384,7 +551,7 @@ describe('App e2e', () => {
             mnemonic: 'weijeko dowkedko',
           };
           return spec()
-            .post(url + '{id}')
+            .post(eligibleUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
             .withBody(faultyDto)
@@ -393,7 +560,7 @@ describe('App e2e', () => {
 
         it('should validate mnemonic', function () {
           return spec()
-            .post(url + '{id}')
+            .post(eligibleUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
             .withBody(dto)
@@ -401,16 +568,15 @@ describe('App e2e', () => {
         });
       });
 
-      describe('Vote [POST election/vote]', function () {
+      describe(`Vote [POST ${voteUrl}:id]`, function () {
         const dto: ElectionVoteDto = {
           mnemonic: '$S{Mnemonic}',
           candidate: 0,
         };
-        const url = baseUrl + 'vote/';
 
         it('should be guarded', function () {
           return spec()
-            .post(url + '{id}')
+            .post(voteUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withBody(dto)
             .expectStatus(401);
@@ -421,7 +587,7 @@ describe('App e2e', () => {
           faultyDto.mnemonic =
             'town sun north elevator rubber crack dolphin runway liar awake try iron crew relief basic';
           return spec()
-            .post(url + '{id}')
+            .post(voteUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
             .withBody(faultyDto)
@@ -430,7 +596,7 @@ describe('App e2e', () => {
 
         it('should vote', function () {
           return spec()
-            .post(url + '{id}')
+            .post(voteUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
             .withBody(dto)
@@ -439,12 +605,42 @@ describe('App e2e', () => {
 
         it('should only allow one vote', function () {
           return spec()
-            .post(url + '{id}')
+            .post(voteUrl + '{id}')
             .withPathParams('id', '$S{ElectionId}')
             .withHeaders(headersVoter)
             .withBody(dto)
-            .expectStatus(403)
-            .inspect();
+            .expectStatus(403);
+        });
+      });
+    });
+
+    // Test admin module
+    describe('Admin 2', function () {
+      const headersAdmin = { Authorization: 'Bearer $S{access_tokenA}' };
+      const headersVoter = { Authorization: 'Bearer $S{access_tokenV}' };
+      const baseUrl = 'admin/';
+
+      describe('Election', function () {
+        const electionUrl = baseUrl + 'election/';
+
+        const closeUrl = electionUrl + 'close/';
+
+        describe(`Close election [POST ${closeUrl}:id]`, function () {
+          it('should be guarded', function () {
+            return spec()
+              .put(closeUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersVoter)
+              .expectStatus(403);
+          });
+
+          it('should close election', function () {
+            return spec()
+              .put(closeUrl + '{id}')
+              .withPathParams('id', '$S{ElectionId}')
+              .withHeaders(headersAdmin)
+              .expectStatus(200);
+          });
         });
       });
     });
