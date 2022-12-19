@@ -48,7 +48,8 @@
         "totalEligibleVoters": "Eligible voters",
         "totalRegisteredVoters": "Registered voters",
         "close": "Close",
-        "edit": "Edit"
+        "edit": "Edit",
+        "results": "Show results"
       }
     },
     "create": {

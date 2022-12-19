@@ -36,6 +36,9 @@ interface Candidate {
   name: string;
   image?: string;
   party?: string;
+  draw?: boolean;
+  winner?: boolean;
+  voteCount?: number;
 }
 
 interface ElectionCreate {
