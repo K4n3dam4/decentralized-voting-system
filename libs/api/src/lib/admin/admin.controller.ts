@@ -31,6 +31,11 @@ import { AdminElectionEntity, UserEntity } from './admin.entity';
 export class AdminElectionController {
   constructor(private adminService: AdminService) {}
 
+  @Get('overview')
+  async getOverview() {
+    return await this.adminService.getOverview();
+  }
+
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('election/single/:id')
   async getElection(@Param('id') electionId: string): Promise<AdminElectionEntity> {

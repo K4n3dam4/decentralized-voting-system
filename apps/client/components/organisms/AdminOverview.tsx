@@ -7,30 +7,48 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
+  ArcElement,
   Legend,
   Colors,
   ChartData,
   ChartOptions,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { Box, Stack, useColorModeValue } from '@chakra-ui/react';
+import { Line, Bar, Doughnut } from 'react-chartjs-2';
+import { Box, Flex, Stack, useColorModeValue } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Colors);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+);
 
 interface AdminOverviewProps {
-  elections: AdminElection[];
-  users: AdminUser[];
+  stats: AdminStats;
 }
 
-const AdminOverview: React.FC<AdminOverviewProps> = ({ elections, users }) => {
+const AdminOverview: React.FC<AdminOverviewProps> = ({ stats }) => {
   const { t } = useTranslation();
 
   const color = useColorModeValue('#000', '#fff');
   const bgColor = useColorModeValue('#EDF2F6', '#171923');
-  const borderColorPrimary = useColorModeValue('#CB1871', '#F38DBF');
   ChartJS.defaults.backgroundColor = bgColor;
   ChartJS.defaults.color = color;
+  ChartJS.defaults.responsive = true;
+
+  const defaultPlugins = {
+    legend: {
+      position: 'bottom' as const,
+    },
+  };
 
   const months = [
     t('dates.months.jan'),
@@ -47,72 +65,78 @@ const AdminOverview: React.FC<AdminOverviewProps> = ({ elections, users }) => {
     t('dates.months.dec'),
   ];
 
-  const analyticsOptions: ChartOptions<'line'> = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
+  const Charts = Object.entries(stats).map(([chart, data]) => {
+    const options = {
+      responsive: true,
+      plugins: {
+        ...defaultPlugins,
+        title: {
+          display: true,
+        },
       },
-      title: {
-        display: true,
-        text: `Analytics ${new Date().getFullYear().toString()}`,
-      },
-    },
-    scales: {
-      x: {
-        ticks: { color },
-      },
-      y: {
-        ticks: { color },
-      },
-    },
-  };
-  const analyticsData: ChartData<'line'> = {
-    labels: months,
-    datasets: [
-      {
-        label: 'Elections',
-        data: months.map((_month, index) => {
-          const created = elections.filter((election) => {
-            const electionDate = new Date(election.createdAt);
-            const electionMonth = electionDate.getMonth();
-            const electionYear = electionDate.getFullYear();
-            const year = new Date().getFullYear();
+    };
 
-            if (electionYear === year && electionMonth === index) return election;
-          });
+    switch (chart) {
+      case 'all': {
+        const opt: ChartOptions<'line'> = {
+          ...options,
+          scales: {
+            x: {
+              ticks: { color },
+            },
+            y: {
+              ticks: { color },
+            },
+          },
+        };
+        opt.plugins.title.text = `Analytics ${new Date().getFullYear().toString()}`;
+        const allData: ChartData<'line'> = {
+          labels: months,
+          datasets: data.dataSets,
+        };
 
-          return created.length;
-        }),
-        borderColor: borderColorPrimary,
-      },
-      {
-        label: 'Users',
-        data: months.map((_month, index) => {
-          const created = users.filter((user) => {
-            const createdAt = new Date(user.createdAt);
-            const month = createdAt.getMonth();
-            const year = createdAt.getFullYear();
-            const currentYear = new Date().getFullYear();
+        return <Line options={options} data={allData} />;
+      }
+      case 'elections': {
+        const opt: ChartOptions<'bar'> = { ...options };
+        opt.plugins.title.text = `Elections`;
+        const allData: ChartData<'bar'> = {
+          labels: months,
+          datasets: data.dataSets.map((set) => ({
+            ...set,
+            label: t(set.label),
+          })),
+        };
 
-            if (year === currentYear && month === index) return user;
-          });
+        return (
+          <Box w="70%">
+            <Bar options={opt} data={allData} />
+          </Box>
+        );
+      }
+      case 'latestElection': {
+        const opt: ChartOptions<'doughnut'> = { ...options };
+        opt.plugins.title.text = 'Latest election';
+        const allData: ChartData<'doughnut'> = {
+          labels: ['Eligible voters', 'Registered voters', 'Candidates'],
+          datasets: data.dataSets,
+        };
 
-          return created.length;
-        }),
-        borderColor: 'rgb(75, 192, 192)',
-      },
-    ],
-  };
+        return (
+          <Box w="30%">
+            <Doughnut options={opt} data={allData} />
+          </Box>
+        );
+      }
+    }
+  });
+
+  const ChartFull = Charts.shift();
 
   return (
     <Stack spacing={20}>
-      <Box display="flex" justifyContent="center" w="100%" h="500px">
-        <Line options={analyticsOptions} data={analyticsData} />
-      </Box>
-      <Box display="flex" justifyContent="center" w="100%" h="500px">
-        <Line options={analyticsOptions} data={analyticsData} />
-      </Box>
+      <Flex alignItems="center">{Charts}</Flex>
+      {ChartFull}
     </Stack>
   );
 };

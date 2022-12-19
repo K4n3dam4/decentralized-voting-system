@@ -1,3 +1,8 @@
+declare namespace Chart {
+  import { ChartDataset } from 'chart.js';
+  type dataset = ChartDataset;
+}
+
 interface VoterSignup {
   firstName: string;
   lastName: string;
@@ -83,6 +88,22 @@ interface AdminUser {
   street: string;
   city: string;
   postalCode: number;
+}
+
+interface AdminStats {
+  all: {
+    months: number[];
+    dataSets: Chart.dataset<'line'>;
+    users: {
+      dataSets: Chart.dataset<'doughnut'>;
+    };
+    elections: {
+      dataSets: Chart.dataset<'bar'>;
+    };
+  };
+  latestElection: {
+    dataSets: Chart.dataset<'bar'>;
+  };
 }
 
 interface APIError {

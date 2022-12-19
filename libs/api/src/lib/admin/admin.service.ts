@@ -26,6 +26,126 @@ export class AdminService {
     private readonly contract: EthersContract,
   ) {}
 
+  mapToMonths = (data: any & { createdAt: Date }[], months: number[]) => {
+    return months.map((_month, index) => {
+      const created = data.filter((item) => {
+        const electionDate = new Date(item.createdAt);
+        const electionMonth = electionDate.getMonth();
+        const electionYear = electionDate.getFullYear();
+        const year = new Date().getFullYear();
+
+        if (electionYear === year && electionMonth === index) return item;
+      });
+      return created.length;
+    });
+  };
+
+  async getOverview() {
+    const createdCurrentYear = {
+      createdAt: {
+        gte: new Date(new Date().getFullYear(), 0, 1).toISOString(),
+        lt: new Date(new Date().getFullYear(), 11, 31).toISOString(),
+      },
+    };
+    const opened = {
+      expires: {
+        gte: new Date().toISOString(),
+      },
+    };
+    const closed = {
+      expires: {
+        gte: new Date(new Date().getFullYear(), 0, 1).toISOString(),
+        lt: new Date().toISOString(),
+      },
+    };
+    const voters = await this.prisma.user.findMany({
+      where: { role: 'VOTER' },
+      include: { registered: true },
+    });
+    const admins = await this.prisma.user.findMany({
+      where: { role: 'ADMIN' },
+      include: { elections: true },
+    });
+    const elections = await this.prisma.election.findMany({
+      where: createdCurrentYear,
+    });
+    const openElections = await this.prisma.election.findMany({
+      where: { expires: opened.expires },
+    });
+    const closedElections = await this.prisma.election.findMany({
+      where: { expires: closed.expires, createdAt: createdCurrentYear.createdAt },
+    });
+    const [latestElection] = await this.prisma.election.findMany({
+      include: {
+        registeredVoters: true,
+        eligibleVoters: true,
+      },
+      take: -1,
+    });
+
+    const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+    return {
+      all: {
+        months,
+        dataSets: [
+          {
+            label: 'Elections',
+            data: this.mapToMonths(voters, months),
+          },
+          {
+            label: 'Voters',
+            data: this.mapToMonths(admins, months),
+          },
+          {
+            label: 'Admins',
+            data: this.mapToMonths(elections, months),
+          },
+        ],
+      },
+      users: {
+        dataSets: [
+          {
+            label: 'Admins',
+            data: [admins.length],
+          },
+          {
+            label: 'Voters',
+            data: [voters.length],
+          },
+        ],
+      },
+      elections: {
+        months,
+        dataSets: [
+          {
+            label: 'admin.overview.allElections',
+            data: this.mapToMonths(elections, months),
+          },
+          {
+            label: 'admin.overview.openElections',
+            data: this.mapToMonths(openElections, months),
+          },
+          {
+            label: 'admin.overview.closedElections',
+            data: this.mapToMonths(closedElections, months),
+          },
+        ],
+      },
+      latestElection: {
+        dataSets: [
+          {
+            data: [
+              latestElection.eligibleVoters.length,
+              latestElection.registeredVoters.length,
+              JSON.parse(JSON.stringify(latestElection.candidates)).length,
+            ],
+          },
+        ],
+      },
+    };
+  }
+
   async getElection(electionId: string) {
     const id = Number(electionId);
     let election = await this.prisma.election.findUnique({

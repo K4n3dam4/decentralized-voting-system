@@ -3,7 +3,6 @@ import DVSSidebar, { DVSSidebarProps } from '../molecules/DVSSidebar';
 import { useRouter } from 'next/router';
 import { DVSMenuLinkProps } from '../atoms/DVSMenuLink';
 import { GiPapers } from 'react-icons/gi';
-import { FaUsers } from 'react-icons/fa';
 import { IoMdCreate, IoIosAnalytics } from 'react-icons/io';
 import { Icon } from '@chakra-ui/icons';
 
@@ -41,16 +40,16 @@ const Sidebar = () => {
             children: 'Create',
             icon: <Icon as={IoMdCreate} />,
           },
-          {
-            href: 'admin/users/list',
-            children: 'List',
-            icon: <Icon as={FaUsers} />,
-          },
-          {
-            href: 'admin/users/create',
-            children: 'Create',
-            icon: <Icon as={IoMdCreate} />,
-          },
+          // {
+          //   href: 'admin/users/list',
+          //   children: 'List',
+          //   icon: <Icon as={FaUsers} />,
+          // },
+          // {
+          //   href: 'admin/users/create',
+          //   children: 'Create',
+          //   icon: <Icon as={IoMdCreate} />,
+          // },
         ];
         dividers = [
           {

@@ -38,6 +38,11 @@
     "closed": "Closed"
   },
   "admin": {
+    "overview": {
+      "allElections": "All elections",
+      "closedElections": "Closed elections",
+      "openElections": "Open elections"
+    },
     "common": {
       "candidate": "Candidate name",
       "party": "Candidate party",
