@@ -102,8 +102,14 @@
     "vote": {
       "header": "Vote for {{name}}",
       "text": "You will cast your vote for {{name}}. Please enter the mnemonic passphrase you received after completing the registration process.",
-      "warning": "This action is final and can not be reversed.",
+      "warning": "This action is final and can not be reverted.",
       "submit": "Cast your vote"
+    },
+    "closeElection": {
+      "header": "Close {{name}}",
+      "text": "This will close {{name}}. Are you sure?",
+      "warning": "This action is final and can not be reverted.",
+      "submit": "Close election"
     }
   },
   "controls": {
@@ -116,7 +122,8 @@
   "success": {
     "admin": {
       "election": {
-        "create": "{{name}} created successfully."
+        "create": "{{name}} created successfully.",
+        "close": "{{name}} was closed successfully."
       }
     }
   },

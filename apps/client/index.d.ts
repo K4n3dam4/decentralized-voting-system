@@ -28,6 +28,7 @@ type buttonType = 'primary' | 'secondary';
 type Modal =
   | { type: 'registerVoter'; payload: Election }
   | { type: 'mnemonic'; payload: string[] }
-  | { type: 'vote'; payload: { index: number; electionId: number; candidate: Candidate } };
+  | { type: 'vote'; payload: { index: number; electionId: number; candidate: Candidate } }
+  | { type: 'closeElection'; payload: Partial<Election> };
 
 type Modify<T, R> = Omit<T, keyof R> & R;
