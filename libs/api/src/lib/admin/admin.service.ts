@@ -148,9 +148,13 @@ export class AdminService {
 
     try {
       // close election
-      await contract.functions.closeElection();
+      const tsx = await contract.functions.closeElection();
+      // wait for transaction
+      await tsx.wait();
+
       const expires = await contract.callStatic.expires();
       const result = await contract.callStatic.getResults();
+
       // calc result
       let candidates = JSON.parse(JSON.stringify(election.candidates));
       type candidate = {
