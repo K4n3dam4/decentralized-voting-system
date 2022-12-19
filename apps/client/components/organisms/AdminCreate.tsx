@@ -236,12 +236,12 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
             onClick: () => createElection(router, showToast),
           },
         ];
-        const empty = !name && !expires && !description && candidates.length < 1;
+
         return (
-          <Stack spacing={empty ? 0 : 5} direction="row">
+          <Stack spacing={5} direction="row">
             <DVSAdminCreate
-              maxH="620px"
-              w={empty ? '100%' : '60%'}
+              maxH="85vh"
+              w="60%"
               overflowY="auto"
               heading={t(`admin.create.${type}.heading`)}
               description={t(`admin.create.${type}.descr`)}
@@ -250,10 +250,9 @@ const AdminCreate: React.FC<AdminCreateProps> = ({ type }) => {
             />
             <DVSAdminDataDisplay
               card={{
-                w: empty ? '0%' : '40%',
-                maxH: '620px',
+                w: '40%',
+                maxH: '85vh',
                 overflowY: 'auto',
-                transition: '500ms',
               }}
               headerImage={
                 <DVSAdminDataDisplay.HeaderImage src={image} fallbackSrc={config.get('electionImageFallback')} />

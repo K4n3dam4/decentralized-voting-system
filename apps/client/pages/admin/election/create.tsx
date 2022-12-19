@@ -16,7 +16,7 @@ export const getServerSideProps = async (ctx) => {
 
 const AdminCreatePage = () => {
   return (
-    <Box w="full" px={20} py={10}>
+    <Box w="full" px={20} py={10} h="calc(100vh - 64px)" display="flex" alignItems="center">
       <AdminCreate type="election" />
     </Box>
   );
