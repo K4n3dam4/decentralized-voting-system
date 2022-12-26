@@ -5,6 +5,7 @@ import { Icon } from '@chakra-ui/icons';
 import { AiFillPlusCircle, AiFillMinusCircle } from 'react-icons/ai';
 import { useTranslation } from 'next-i18next';
 import DVSAlert from './DVSAlert';
+import DVSColorPicker from '../atoms/DVSColorPicker';
 
 export interface DVSCandidatesProps extends Omit<DVSFormInputProps, 'value' | 'onChange' | 'onFocus'> {
   name: string;
@@ -32,7 +33,9 @@ const DVSCandidates: React.FC<DVSCandidatesProps> = ({
   };
   const handeAddCandidate = () => {
     onFocus({ target: { name: 'candidates' } });
-    onChange({ target: { name: 'candidates', value: [...candidates, { name: '', party: '', image: '' }] } });
+    onChange({
+      target: { name: 'candidates', value: [...candidates, { name: '', party: '', image: '', partyColor: '#F38DBF' }] },
+    });
   };
   const handleRemoveCandidate = (index) => {
     onFocus({ target: { name: 'candidates' } });
@@ -44,7 +47,7 @@ const DVSCandidates: React.FC<DVSCandidatesProps> = ({
     onChange({ target: { name: 'candidates', value: newCandidates } });
   };
 
-  const CandidateInput = candidates.map(({ name, party, image }, index) => {
+  const CandidateInput = candidates.map(({ name, party, image, partyColor }, index) => {
     return (
       <Stack key={`candidate-inputs-${index}`} alignItems="center" direction="row" spacing={5}>
         <Stack w="full" spacing={4}>
@@ -56,14 +59,19 @@ const DVSCandidates: React.FC<DVSCandidatesProps> = ({
             onFocus={() => onFocus({ target: { name: 'candidates' } })}
             variant={variant}
           />
-          <DVSFormInput
-            placeholder={t('admin.common.party')}
-            name="party"
-            value={party}
-            onChange={(event) => handleChange(event, index)}
-            onFocus={() => onFocus({ target: { name: 'candidates' } })}
-            variant={variant}
-          />
+          <Stack direction="row" spacing={4}>
+            <DVSFormInput
+              placeholder={t('admin.common.party')}
+              name="party"
+              value={party}
+              onChange={(event) => handleChange(event, index)}
+              onFocus={() => onFocus({ target: { name: 'candidates' } })}
+              variant={variant}
+            />
+            <DVSColorPicker name="partyColor" color={partyColor} onChange={(event) => handleChange(event, index)}>
+              Party color
+            </DVSColorPicker>
+          </Stack>
           <DVSFormInput
             placeholder={t('admin.common.image')}
             name="image"

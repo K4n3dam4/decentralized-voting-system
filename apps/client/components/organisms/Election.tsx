@@ -10,6 +10,7 @@ import DVSElectionInfoCard from '../molecules/DVSElectionInfoCard';
 import DVSScrollTo from '../atoms/DVSScrollTo';
 import DVSHeroIcon from '../atoms/DVSHeroIcon';
 import { DVSToast } from '../atoms/DVSToast';
+import DVSElectionResults from '../molecules/DVSElectionResults';
 
 export interface ElectionProps {
   election: Election;
@@ -23,9 +24,7 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
 
   const electionInfo = useRef<HTMLDivElement>(null);
   const [refInViewport, ref] = useVisibility<HTMLDivElement>();
-  const isEven = election.candidates.length % 2 === 0;
-  const gridColumns = isEven ? 2 : 3;
-  const colSpanCandidate = useBreakpointValue({ base: gridColumns, md: 1 });
+  const colSpanCandidate = useBreakpointValue({ base: 2, md: 1 });
 
   // handles scroll to candidates
   const handleScroll = () => {
@@ -47,14 +46,6 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
     }
   };
 
-  // candidate map
-  const CandidateMap = () =>
-    election.candidates.map((candidate, index) => (
-      <GridItem ref={index < 1 ? ref : null} key={`candidate-${index}`} colSpan={colSpanCandidate}>
-        <DVSCandidate {...candidate} onClick={() => handleVote(index, candidate)} />
-      </GridItem>
-    ));
-
   const PageContent = () => {
     let type: 'notRegistered' | 'registered' | 'hasVoted' | 'closed' = 'notRegistered';
     const closed = new Date(election.expires).getTime() < Date.now();
@@ -68,7 +59,7 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
       case 'registered': {
         return (
           <>
-            <GridItem ref={electionInfo} colSpan={gridColumns}>
+            <GridItem ref={electionInfo} colSpan={2}>
               <DVSHeroIcon
                 position="absolute"
                 display={{ base: 'none', md: 'block' }}
@@ -82,7 +73,7 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
                 text={t(`election.${type}`)}
               />
             </GridItem>
-            <GridItem colSpan={gridColumns} position="relative" display="flex" justifyContent="center">
+            <GridItem colSpan={2} position="relative" display="flex" justifyContent="center">
               <DVSScrollTo
                 onClick={handleScroll}
                 inViewPort={refInViewport}
@@ -90,16 +81,19 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
                 text={t('election.vote')}
               />
             </GridItem>
-            {CandidateMap()}
+            {election.candidates.map((candidate, index) => (
+              <GridItem ref={index < 1 ? ref : null} key={`candidate-${index}`} colSpan={colSpanCandidate}>
+                <DVSCandidate {...candidate} onClick={() => handleVote(index, candidate)} />
+              </GridItem>
+            ))}
           </>
         );
       }
       case 'hasVoted':
       case 'closed': {
-        // TODO: add election results
         return (
           <>
-            <GridItem ref={electionInfo} colSpan={gridColumns}>
+            <GridItem ref={electionInfo} colSpan={2}>
               <DVSHeroIcon
                 position="absolute"
                 display={{ base: 'none', md: 'block' }}
@@ -109,6 +103,14 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
               />
               <DVSElectionInfoCard expiration={{ value: election.expires }} text={t(`election.${type}`)} />
             </GridItem>
+            <GridItem colSpan={2} my={10}>
+              <DVSElectionResults candidates={election.candidates} />
+            </GridItem>
+            {election.candidates.map((candidate, index) => (
+              <GridItem ref={index < 1 ? ref : null} key={`candidate-${index}`} colSpan={colSpanCandidate}>
+                <DVSCandidate {...candidate} winner={candidate?.winner} />
+              </GridItem>
+            ))}
           </>
         );
       }
@@ -116,8 +118,8 @@ const Election: React.FC<ElectionProps> = ({ election }) => {
   };
 
   return (
-    <Grid templateColumns={`repeat(${gridColumns}, 1fr)`} gap={5}>
-      <GridItem colSpan={gridColumns}>
+    <Grid templateColumns={`repeat(2, 1fr)`} gap={5}>
+      <GridItem colSpan={2}>
         <DVSElectionHeader name={election.name} description={election.description} image={election.image} />
       </GridItem>
       {PageContent()}

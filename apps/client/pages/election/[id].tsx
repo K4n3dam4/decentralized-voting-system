@@ -42,7 +42,7 @@ interface ElectionPageProps {
 
 const ElectionPage = ({ election }: ElectionPageProps) => {
   return (
-    <Container maxW="7xl" alignItems="center" minH="100%" overflow="hidden" py={12}>
+    <Container maxW="5xl" alignItems="center" minH="100%" overflow="hidden" py={12}>
       <Election election={election} />
     </Container>
   );

@@ -31,7 +31,9 @@
     "hasVoted": "Thank you for participating in this election. When the election is closed its results will be displayed below.",
     "closed": "The election is closed. Please scroll down to see the results.",
     "register": "Register to vote",
-    "vote": "Vote"
+    "vote": "Vote",
+    "results": "Results",
+    "winner": "Winner"
   },
   "expiration": {
     "closesIn": "Closes in {{days}} days {{hours}} hours {{minutes}} minutes",

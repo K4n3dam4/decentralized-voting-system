@@ -41,6 +41,7 @@ interface Candidate {
   name: string;
   image?: string;
   party?: string;
+  partyColor?: string;
   draw?: boolean;
   winner?: boolean;
   voteCount?: number;
