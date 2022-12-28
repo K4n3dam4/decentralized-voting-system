@@ -135,7 +135,7 @@ We then proceed with connecting our Nest.js application to the database through 
 \codeFromFile{ts}{code_snippets/nest-core-module.ts}{Core module}{Core module}{lst:core-module}
 \codeFromFile{ts}{code_snippets/nest-prisma-service.ts}{Prisma service}{Prisma service}{lst:prisma-service}
 
-\section{Smart Contracts}\label{sec:smart-contracts}
+\section{Preparing for smart contract development}\label{sec:preparing-for-smart-contract-development}
 
 \subsection{Setting up our IDE}\label{subsec:setting-up-our-ide}
 
@@ -144,8 +144,8 @@ After installing the plugin, the \gls{IDE} should be able to recognize Solidity 
 Unfortunately, the plugin does not provide autocomplete, making for an unpleasant development experience.
 
 It should be noted that this is a problem specific to our preferred \gls{IDE}.
-Developers running another \glsfirst{IDE}, such as VSCode, should be better equipped to write their Solidity code locally.
-Nevertheless, since we do not want to switch to VSCode, we will use the Remix \gls{IDE} to develop our smart contract online.
+Developers running another \glsfirst{IDE}, such as VSCode or Atom, should be better equipped to write their Solidity code locally.
+Nevertheless, since we do neither wish to switch to VSCode nor Atom, we will use the Remix \gls{IDE} to develop our smart contract online.
 
 \subsection{Setting up Remix}\label{subsec:setting-up-remix}
 
@@ -174,7 +174,7 @@ Afterward, we need to install the necessary Hardhat dependencies in our project'
 
 and chai matchers to enable local testing of our election contract, as well as typechain, since we are going to need typed interfaces of our contracts
 
-\begin{minted}[breaklines]{shell-session}
+\begin{minted}[breaklines, style=material]{shell-session}
     yarn add -D @nomicfoundation/hardhat-chai-matchers @types/chai @types/mocha typechain @types/typechain
 \end{minted}
 
@@ -183,14 +183,73 @@ After installing all necessary dependencies, we configure Hardhat and tell it to
 \codeFromFile{ts}{code_snippets/hardhat-config.ts}{Hardhat config}{Hardhat config}{lst:hardhat-config}
 \codeFromFile{json}{code_snippets/hardhat-project.json}{Hardhat project.json}{Hardhat project.json}{lst:hardhat-project.json}
 
+\section{Smart contract}\label{sec:smart-contract}
 
+To begin writing the smart contract, we will later deploy when admins create an election; we switch to Remix \gls{IDE} and open the \emph{Election.sol} file we created earlier.
 
+\subsection{Selecting a Solidity compiler and language version}\label{subsec:selecting-a-solidity-compiler-and-language-version}
 
+In contrast to code written in JavaScript, Solidity compiles to bytecode.
+Hence, we need to start every .sol file we create with a \emph{compiler directive}, known as \emph{version pragma}~\autocite[135]{antonopoulos_mastering_2019}, that specifies the compiler and language version our contract expects
 
+\begin{minted}{solidity}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.17;
+\end{minted}
 
+Our contract will be using Solidity 0.8.17, as well as higher minor versions, e.g., 0.8.20.
 
+\subsection{Importing Ownable.sol}\label{subsec:impotring-ownable.sol}
 
+Since some functions in the contract will only accept transactions from the admin address that created the election, we also import \emph{@openzeppelin/contracts/access/Ownable.sol} into our contract's context
 
+\begin{minted}{solidity}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.17;
+import "@openzeppelin/contracts/access/Ownable.sol";
+\end{minted}
+
+The OpenZeppelin library is a collection of reusable smart contracts that include operations commonly needed when developing smart contracts.
+In this case, \emph{Ownable.sol} provides a basic ownership model for our contract, including functions for checking its current owner and transferring ownership to other admins.
+
+\subsection{Defining the contract's structs}\label{subsec:defining-the-contracts-structs}
+
+% use c++ instead of solidity to avoid messed up highlighting
+\codeFromFile{sol}{code_snippets/election-step1.sol}{Defining the contract's structs}{Defining the contract's structs}{lst:election-step1.sol}
+
+Since the data pertaining to an election can be split up into information about its candidates, voters and result, we use the struct data type to define how this data will look (see listing~\ref{lst:election-step1.sol}).
+
+\subsection{Defining the contract's states, constructor and modifiers}\label{subsec:defining-the-contract's-states-constructor-and-modifiers}
+
+\codeFromFile{sol}{code_snippets/election-step2.sol}{Defining the contract's states, constructor and modifiers}{Defining the contract's states, constructor and modifiers}{lst:election-step2.sol}
+
+\subsubsection{States}
+
+Subsequently, as shown in listing~\ref{lst:election-step2.sol}, we use these data structures to define the contract's states: 
+
+\begin{enumerate}
+    \item The election's name
+    \item The expiration timestamp
+    \item A mapping for all registered voters, which acts as a hash lookup table iterable with a voter's wallet address~\autocite[137]{antonopoulos_mastering_2019}
+    \item An array of the election's candidates
+    \item An array of the result
+\end{enumerate}
+
+In elections conducted on the blockchain, having a dedicated state holding the election's expiration is essential.
+Again, as discussed in~\cref{subsec:blocks}, once a transaction has been saved on the blockchain, it can not be deleted.
+Thus, the only possible way to prevent people from voting once an election has expired or an election official has closed it, is to change one of the contract's states to a value that will be checked by its functions before executing them.
+
+\subsubsection{Constructor}
+
+As in other programming languages, a contract's constructor is called only once when a new contract instance is created on the blockchain.
+Hence, our constructor accepts three arguments, the election's name, its candidates, and its expiration timestamp, which will be parsed to the contract during deployment (see listing~\ref{lst:election-step2.sol}).
+
+\subsubsection{Modifiers}
+
+The last thing we do before writing the contract's functions is to create a modifier that checks the value saved in the \emph{expires} state against the global variable \emph{block.timestamp}, which is exposed by the \gls{EVM}.
+Since every transaction, including transactions that would change the contracts states, have to be added to a block, and each block has a timestamp, we can prevent successful state changes by adding the \emph{checkExpired} modifier to selected functions.
+
+\subsection{Contract functions}\label{subsec:contract-functions}
 
 
 

@@ -3,9 +3,12 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Election is Ownable {
+    // expiration date as unix epoch
     uint public expires;
+    // election name
     string public name;
 
+    // voter struct
     struct Voter {
         bool registered;
         bool voted;
@@ -14,20 +17,25 @@ contract Election is Ownable {
         address id;
     }
 
+    // candidate struct
     struct Candidate {
         string name;
         uint voteCount;
     }
 
+    // result struct
     struct Result {
         string name;
         uint voteCount;
     }
 
+    // registered voters
     mapping(address => Voter) private voters;
 
+    // candidates
     Candidate[] public candidates;
 
+    // results
     Result[] public result;
 
     constructor(string memory _name, string[] memory _candidates, uint _expires) {
@@ -47,10 +55,6 @@ contract Election is Ownable {
      */
     modifier checkExpired {
         require(block.timestamp <= expires, "error.contract.expired");
-        _;
-    }
-    modifier checkUnexpired {
-        require(block.timestamp >= expires, "error.contract.unexpired");
         _;
     }
 
