@@ -7,7 +7,6 @@ Following is a short overview of methodologies applied during crucial steps in o
     \begin{itemize}
         \item Selection of \gls{Blockchain} network
         \item Selection of technology stack
-        \item Architectural design
     \end{itemize}
     \item Development
     \begin{itemize}
@@ -25,16 +24,15 @@ Following is a short overview of methodologies applied during crucial steps in o
 
 \section{Preparation}\label{sec:preparation}
 
-\section{Development}\label{sec:development}
+\subsection{Selection of blockchain network}\label{subsec:selection-of-blockchain-network2}
 
-\subsection{Versioning}\label{subsec:versioning}
+To select the most feasible blockchain network, we compared the findings in \cref{sec:voting-systems} with those in \cref{subsec:comparison-of-turing-complete-blockchains}.
 
-We used Git Workflows to version the project during development, which enabled parallel workflows depending on features and provided greater flexibility.
-Furthermore, it enabled the analysis of code changes during our iterative process and revision of changes and is well-established in the software industry and does not have serious contenders that are also open-source.
+\subsection{Selection of technology stack}\label{subsec:selection-of-technology-stack}
 
-\subsection{Agile development}\label{subsec:agile-development}
+Similarly, after researching possible development tools (see \cref{sec:development-tools}), we considered a suitable technology stack.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \begin{subfigure}[b]{\textwidth}
         \centering
         \includegraphics[width=0.7\textwidth]{jones-2010-development-methods}
@@ -50,6 +48,15 @@ Furthermore, it enabled the analysis of code changes during our iterative proces
     \caption{Development methods}\label{fig:development-methods}
 \end{figure}
 
+\section{Development}\label{sec:development}
+
+\subsection{Versioning}\label{subsec:versioning}
+
+We used Git Workflows to version the project during development, which enabled parallel workflows depending on features and provided greater flexibility.
+Furthermore, it enabled the analysis of code changes during our iterative process and revision of changes and is well-established in the software industry and does not have serious contenders that are also open-source.
+
+\subsection{Agile development}\label{subsec:agile-development}
+
 The development methods displayed in \cref{fig:success-rates-development-methods} are sorted according to their success rates.
 As stated by~\textcite[10-12]{jones_software_2010}, projects with a size of less than 1000 function points are most likely to benefit from agile development methods.
 The median size of function points is defined as 53 lines of JavaScript code by~\textcite{qsm_function_2009}.
@@ -60,7 +67,7 @@ Instead, the same goal could be achieved by applying Scrum methods and \gls{E2E}
 
 \subsection{Personal Scrum}\label{subsec:personal-scrum}
 
-Despite this being a one-person project with different organizational requirements than projects developed by a team, we applied scrum methods during our development process.
+Despite this being a one-person project with different organizational requirements than projects developed by a team, we applied scrum methods (see \cref{fig:scrum-method}) during our development process.
 As stated by \textcites{andrews_scrum_2017}{pahuja_scrum_2015}, this meant adapting scrum methods for personal use, enabling us to establish iterative processes to track the development process, evaluate intermediate results and remove defects (see~\cref{fig:scrum-method}).
 
 \subsection{End-to-end tests}\label{subsec:end-to-end-tests}

@@ -37,7 +37,7 @@ The properties shown in~\cref{tab:properties-of-voting-systems} are most commonl
 
 Even though the first blockchain-like protocol was proposed by \textcite{chaum_computer_1982}, the concept of modern \gls{Blockchain} technology was first introduced in 2008 by \textcite{nakamoto_bitcoin_2008} and with the subsequent launch of Bitcoin in 2009.
 Although Satoshi Nakamoto's real identity remains a mistery to this day, he alluded to his motivations with a message left in Bitcoin's \gls{GenesisBlock}.
-It reads \enquote{The Times 03/Jan/2009 Chancellor on brink of second bailout for banks}~\autocite{nakamoto_bitcoin_2009} and is a reference to the headline of an article that appeared in \emph{The Times} on January 3, 2009 in the midst of the \gls{GFC} (see listing~\ref{lst:genesis-block-message}).
+It reads \enquote{The Times 03/Jan/2009 Chancellor on brink of second bailout for banks}~\autocite{nakamoto_bitcoin_2009} and is a reference to the headline of an article that appeared in \emph{The Times} on January 3, 2009, in the midst of the \gls{GFC} (see listing~\ref{lst:genesis-block-message}).
 
 \codeFromFile{text}{code_snippets/genesis_block_message.sh}{Nakamoto's message in the Genesis Block}{Nakamoto's message in the Genesis Block}{lst:genesis-block-message}
 
@@ -115,7 +115,7 @@ Since SHA-256 can produce such a high number of unique digests, it is said to be
 \subsection{Asymmetric key cryptography}\label{subsec:asymmetric-key-cryptography}
 
 \Gls{Blockchain} technology relies on asymmetric key cryptography.
-In asymmetric key cryptography two keys are used, the \gls{PK} and the \gls{PBK} (see~\cref{fig:asymmetric-key}).
+In asymmetric key cryptography, two keys are used, the \gls{PK} and the \gls{PBK} (see~\cref{fig:asymmetric-key}).
 
 \begin{figure}[H]
     \begin{subfigure}[b]{\textwidth}
@@ -187,7 +187,7 @@ The \gls{PK} or $k$ (see~\cref{fig:elliptic-curve-trapdoor}) is a 256-bit number
 it can be any number between $1$ and $n-1$, where $n$ is a constant that defines the order of the elliptic curve $k$~\autocite[63]{antonopoulos_mastering_2017}.
 
 \begin{figure}[H]
-    \includegraphics[width=\textwidth]{cryptographic_trapdoor}
+    \includegraphics[width=\textwidth]{boehm-cryptographic_trapdoor}
     \caption[Cryptographic trapdoor functions]{Cryptographic trapdoor functions. Shows the direction in which trapdoor functions are utilized to achieve a one-way relationship between \gls{PK}, \gls{PBK} and a wallet's address. Based on~\textcite[160]{antonopoulos_mastering_2017}}
     \label{fig:elliptic-curve-trapdoor}
 \end{figure}
@@ -294,7 +294,7 @@ However, it utilizes the concept of an event loop as a runtime construct rather 
 \subsection{Nx}\label{subsec:nx}
 
 Nx is a build system that provides monorepo support, thus making it possible to manage code bases for several projects in a single repository.
-According to~\autocite[80]{potvin_why_2016}, this is a concept Google, whose monolith repository contains over two billion lines of code, has been embracing for over two decades.
+According to~\textcite[80]{potvin_why_2016}, this is a concept Google, whose monolith repository contains over two billion lines of code, has been embracing for over two decades.
 In doing so, Google has been able to unify versioning and simplify dependency management for its developers while encouraging code sharing across multiple applications and teams~\autocite[84]{potvin_why_2016}.
 However, whereas Google has developed its own tools for managing code bases of that size in one repository, smaller companies, and freelance developers can still leverage the advantages of monorepos while alleviating disadvantages with build systems like Nx or Turborepo.
 
@@ -307,8 +307,8 @@ Accordingly, node modules are also installed in the root directory but nx makes 
 \subsection{Next.js}\label{subsec:next.js}
 
 Next.js is a frontend framework that utilizes React.js with added capabilities for server-side rendering of static web applications.
-This means developers can write React components in Java- or TypeScript without exposing their code to the client.
-Instead, all React components are executed on the server, which then serves ready \gls{HTML} documents to the client.
+This means developers can write React components in Java- or TypeScript without exposing code executed on the server to the client.
+However, it should be noted that the JavaScript code in React components is still executed in the browser, meaning the client will have access.
 
 \subsubsection{JSX}\label{subsubsec:jsx}
 
@@ -337,12 +337,27 @@ Listing~\ref{lst:props} shows a simplified example of this where a state defined
 
 \subsection{Nest.js}\label{subsec:nest.js}
 
-Nest.js is regularly mentioned among the best Node.js backend frameworks~\autocites{clever_solution_9_2020}{labay_10_2020}{patel_top_2022} due to its many development features and under-the-hood usage of Express.js~\autocite{mysliwiec_documentation_nodate}, which is another highly regarded backend framework known for its speed.
-It is specifically designed for building scalable Node.js backend applications~\autocite{mysliwiec_documentation_nodate} by utilizing design methods common for traditional backends written in languages like Java.
+Nest.js is regularly mentioned among the best Node.js backend frameworks~\autocites{clever_solution_9_2020}{labay_10_2020}{patel_top_2022} due to its many development features and usage of Express.js~\autocite{mysliwiec_documentation_nodate}, which is another highly regarded backend framework known for its speed.
+It is specifically designed for building scalable Node.js backend applications~\autocite{mysliwiec_documentation_nodate} and utilizes design methods common among traditional backends written in languages like Java.
 Accordingly, Nest.js combines elements of \gls{OOP} and \gls{FP}~\autocite{mysliwiec_documentation_nodate}.
 
 \subsection{PostgreSQL}\label{subsec:postgresql}
 
 PostgreSQL is an \gls{ORDBMS} first developed by researchers at the University of California, Berkeley~\autocite[3]{worsley_practical_2002}.
-It is an open-source project and thus free to download and use, although there are commercially developed products on the market based on PostgreSQL, such as Red Hat.
+It is an open-source project and thus free to download and use, although there are commercially developed products based on PostgreSQL, such as Red Hat.
 
+\subsection{Remix IDE}\label{subsec:remix-ide}
+
+The Remix \gls{IDE} is an open-source tool for writing, debugging, and deploying smart contracts on supported blockchain networks.
+According to \textcite{remix_project_welcome_nodate}, some features of their \gls{IDE} are:
+
+\begin{enumerate}
+    \item A code editor with syntax highlighting and autocomplete features for Solidity
+    \item A debugger that enables developers to step through state changes triggered by transactions
+    \item Deployment tools enabling developers to connect their wallets and deploy their contracts on main- or testnets.
+\end{enumerate}
+
+\subsection{Hardhat}\label{subsec:hardhat}
+
+Hardhat is a \gls{CLI} tool that provides similar features as the Remix \gls{IDE} (see \cref{subsec:remix-ide}) but is used for local development of smart contracts~\autocite{hardhat_documentation_nodate}.
+For more advanced use cases, developers may write and test their contracts locally, as one of Hardhat's most important features is its extensibility.

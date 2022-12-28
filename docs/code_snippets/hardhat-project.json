@@ -1,0 +1,23 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/smart-contracts/src",
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "outputs": ["coverage/libs/smart-contracts"],
+      "options": {
+        "command": "npx hardhat test",
+        "cwd": "libs/smart-contracts"
+      }
+    },
+    "compile": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx hardhat compile",
+        "cwd": "libs/smart-contracts"
+      }
+    }
+  },
+  "tags": ["scope:shared"]
+}
