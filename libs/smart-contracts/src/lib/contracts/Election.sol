@@ -122,6 +122,13 @@ contract Election is Ownable {
         result_ = result;
     }
 
+    /**
+     * @dev Get registered voters. May only be called by owner
+     */
+    function getVoters(address _voter) external view onlyOwner returns(Voter memory voter_) {
+        voter_ = voters[_voter];
+    }
+
     function discardContract() payable external onlyOwner {
         selfdestruct(payable(address(owner())));
     }

@@ -104,7 +104,7 @@ Creating a monorepo with nx is a straightforward process using the nx-provided e
     \label{fig:setting-up-nx-workspace}
 \end{figure}
 
-After initiating the process by typing \mintinline{text}{yarn create nx-workspace} in the terminal, nx allows developers to name (see~\cref{fig:nx-workspace-name}) the project.
+After initiating the process by typing \mintinline[breaklines]{text}{yarn create nx-workspace} in the terminal, nx allows developers to name (see~\cref{fig:nx-workspace-name}) the project.
 Next, developers are offered several template options for an initial application nx then automatically adds to the workspace (see~\cref{fig:nx-workspace-options-0,fig:nx-workspace-options-1}).
 Given these options, we initialize the workspace with a Next.js application for the client side of the voting system.
 Alternatively, we could initialize it containing a Nest.js application, but the order in which client and server applications are added to the workspace is irrelevant in this context.
@@ -165,7 +165,7 @@ So after deleting those, we create a new file in the \emph{contracts} folder cal
 \subsection{Setting up local Hardhat project}\label{subsec:setting-up-local-hardhat-project}
 
 Since our backend will depend on the \gls{ABI} of our written contract, we still need to set up a local project.
-First, we use the nx command \mintinline{text}{nx g lib smart-contracts} to create a new nx library.
+First, we use the nx command \mintinline[breaklines]{text}{nx g lib smart-contracts} to create a new nx library.
 Afterward, we need to install the necessary Hardhat dependencies in our project's root directory
 
 \begin{minted}{shell-session}
@@ -175,7 +175,7 @@ Afterward, we need to install the necessary Hardhat dependencies in our project'
 and chai matchers to enable local testing of our election contract, as well as typechain, since we are going to need typed interfaces of our contracts
 
 \begin{minted}[breaklines, style=material]{shell-session}
-    yarn add -D @nomicfoundation/hardhat-chai-matchers @types/chai @types/mocha typechain @types/typechain
+    yarn add -D @nomicfoundation/hardhat-chai-matchers @types/chai @types/mocha typechain @types/typechain @ethersproject/providers
 \end{minted}
 
 After installing all necessary dependencies, we configure Hardhat and tell it to run within its directory in \emph{libs/smart-contracts} by creating a \emph{hardhat.config.ts} (see listing~\ref{lst:hardhat-config}) and adding nx commands for testing and compilation to the library's \emph{project.json} (see listing~\ref{lst:hardhat-project.json}).
@@ -278,6 +278,24 @@ The function then subtracts voting weight from the voter and adds one vote to th
 
 Administrators can close elections by calling this function.
 As seen in listing~\ref{lst:election-step3.sol}, it then sets the election's \emph{expires} state to the current block timestamp, preventing further transactions, and calculates the election's result.
+
+\subsection{Testing the contract}\label{subsec:testing-the-contract}
+
+After successfully debugging and testing our contract on Remix, we copy it to our local \emph{libs/smart-contracts/src/lib/contracts} directory and try to compile it by running \mintinline[breaklines]{text}{nx compile smart-contracts} in our terminal.
+Having installed \emph{typechain} earlier, this should create a new \emph{typechain-types} folder containing typed interfaces of our contract and its \gls{ABI}.
+
+We now have everything we need to create a new \emph{test} directory and write tests for the contract (see listing~\ref{lst:election-tests.ts}).
+As seen in~\cref{fig:smart-contract-test-results}, running the tests with \mintinline[breaklines]{text}{nx test smart-contracts} shows us that transactions on our contract yield the expected results.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{boehm-testing-contract}
+    \caption[Smart contract test results]{Smart contract test results. Screenshot taken by author}
+    \label{fig:smart-contract-test-results}
+\end{figure}
+
+\codeFromFile{ts}{../libs/smart-contracts/src/lib/test/Election.ts}{Testing the contract}{Testing the contract}{lst:election-tests.ts}
+
 
 
 
