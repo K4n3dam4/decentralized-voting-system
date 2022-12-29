@@ -2,7 +2,7 @@
 
 \section{Preparation}\label{sec:preparation2}
 
-\subsection{Selection of blockchain network}\label{subsec:selection-of-blockchain-network}
+\subsection{Selecting a blockchain network}\label{subsec:selection-of-blockchain-network}
 
 As seen in \cref{tab:selection-of-blockchain-network}, the findings in~\cref{sec:voting-systems} can be applied as selection criteria for relevant \gls{Blockchain} networks (see \cref{subsec:comparison-of-turing-complete-blockchains}).
 However, some properties mentioned in~\cref{sec:voting-systems} depend entirely on decisions relating to frontend design and code governance rather than the selected \gls{Blockchain}, e.g., whether the software is open-source.
@@ -45,7 +45,7 @@ Unfortunately, in the absence of a \gls{Blockchain} protocol that satisfies all 
 Bearing this in mind and looking at \cref{tab:selection-of-blockchain-network}, Polygon is the most logical choice as it runs on top of Ethereum.
 Therefore, it automatically benefits from Ethereum's superior security and anonymity, as well as all future improvements made to Ethereum's protocol, while still having an edge in terms of scalability due to its Layer 2 protocol (see~\cref{subsec:comparison-of-turing-complete-blockchains}).
 
-\subsection{Selection of technology stack}\label{subsec:selection-of-tech-stack}
+\subsection{Selecting the technology stack}\label{subsec:selection-of-tech-stack}
 
 Many frameworks could be used to develop the server- and client-side of a decentralized electronic voting system.
 However, we rely on a full Node.js integration due to its non-blocking \gls{IO} to ensure high scalability (see~\cref{subsec:node.js}).
@@ -230,7 +230,7 @@ Subsequently, as shown in listing~\ref{lst:election-step2.sol}, we use these dat
 \begin{enumerate}
     \item The election's name
     \item The expiration timestamp
-    \item A mapping for all registered voters, which acts as a hash lookup table iterable with a voter's wallet address~\autocite[137]{antonopoulos_mastering_2019}
+    \item A mapping of all registered voters, which acts as a hash lookup table iterable with a voter's wallet address~\autocite[137]{antonopoulos_mastering_2019}
     \item An array of the election's candidates
     \item An array of the result
 \end{enumerate}
@@ -250,6 +250,34 @@ The last thing we do before writing the contract's functions is to create a modi
 Since every transaction, including transactions that would change the contracts states, have to be added to a block, and each block has a timestamp, we can prevent successful state changes by adding the \emph{checkExpired} modifier to selected functions.
 
 \subsection{Contract functions}\label{subsec:contract-functions}
+
+The administrating wallet address will primarily perform transactions on our contract through our Nest.js backend.
+
+\codeFromFile{sol}{code_snippets/election-step3.sol}{Contract functions}{Contract functions}{lst:election-step3.sol}
+
+\subsubsection{registerVoter}
+
+As shown in listing~\ref{lst:election-step3.sol}, this function is only executable by the contract owner while the election has not expired.
+It takes a voter’s wallet address, which will be created in our Nest.js backend when a voter tries to register for an election (see ADNINSERVICE), and adds it to the voters mapping.
+Lastly, it transfers a small number of funds from the administrative wallet to the voter’s wallet to enable the latter to pay for transactions while interacting with the smart contract.
+We also considered fully decentralizing the registration process.
+However, we concluded that voters could not be expected to create their wallets as this remains unintuitive (see section ADMINSERVICES).
+
+\subsubsection{addVotingWeight}
+
+This function (see listing~\ref{lst:election-step3.sol})enables administrators to add voting weight to a registered voter.
+When a voter has no voting weight left, he is not eligible to vote.
+This function may seem unnecessary in elections where voters only have one vote, but it could be used in later versions of the systems to create more complex elections.
+
+\subsubsection{vote}
+
+A voter sends a transaction calling the contract's vote function by using a private key related to a registered address (see~\cref{subsec:asymmetric-key-cryptography,subsec:elliptic-curve-cryptography}).
+The function then subtracts voting weight from the voter and adds one vote to the candidate specified in its parameter (see listing~\ref{lst:election-step3.sol}).
+
+\subsubsection{closeElection}
+
+Administrators can close elections by calling this function.
+As seen in listing~\ref{lst:election-step3.sol}, it then sets the election's \emph{expires} state to the current block timestamp, preventing further transactions, and calculates the election's result.
 
 
 

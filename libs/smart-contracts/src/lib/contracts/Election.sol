@@ -59,7 +59,7 @@ contract Election is Ownable {
     }
 
     /**
-     * @dev Register voter.
+     * @dev Register voter. May only be called by owner, i.e., administrator.
      * @param _voter address of voter
      */
     function registerVoter(address _voter) payable external onlyOwner checkExpired {
@@ -104,7 +104,7 @@ contract Election is Ownable {
     }
 
     /**
-     * @dev Close election, calculate results
+     * @dev Close election, calculate results. May only be called by owner, i.e., administrator.
      */
     function closeElection() external onlyOwner {
         expires = block.timestamp;
@@ -115,19 +115,11 @@ contract Election is Ownable {
             }));
         }
     }
-
     /**
-     * @dev Get election results
+     * @dev Get election results. May only be called by owner, i.e., administrator.
      */
     function getResults() public view returns(Result[] memory result_) {
         result_ = result;
-    }
-
-    /**
-     * @dev Get registered voters. May only be called by owner
-     */
-    function getVoters(address _voter) external view onlyOwner returns(Voter memory voter_) {
-        voter_ = voters[_voter];
     }
 
     function discardContract() payable external onlyOwner {

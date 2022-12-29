@@ -1,10 +1,9 @@
 /**
-* @dev Register voter.
+* @dev Register voter. May only be called by owner, i.e., administrator.
  * @param _voter address of voter
  */
 function registerVoter(address _voter) payable external onlyOwner checkExpired {
     require(voters[_voter].id == address(0x000), "error.contract.isAlreadyRegistered");
-
     // create voter
     voters[_voter] = Voter({
     registered: true,
@@ -13,7 +12,6 @@ function registerVoter(address _voter) payable external onlyOwner checkExpired {
     weight: 0,
     id: _voter
     });
-
     // transfer funds to wallet
     address payable voter = payable(address(_voter));
     voter.transfer(msg.value);
@@ -41,7 +39,7 @@ function vote(uint _candidate) external checkExpired {
     }
 }
 /**
-* @dev Close election, calculate results
+* @dev Close election, calculate results. May only be called by owner, i.e., administrator.
  */
 function closeElection() external onlyOwner {
     expires = block.timestamp;
@@ -51,19 +49,4 @@ function closeElection() external onlyOwner {
         voteCount: candidates[i].voteCount
         }));
     }
-}
-/**
-* @dev Get election results
- */
-function getResults() public view returns(Result[] memory result_) {
-    result_ = result;
-}
-/**
-* @dev Get registered voters. May only be called by owner
- */
-function getVoters(address _voter) external view onlyOwner returns(Voter memory voter_) {
-    voter_ = voters[_voter];
-}
-function discardContract() payable external onlyOwner {
-    selfdestruct(payable(address(owner())));
 }
