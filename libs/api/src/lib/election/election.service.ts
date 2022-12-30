@@ -78,7 +78,7 @@ export class ElectionService {
 
     // exception voter is not eligible
     if (election.eligibleVoters.length !== 1) {
-      throw new ForbiddenException({ message: 'error.api.election.uneligible' });
+      throw new ForbiddenException({ message: 'error.api.election.ineligible' });
     }
 
     try {
@@ -144,7 +144,7 @@ export class ElectionService {
 
     // exception voter is not registered
     if (!eligibleVoter) {
-      throw new ForbiddenException({ message: 'error.api.election.uneligible' });
+      throw new ForbiddenException({ message: 'error.api.election.ineligible' });
     }
 
     return signer;

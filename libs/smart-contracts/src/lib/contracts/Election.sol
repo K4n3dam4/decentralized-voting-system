@@ -94,7 +94,7 @@ contract Election is Ownable {
     function vote(uint _candidate) external checkExpired {
         if (msg.sender != owner()) {
             Voter storage voter = voters[msg.sender];
-            require(voter.weight != 0, "error.contract.uneligible");
+            require(voter.weight != 0, "error.contract.ineligible");
             require(voter.voted != true, "error.contract.hasVoted");
             voter.voted = true;
             voter.candidate = _candidate;

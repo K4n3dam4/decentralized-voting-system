@@ -56,9 +56,9 @@ describe('Test contracts', function () {
     });
 
     describe('Voting', function () {
-      it('should prevent uneligible votes', async function () {
+      it('should prevent ineligible votes', async function () {
         const electionConnect = election.connect(provider.getSigner(wallet1));
-        await expect(electionConnect.vote(0)).to.be.revertedWith('error.contract.uneligible');
+        await expect(electionConnect.vote(0)).to.be.revertedWith('error.contract.ineligible');
       });
 
       it('should vote', async function () {

@@ -235,13 +235,13 @@ Subsequently, as shown in listing~\ref{lst:election-step2.sol}, we use these dat
     \item An array of the result
 \end{enumerate}
 
-In elections conducted on the blockchain, having a dedicated state holding the election's expiration is essential.
-Again, as discussed in~\cref{subsec:blocks}, once a transaction has been saved on the blockchain, it can not be deleted.
+In elections conducted on the \gls{Blockchain}, having a dedicated state holding the election's expiration is essential.
+Again, as discussed in~\cref{subsec:blocks}, once a transaction has been saved on the \gls{Blockchain}, it can not be deleted.
 Thus, the only possible way to prevent people from voting once an election has expired or an election official has closed it, is to change one of the contract's states to a value that will be checked by its functions before executing them.
 
 \subsubsection{Constructor}
 
-As in other programming languages, a contract's constructor is called only once when a new contract instance is created on the blockchain.
+As in other programming languages, a contract's constructor is called only once when a new contract instance is created on the \gls{Blockchain}.
 Hence, our constructor accepts three arguments, the election's name, its candidates, and its expiration timestamp, which will be parsed to the contract during deployment (see listing~\ref{lst:election-step2.sol}).
 
 \subsubsection{Modifiers}
@@ -289,12 +289,125 @@ As seen in~\cref{fig:smart-contract-test-results}, running the tests with \minti
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{boehm-testing-contract}
+    \includegraphics[scale=0.8]{boehm-testing-contract}
     \caption[Smart contract test results]{Smart contract test results. Screenshot taken by author}
     \label{fig:smart-contract-test-results}
 \end{figure}
 
 \codeFromFile{ts}{../libs/smart-contracts/src/lib/test/Election.ts}{Testing the contract}{Testing the contract}{lst:election-tests.ts}
+
+\section{Server}\label{sec:server}
+
+Even though elections will exist as \glsplural{SmartContract} on our chosen \gls{Blockchain} network, we will still handle transactions in our Nest.js backend.
+
+\subsection{Database}\label{subsec:database}
+
+\codeFromFile{java}{../libs/prisma/prisma/schema.prisma}{Prisma schema}{Prisma schema}{lst:schema-prisma}
+
+The application utilizes a relational database consisting of four collections that are implemented as prisma schema (see listing~\ref{lst:schema-prisma}):
+
+\begin{enumerate}
+    \item Users
+    \item Registered Voters
+    \item Eligible Voters
+    \item Elections
+\end{enumerate}
+
+\subsection{Core module}\label{subsec:core-module}
+
+\subsubsection{Configuration}
+
+As seen in listing~\ref{lst:core-config}, to enable certain features within our backend services, we first need to add a configuration file to the application's core which then parses information from our \emph{env} files to their relative configuration keys.
+
+\codeFromFile{java}{../libs/api/src/lib/core/configuration.ts}{Core configuration}{Core configuration}{lst:core-config}
+
+We use Alchemy as a provider for transactions on the \gls{Blockchain}, hence we need to add an Alchemy \gls{API} key to our env, which our configuration file processes.
+
+\subsubsection{Ethers for Nest.js}
+
+\subsection{E2E Tests}\label{subsec:e2e-tests}
+
+To test our backend services, we use the \emph{server-e2e} application, which should have been automatically created in the \emph{apps/} directory by nx when we created the \emph{server} application.
+
+\subsubsection{Ganache}
+
+Since running \gls{E2E} tests of our backend services require transactions on a \gls{Blockchain} network, we install Ganache to run a local test network by typing \mintinline[breaklines]{text}{yarn add -D ganache} in our terminal.
+
+\subsubsection{Tests}
+
+\codeFromFile{ts}{code_snippets/e2e-test.ts}{Excerpt from server E2E tests}{Excerpt from server E2E tests. Tests requests from voters}{lst:server-e2e-tests}
+
+As seen in listing~\ref{lst:server-e2e-tests}, aside from testing whether our services work as expected, we also test whether successful requests to controllers can only be made with the specified access rights and when request bodies contain expected data.
+
+\subsubsection{Running the tests}
+
+After writing \gls{E2E} tests for all backend services we can run our tests by using the following commands
+
+\begin{minted}[linenos,breaklines]{shell-session}
+    dotenv -e .env.test cross-var -- yarn ganache --account='0x%ADMIN_PK%,100000000000000000000' --account='0x%VOTER_PK%,0' & dotenv -e .env.test -- nx restart-db-test prisma && dotenv -e .env.test -- nx e2e server-e2e
+\end{minted}
+
+This starts a local \gls{Blockchain} network, creates an admin and a voter wallet.
+After successfully starting the network, it will start a clean test database using our prisma module.
+Lastly, our \gls{E2E} application will run the tests.
+
+A complete overview of the tests and their results is provided in~\cref{ch:apx-server-e2e-tests}.
+
+\section{Client}\label{sec:client}
+
+As mentioned in~\cref{subsec:selection-of-tech-stack}, we utilize Next.js to develop the client side of our application.
+
+\subsection{Configuration}\label{subsec:configuration}
+
+As Next.js ships with its own tools for routing, including routing for \gls{API} requests, we first need to configure the application to reroute any traffic on \emph{/api} to the \gls{URL} of our backend server.
+We can do this by creating a \emph{proxy.conf.js} file in the project's root directory (see listing~\ref{lst:proxy-conf.js}) and adding rewrites to the \emph{next.config.js} file (see listing~\ref{lst:next-conf.js}).
+
+\codeFromFile{js}{../apps/client/proxy.conf.js}{Proxy configuration file}{Proxy configuration file}{lst:proxy-conf.js}
+\codeFromFile{ts}{../apps/client/next.config.js}{Next configuration file}{Next configuration file}{lst:next-conf.js}
+
+\subsection{Middleware}\label{subsec:middleware}
+
+To protect our application's pages on the server side we use our backend's jwt services to check the user's jwt token on each request of a protected route.
+We can achieve this by creating a \emph{middleware.ts} in the application's root directory (see listing~\ref{lst:next-middleware.ts}).
+
+\codeFromFile{ts}{../apps/client/middleware.ts}{Next middleware}{Next middleware}{lst:next-middleware.ts}
+
+\subsection{Pages}\label{subsec:pages}
+
+The client application consists of six pages, including pages for administrators (see~\cref{tab:all-pages-accessible-on-the-client-side}).
+We use Next.js's internal routing system to create those pages by adding an \emph{index.tsx} file to the \emph{pages} directory for the landing page.
+Next.js treats folders within this directory as routes, so we create \emph{index.tsx} files for each page shown in~\cref{tab:all-pages-accessible-on-the-client-side} in their respective folders according to the routes we want to achieve.
+
+Since we are adhering to atomic design principles (see~\cref{subsec:atomic-design}), a page only fetches data on the server side from our backend services and renders organisms that contain most of our client-side logic.
+Consequently, all pages are structured similarly (see listing~\ref{lst:election-page}).
+
+\begin{table}[H]
+    \begin{tabularx}{\textwidth}{bCb}
+        \hline
+        \textbf{Page} & \textbf{Protected (user=\cmark/admin=\dblcmark)} & \textbf{Description} \\
+        \hline
+        Landing page & \xmark & When users open the voting system they are created by a landing page.
+        They will be able to login or register by using the form located on this page. \\
+        \hline
+        Election overview & \cmark & The page consists of a slider displaying all elections that are currently in the system, \\
+        \hline
+        Election page & \cmark & This page displays a single election.
+        Here, users can register to vote, submit their ballot and check an election's results once it has closed. \\
+        \hline
+        Admin overview & \dblcmark & This page displays some analytical information about the voting system and its users.  \\
+        \hline
+        Admin create panel & \dblcmark & Administrators can create new elections, using the form on this page. \\
+        \hline
+        Admin election list & \dblcmark & Administrators are provided with an additional page to inspect elections, currently in the system.
+        They also have the ability to manually close an election listed on this page.\\
+        \hline
+    \end{tabularx}
+    \caption{All pages accessible on the client side}
+    \label{tab:all-pages-accessible-on-the-client-side}
+\end{table}
+
+\codeFromFile{ts}{../apps/client/pages/election/all/index.tsx}{Election page}{Election page}{lst:election-page}
+
 
 
 

@@ -154,7 +154,7 @@
       },
       "election": {
         "wrongSSN": "Invalid social security number.",
-        "uneligible": "You are not eligible to vote.",
+        "ineligible": "You are not eligible to vote.",
         "notFound": "Election could not be found.",
         "wrongServiceNumber": "Your service number does not exist."
       },
@@ -170,7 +170,7 @@
       "expired": "The election is closed.",
       "unexpired": "The election is not closed, yet.",
       "alreadyRegistered": "You have already registered.",
-      "uneligible": "You are not eligible to vote.",
+      "ineligible": "You are not eligible to vote.",
       "hasVoted": "You have already voted."
     }
   }

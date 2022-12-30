@@ -511,7 +511,7 @@ describe('App e2e', () => {
             .expectStatus(401);
         });
 
-        it('should not register uneligible voters', function () {
+        it('should not register ineligible voters', function () {
           const faultyDto = { ...dto };
           faultyDto.ssn = '2134';
           return spec()
