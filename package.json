@@ -150,11 +150,8 @@
     "typescript": "~4.7.2"
   },
   "lint-staged": {
-    "ignore": ["docs"],
-    "linters": {
-      "*.{js,jsx,json,css,scss,md,ts,tsx,html,graphql}": [
-        "yarn format --uncommitted"
-      ]
-    }
+    "*.{js,json,css,scss,md,ts,html,graphql}": [
+      "yarn format --uncommitted"
+    ]
   }
 }
