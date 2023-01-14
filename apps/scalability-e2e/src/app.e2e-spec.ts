@@ -1,6 +1,6 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CoreModule, ElectionCreateDto, SigninDto, VoterSignupDto } from '@dvs/api';
+import { ElectionCreateDto, SigninDto, VoterSignupDto } from '@dvs/api';
 import { AdminDto, PrismaService } from '@dvs/prisma';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { AppModule } from '@dvs/server';
@@ -19,7 +19,6 @@ import {
 describe('Scalability e2e', () => {
   describe('e2e running...', () => {
     let app: INestApplication;
-    let core: CoreModule;
     let prisma: PrismaService;
     const host = 'http://localhost:3333/api/';
 
@@ -34,10 +33,9 @@ describe('Scalability e2e', () => {
       hash: 'adminpw',
     };
     const voterList: VoterSignupDto[] = [];
-    const tokens: { [k: string]: string } = {};
-    const mnemonics: { [k: string]: string } = {};
+    const voterNumber = Number(process.env.VOTER_NUM);
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < voterNumber; i++) {
       voterList.push({
         ssn: randNumber({ max: 9, length: 9 }).join(''),
         firstName: randFirstName(),
@@ -66,8 +64,6 @@ describe('Scalability e2e', () => {
       request.setBaseUrl(host);
       request.setDefaultTimeout(10 * 1000);
 
-      // core
-      core = moduleFixture.get(CoreModule);
       // prisma
       prisma = app.get(PrismaService);
       await prisma.withCleanDatabase();
@@ -76,15 +72,6 @@ describe('Scalability e2e', () => {
 
     afterAll(function () {
       app.close();
-    });
-
-    describe('Registering voter accounts...', function () {
-      test.each(voterList.map((voter) => [voter.firstName + ' ' + voter.lastName, voter]))(
-        'Voter %s',
-        function (name, voter) {
-          return spec().post('auth/signup').withBody(voter).expectStatus(201);
-        },
-      );
     });
 
     describe('Creating election...', function () {
@@ -97,7 +84,7 @@ describe('Scalability e2e', () => {
         return spec().post('auth/signin').withBody(dto).expectStatus(200).stores('access_tokenA', 'access_token');
       });
 
-      it('Creating new election...', async function () {
+      it('Creating new election...', function () {
         const headersAdmin = { Authorization: 'Bearer $S{access_tokenA}' };
         const dto: ElectionCreateDto = {
           name: 'US Presidential Election 2020',
@@ -120,58 +107,44 @@ describe('Scalability e2e', () => {
       });
     });
 
-    describe('Voting...', function () {
-      describe('Signing in voters...', function () {
-        test.each(voterList.map((voter) => [voter.firstName + ' ' + voter.lastName, voter]))(
-          'Voter %s',
-          function (name, voter: VoterSignupDto) {
-            return spec()
-              .post('auth/signin')
-              .withBody({ email: voter.email, password: voter.password })
-              .expectStatus(200)
-              .toss()
-              .then((res) => {
-                tokens[voter.ssn] = res.body.access_token;
-              });
-          },
-        );
-      });
+    describe('Run concurrently', function () {
+      test.concurrent.each(voterList.map((voter) => [voter.firstName + ' ' + voter.lastName, voter]))(
+        '==== Voter %s ====',
+        async function (name: string, voter: VoterSignupDto) {
+          const headersVoter = { Authorization: null };
+          let mnemonic: string;
 
-      describe('Registering voters for election...', function () {
-        test.each(voterList.map((voter) => [voter.firstName + ' ' + voter.lastName, voter]))(
-          'Voter %s',
-          function (name, voter: VoterSignupDto) {
-            const headersVoter = { Authorization: `Bearer ${tokens[voter.ssn]}` };
+          await spec().post('auth/signup').withBody(voter).expectStatus(201);
 
-            return spec()
-              .post('election/register/' + `{id}`)
-              .withPathParams('id', '$S{ElectionId}')
-              .withHeaders(headersVoter)
-              .withBody({ ssn: voter.ssn })
-              .expectStatus(201)
-              .toss()
-              .then((res) => {
-                mnemonics[voter.ssn] = res.body.mnemonic;
-              });
-          },
-        );
-      });
+          await spec()
+            .post('auth/signin')
+            .withBody({ email: voter.email, password: voter.password })
+            .expectStatus(200)
+            .toss()
+            .then((res) => {
+              headersVoter.Authorization = `Bearer ${res.body.access_token}`;
+            });
 
-      describe('Voters are voting...', function () {
-        test.each(voterList.map((voter) => [voter.firstName + ' ' + voter.lastName, voter]))(
-          'Voter %s',
-          function (name, voter: VoterSignupDto) {
-            const headersVoter = { Authorization: `Bearer ${tokens[voter.ssn]}` };
+          await spec()
+            .post('election/register/' + `{id}`)
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .withBody({ ssn: voter.ssn })
+            .expectStatus(201)
+            .toss()
+            .then((res) => {
+              mnemonic = res.body.mnemonic;
+            });
 
-            return spec()
-              .post('election/vote/' + '{id}')
-              .withPathParams('id', '$S{ElectionId}')
-              .withHeaders(headersVoter)
-              .withBody({ mnemonic: mnemonics[voter.ssn], candidate: 0 })
-              .expectStatus(201);
-          },
-        );
-      });
+          await spec()
+            .post('election/vote/' + '{id}')
+            .withPathParams('id', '$S{ElectionId}')
+            .withHeaders(headersVoter)
+            .withBody({ mnemonic, candidate: 0 })
+            .expectStatus(201);
+        },
+        20000,
+      );
     });
   });
 });
