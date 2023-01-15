@@ -9,7 +9,7 @@ export const configuration = () => ({
   globalPrefix: GLOBAL_PREFIX || 'api',
   validationPipe: new ValidationPipe({ whitelist: true }),
   jwtSecret: JWT_SECRET,
-  jwtExpiration: '15m',
+  jwtExpiration: '24h',
   secret: SECRET,
   salt: SALT,
   // Blockchain

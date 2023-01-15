@@ -116,6 +116,20 @@
         "parallel": false,
         "cwd": "libs/prisma"
       }
+    },
+    "export-db-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker exec -i dvs-db-test pg_dump dvs-test -U test --column-inserts --data-only > prisma/dumps/db-test-dump.sql",
+        "cwd": "libs/prisma"
+      }
+    },
+    "import-db-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker exec -i dvs-db-test psql -U test -d dvs-test < prisma/dumps/db-test-dump.sql",
+        "cwd": "libs/prisma"
+      }
     }
   },
   "tags": ["scope:api"]

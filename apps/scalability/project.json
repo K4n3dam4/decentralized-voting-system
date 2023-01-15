@@ -1,0 +1,32 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/scalability",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/scalability",
+        "main": "apps/scalability/src/main.ts",
+        "tsConfig": "apps/scalability/tsconfig.json",
+        "clean": true
+      },
+      "configurations": {
+        "development": {
+          "optimization": true,
+          "inspect": false
+        }
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node --project ./tsconfig.app.json src/main.ts",
+        "cwd": "apps/scalability"
+      }
+    }
+  },
+  "tags": ["scope:api"],
+  "implicitDependencies": ["api"]
+}

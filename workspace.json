@@ -5,6 +5,7 @@
     "api": "libs/api",
     "client": "apps/client",
     "prisma": "libs/prisma",
+    "scalability": "apps/scalability",
     "scalability-e2e": "apps/scalability-e2e",
     "server": "apps/server",
     "server-e2e": "apps/server-e2e",
