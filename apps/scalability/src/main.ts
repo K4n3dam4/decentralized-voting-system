@@ -1,4 +1,5 @@
 import { ElectionCreateDto, VoterSignupDto } from '@dvs/api';
+
 const {
   randCity,
   randEmail,
@@ -14,17 +15,28 @@ const os = require('os');
 class TestScalability {
   baseURL = 'http://localhost:3000/api';
   voterList: VoterSignupDto[] = [];
-  voterNumber: number;
-  tolerance: number;
   startTimeStamp: number;
   electionId: number;
-  breaks: number;
+  finished = false;
+  breaks = 0;
+  voters: number;
+  tolerance: number;
+  concurrent: boolean;
 
-  constructor(voterNumber = 1, tolerance = 10) {
-    this.voterNumber = voterNumber;
+  constructor({ voters = 1, tolerance = 10, concurrent = false, election_id = 2 }) {
+    this.electionId = election_id;
+    this.voters = voters;
     this.tolerance = tolerance;
+    this.concurrent = concurrent;
 
-    for (let i = 0; i < voterNumber; i++) {
+    this.logger('Initializing scalability test with the following parameters:');
+    this.logger(`Election ID: ${election_id}`);
+    this.logger(`Number of voters: ${voters}`);
+    this.logger(`Tolerance for failed votes: ${tolerance}`);
+    this.logger(`Execute votes concurrently: ${concurrent}`);
+    this.logger('');
+
+    for (let i = 0; i < voters; i++) {
       this.voterList.push({
         ssn: randNumber({ max: 9, length: 9 }).join(''),
         firstName: randFirstName(),
@@ -40,7 +52,7 @@ class TestScalability {
 
   createHeaders = (token: string) => ({ Authorization: `Bearer ${token}` });
 
-  logger = (message: string, voter?: VoterSignupDto) =>
+  logger = (message: string, voter?: Partial<VoterSignupDto>) =>
     process.stdout.write((voter ? `${voter.firstName} ${voter.lastName} ${message}` : message) + os.EOL);
 
   signupVoter = async (voter: VoterSignupDto) => {
@@ -52,7 +64,7 @@ class TestScalability {
     }
   };
 
-  signin = async (email: string, password: string, voter?: VoterSignupDto) => {
+  signin = async (email: string, password: string, voter?: Partial<VoterSignupDto>) => {
     this.logger('signing in...', voter);
     try {
       const { data } = await axios(`auth/signin`, { method: 'POST', baseURL: this.baseURL, data: { email, password } });
@@ -76,6 +88,19 @@ class TestScalability {
     }
   };
 
+  addEligibleVoters = async (token: string) => {
+    try {
+      await axios('admin/election/add/voter', {
+        method: 'POST',
+        baseURL: this.baseURL,
+        headers: this.createHeaders(token),
+        data: { eligibleVoters: this.voterList.map(({ ssn }) => ({ electionId: this.electionId, ssn })) },
+      });
+    } catch (e) {
+      this.logger(e);
+    }
+  };
+
   registerVoter = async (voter: VoterSignupDto, token: string) => {
     this.logger('registering...', voter);
     try {
@@ -87,7 +112,7 @@ class TestScalability {
       });
       return data.mnemonic;
     } catch (e) {
-      this.logger(e);
+      throw new Error(e.code);
     }
   };
 
@@ -100,60 +125,59 @@ class TestScalability {
         headers: this.createHeaders(token),
         data: { mnemonic, candidate: 0 },
       });
-      return true;
     } catch (e) {
       this.logger(e);
-      return e;
+      throw new Error(e);
     }
   };
 
   run = async () => {
-    const adminToken = await this.signin('admin@test.com', 'adminpw');
-    await this.createElection(
-      {
-        name: 'US Presidential Election 2020',
-        image: 'https://google.de',
-        candidates: [
-          { name: 'Donald J. Trump', image: '', party: 'GOP' },
-          { name: 'Joe Biden', image: '', party: 'Democrats' },
-        ],
-        description:
-          'After both parties have chosen their respective candidates, the election process for the 2020 presidential election will commence on November, 3.',
-        eligibleVoters: this.voterList.map((voter) => voter.ssn),
-        expires: Math.round(new Date(Date.now() + 24 * 60 * 60 * 1000).getTime() / 1000),
-      },
-      adminToken,
-    );
+    const adminToken = await this.signin('admin@test.com', 'adminpw', { firstName: 'Admin', lastName: '' });
+    await this.addEligibleVoters(adminToken);
 
     if (this.electionId) {
       this.startTimeStamp = Date.now();
+
       const call = async (voter: VoterSignupDto) => {
+        if (this.finished) return;
+
         await this.signupVoter(voter);
 
-        console.log(voter);
-
         const token = await this.signin(voter.email, voter.password, voter);
-        const mnemonic = await this.registerVoter(voter, token);
 
-        const voted = await this.vote(voter, token, mnemonic);
-        if (!voted) {
+        try {
+          const mnemonic = await this.registerVoter(voter, token);
+          await this.vote(voter, token, mnemonic);
+        } catch {
           this.logger('could not vote.', voter);
           this.breaks = this.breaks + 1;
+          this.logger(`${this.tolerance}`);
+          this.logger(`${this.breaks}`);
 
           if (this.breaks > this.tolerance) {
-            this.logger(`More than ${this.tolerance} unsuccessful voters.`);
-            this.logger('Finishing test');
-            throw Error();
+            throw new Error();
           }
         }
       };
 
       try {
-        const voterCalls = this.voterList.map(call);
-        await Promise.all(voterCalls);
+        if (this.concurrent) {
+          const voterCalls = this.voterList.map(call);
+          await Promise.all(voterCalls);
+        } else {
+          for (const voter of this.voterList) {
+            await call(voter);
+          }
+        }
+      } catch {
+        this.finished = true;
+        this.logger(`Tolerance threshold of ${this.tolerance} unsuccessful votes reached.`);
+        this.logger('Finishing test');
       } finally {
-        this.logger(`Scalability test completed.`);
-        this.logger(`${this.voterNumber} voter voted in ${(Date.now() - this.startTimeStamp) / 1000} seconds`);
+        if (!this.finished) {
+          this.logger(`Scalability test completed.`);
+          this.logger(`${this.voters} voters voted in ${(Date.now() - this.startTimeStamp) / 1000} seconds`);
+        }
       }
     } else {
       this.logger('Election contract could not be deployed.');
@@ -162,7 +186,15 @@ class TestScalability {
 }
 
 process.argv.splice(0, 2);
-const args = process.argv.map((arg) => Number(arg.split('=')[1]));
+const args: { voters?: number; tolerance?: number; concurrent?: boolean } = process.argv.reduce((prev, curr) => {
+  const splitArg = curr.split('=');
+  if (/^-?\d+$/.test(splitArg[1])) {
+    prev[splitArg[0].replace('--', '')] = Number(splitArg[1]);
+  } else {
+    prev[splitArg[0].replace('--', '')] = splitArg[1] === 'true';
+  }
+  return prev;
+}, {});
 
-const testScalability = new TestScalability(...args);
+const testScalability = new TestScalability(args);
 testScalability.run();

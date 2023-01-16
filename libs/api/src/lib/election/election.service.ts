@@ -93,9 +93,12 @@ export class ElectionService {
       const fee = gasPrice.mul(gasLimit).mul(5);
 
       // // register voter
-      await contract.functions.registerVoter(voterWallet.address, { value: fee });
+      const txRegister = await contract.functions.registerVoter(voterWallet.address, { value: fee });
+      await txRegister.wait();
       // add voting weight
-      await contract.functions.addVotingWeight(voterWallet.address);
+      const txWeight = await contract.functions.addVotingWeight(voterWallet.address);
+      await txWeight.wait();
+
       // create voter relation to election
       await this.prisma.registeredVoter.create({
         data: {
