@@ -16,6 +16,7 @@ class TestScalability {
   baseURL = 'http://localhost:3000/api';
   voterList: VoterSignupDto[] = [];
   startTimeStamp: number;
+  newElection: boolean;
   electionId: number;
   finished = false;
   breaks = 0;
@@ -23,7 +24,8 @@ class TestScalability {
   tolerance: number;
   concurrent: boolean;
 
-  constructor({ voters = 1, tolerance = 10, concurrent = false, election_id = 2 }) {
+  constructor({ voters = 1, tolerance = 10, concurrent = false, election_id = 1, new_election = false }) {
+    this.newElection = new_election;
     this.electionId = election_id;
     this.voters = voters;
     this.tolerance = tolerance;
@@ -133,7 +135,31 @@ class TestScalability {
 
   run = async () => {
     const adminToken = await this.signin('admin@test.com', 'adminpw', { firstName: 'Admin', lastName: '' });
-    await this.addEligibleVoters(adminToken);
+
+    if (this.newElection) {
+      this.logger('Creating election...');
+      const now = new Date();
+
+      await this.createElection(
+        {
+          name: 'US Presidential Election 2020',
+          image: 'https://google.de',
+          candidates: [
+            { name: 'Donald J. Trump', image: '', party: 'GOP' },
+            { name: 'Joe Biden', image: '', party: 'Democrats' },
+          ],
+          description:
+            'After both parties have chosen their respective candidates, the election process for the 2020 presidential election will commence on November, 3.',
+          eligibleVoters: this.voterList.map((voter) => voter.ssn),
+          expires: Math.round(now.setMonth(now.getMonth() + 12) / 1000),
+        },
+        adminToken,
+      );
+
+      this.logger('Election created successfully.');
+    } else {
+      await this.addEligibleVoters(adminToken);
+    }
 
     if (this.electionId) {
       this.startTimeStamp = Date.now();
