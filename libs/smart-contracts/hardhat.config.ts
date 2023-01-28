@@ -52,8 +52,13 @@ const config: HardhatUserConfig = {
       accounts: [`0x${process.env.ADMIN_PK}`],
     },
     mainnet: {
-      url: process.env.ALCHEMY_API_MAIN,
-      accounts: [`0x${process.env.ADMIN_PK_MAIN}`],
+      url: process.env.ALCHEMY_API,
+      accounts: [`0x${process.env.ADMIN_PK}`],
+    },
+  },
+  etherscan: {
+    apiKey: {
+      polygonMumbai: process.env.POLYGON_SCAN_API_KEY as string,
     },
   },
   paths: {
