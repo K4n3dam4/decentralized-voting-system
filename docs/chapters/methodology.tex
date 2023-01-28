@@ -1,6 +1,6 @@
 \chapter{Methodology}\label{ch:methodology}
 
-Following is a short overview of methodologies applied during crucial steps in our process that will be discussed in more detail in the following sections:
+This list provides a brief overview of our methodology which will be discussed in greater detail in the following sections:
 
 \begin{enumerate}
     \item Preparation
@@ -12,13 +12,14 @@ Following is a short overview of methodologies applied during crucial steps in o
     \begin{itemize}
         \item Versioning
         \item Agile development
-        \item End-to-end tests
     \end{itemize}
     \item Evaluation
     \begin{itemize}
-        \item Test analysis
-        \item Technical analysis
-        \item Cryptocurrency transaction analysis
+        \item Unit tests
+        \item End-to-end tests
+        \item Scalability test
+        \item Transaction analysis
+        \item Interview of an industry member
     \end{itemize}
 \end{enumerate}
 
@@ -70,19 +71,34 @@ Instead, the same goal could be achieved by applying Scrum methods and \gls{E2E}
 Despite this being a one-person project with different organizational requirements than projects developed by a team, we applied scrum methods (see \cref{fig:scrum-method}) during our development process.
 As stated by \textcites{andrews_scrum_2017}{pahuja_scrum_2015}, this meant adapting scrum methods for personal use, enabling us to establish iterative processes to track the development process, evaluate intermediate results and remove defects (see~\cref{fig:scrum-method}).
 
-\subsection{End-to-end tests}\label{subsec:end-to-end-tests}
-
-Since peer reviews are no feasible option for defect removal in a single-person project, we employed E2E tests to check the application’s intended functionality and iteratively remove possible defects.
-Also, in contrast to unit tests, \gls{E2E} tests provided the possibility to test entire workflows of the application, such as the registration or voting process.
-
-\subsection{Atomic design}\label{subsec:atomic-design}
-
 
 \section{Evaluation}\label{sec:evaluation}
 
-The primary objective of this thesis was the development of a decentralized voting system under the assumption that such a system would dramatically improve upon fundamental properties of voting systems compared to analogous and centralized electronic systems.
-For this, we first identified objectives based on a qualitative analysis of relevant research data (see~\cref{sec:voting-systems}) and quantified established \gls{E2E} election processes of analogous voting systems to convert them into software features mirroring the process.
+The primary objective of this thesis was the development of a decentralized voting system under the assumption that such a system would dramatically improve upon fundamental properties of analogous and centralized electronic systems.
+We first identified objectives based on a qualitative analysis of relevant research data (see~\cref{sec:voting-systems}).
+We then translated the results into software features to mirror an analogous election process and evaluated them using the methodologies discussed in the following sections.
 
+\subsection{Unit tests}\label{subsec:unit-tests}
 
-\subsection{Tests}\label{subsec:tests}
-\subsection{Cryptocurrency transaction analysis}\label{subsec:crypto-currency-transaction-analysis}
+To ensure transactions on our \gls{SmartContract} manipulate its state in an expected manner, we employed unit tests that make use of the contract's \gls{ABI}.
+
+\subsection{End-to-end tests}\label{subsec:end-to-end-tests}
+
+Since code reviews are no feasible option for defect removal in a single-person project, we employed \gls{E2E} tests to evaluate the application’s intended functionality.
+In contrast to unit tests, \gls{E2E} tests enabled us to evaluate entire application workflows, such as the registration or voting processes.
+Most importantly, however, they provided valuable insights concerning the security of our backend services.
+
+\subsection{Scalability test}\label{subsec:scalability-test}
+
+As shown in~\cref{sec:voting-systems}, whether digital or analogous, voting systems must be scalable.
+Therefore, we wrote scalability tests to evaluate how many voters the system we propose could handle.
+In addition, a scalability test generated enough transactions on the \gls{Blockchain} to calculate the estimated network costs of our system (see~\cref{subsec:res-transaction-analysis}).
+
+\subsection{Transaction analysis}\label{subsec:transaction-analysis}
+
+We relied on a \gls{BlockExplorer} to analyze transactions committed to the \gls{Blockchain} network by election officials and voters.
+Consequently, we were able to evaluate transaction costs and whether voters remained anonymous (see \cref{sec:voting-systems}).
+
+\subsection{Interview of an industry member}\label{subsec:interview-of-industry-member}
+
+We collaborated with a person, who works in the \gls{Blockchain} industry, to evaluate our system, eliminate shortcomings and discuss theoretical improvements for a more sophisticated application based on our prototype.

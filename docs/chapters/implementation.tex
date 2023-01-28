@@ -56,7 +56,7 @@ We use Next.js as a framework on the client side as it allows for server-side re
 Alternatively, we could have chosen to develop the client-side with Nuxt.js, which mimics most of Next.js's server-side and static rendering methods, while using Vue.js instead of React.js.
 Nevertheless, Nuxt.js has a smaller community, arguably making React.js the preferable choice.
 
-Although Next.js comes with its own routing framework for API calls, it is reasonable to use a separate framework for requests that handle database and smart contract actions.
+Although Next.js comes with its own routing framework for API calls, it is reasonable to use a separate framework for requests that handle database and \gls{SmartContract} actions.
 Therefore, we utilize Nest.js, which eases the process of following best practices regarding the development of backend applications.
 As illustrated in~\cref{subsec:nest.js}, Nest.js is specifically designed with scalability in mind;
 moreover, it ensures high readability for developers with either an \gls{OOP} or \gls{FP} background.
@@ -145,7 +145,7 @@ Unfortunately, the plugin does not provide autocomplete, making for an unpleasan
 
 It should be noted that this is a problem specific to our preferred \gls{IDE}.
 Developers running another \glsfirst{IDE}, such as VSCode or Atom, should be better equipped to write their Solidity code locally.
-Nevertheless, since we do neither wish to switch to VSCode nor Atom, we will use the Remix \gls{IDE} to develop our smart contract online.
+Nevertheless, since we do neither wish to switch to VSCode nor Atom, we will use the Remix \gls{IDE} to develop our \gls{SmartContract} online.
 
 \subsection{Setting up Remix}\label{subsec:setting-up-remix}
 
@@ -185,7 +185,7 @@ After installing all necessary dependencies, we configure Hardhat and tell it to
 
 \section{Smart contract}\label{sec:smart-contract}
 
-To begin writing the smart contract, we will later deploy when \glsplural{Admin} create an election; we switch to Remix \gls{IDE} and open the \emph{Election.sol} file we created earlier.
+To begin writing the \gls{SmartContract}, we will later deploy when \glsplural{Admin} create an election; we switch to Remix \gls{IDE} and open the \emph{Election.sol} file we created earlier.
 
 \subsection{Selecting a Solidity compiler and language version}\label{subsec:selecting-a-solidity-compiler-and-language-version}
 
@@ -209,7 +209,7 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/access/Ownable.sol";
 \end{minted}
 
-The OpenZeppelin library is a collection of reusable smart contracts that include operations commonly needed when developing smart contracts.
+The OpenZeppelin library is a collection of reusable \glsplural{SmartContract} that include operations commonly needed when developing \glsplural{SmartContract}.
 In this case, \emph{Ownable.sol} provides a basic ownership model for our contract, including functions for checking its current owner and transferring ownership to other \glsplural{Admin}.
 
 \subsection{Defining the contract's structs}\label{subsec:defining-the-contracts-structs}
@@ -259,7 +259,7 @@ The \gls{Admin} wallet address will primarily perform transactions on our contra
 
 As shown in listing~\ref{lst:election-step3.sol}, this function is only executable by the contract owner while the election has not expired.
 It takes a voter’s wallet address, which will be created in our Nest.js backend when a voter tries to register for an election (see~\cref{subsec:admin-service}), and adds it to the voters mapping.
-Lastly, it transfers a small number of funds from the \gls{Admin} wallet to the voter’s wallet to enable the latter to pay for transactions while interacting with the smart contract.
+Lastly, it transfers a small number of funds from the \gls{Admin} wallet to the voter’s wallet to enable the latter to pay for transactions while interacting with the \gls{SmartContract}.
 We also considered fully decentralizing the registration process.
 However, we concluded that voters could not be expected to create their wallets as this remains unintuitive (see~\cref{subsec:election-service}).
 
@@ -285,14 +285,6 @@ After successfully debugging and testing our contract on Remix, we copy it to ou
 Having installed \emph{typechain} earlier, this should create a new \emph{typechain-types} folder containing typed interfaces of our contract and its \gls{ABI}.
 
 We now have everything we need to create a new \emph{test} directory and write tests for the contract (see listing~\ref{lst:election-tests.ts}).
-As seen in~\cref{fig:smart-contract-test-results}, running the tests with \mintinline[breaklines]{text}{nx test smart-contracts} shows us that transactions on our contract yield the expected results.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale=0.8]{boehm-testing-contract}
-    \caption[Smart contract test results]{Smart contract test results. Screenshot taken by author}
-    \label{fig:smart-contract-test-results}
-\end{figure}
 
 \codeFromFile{ts}{../libs/smart-contracts/src/lib/test/Election.ts}{Testing the contract}{Testing the contract}{lst:election-tests.ts}
 
@@ -367,7 +359,7 @@ As our application will only have a public landing page and public \gls{API} end
 
 \subsection{Admin service}\label{subsec:admin-service}
 
-Since we decided to implement a \gls{GUI} to enable election officials to create new elections without prior experience in smart contract programming, we create methods to handle the creation and deployment in our server application.
+Since we decided to implement a \gls{GUI} to enable election officials to create new elections without prior experience in \gls{SmartContract} programming, we create methods to handle the creation and deployment in our server application.
 
 As seen in listing~\ref{lst:create-election.ts}, the createElection service method first fetches the \gls{Admin}'s account.
 Then we use nestjs-ether's EthersModule to create a signer with the \gls{Admin} \gls{PK} that is parsed from an .env to the server's configuration during the build process (see~\cref{subsec:configuration}) and create a local contract instance using the election contract \gls{ABI} and bytecode (see~\cref{subsec:setting-up-local-hardhat-project,subsec:configuration}).
@@ -392,7 +384,7 @@ As the voter is registered for an election with his newly created wallet address
 
 \codeFromFile{ts}{code_snippets/register-voter.ts}{Register voter service}{Register voter service}{lst:register-voter.ts}
 
-\subsection{E2E Tests}\label{subsec:e2e-tests}
+\subsection{End-to-End tests}\label{subsec:e2e-tests}
 
 To test our backend services, we use the \emph{server-e2e} application, which should have been automatically created in the \emph{apps/} directory by nx when we created the \emph{server} application.
 
@@ -414,11 +406,11 @@ After writing \gls{E2E} tests for all backend services we can run our tests by u
     dotenv -e .env.test cross-var -- yarn ganache --account='0x%ADMIN_PK%,100000000000000000000' --account='0x%VOTER_PK%,0' & dotenv -e .env.test -- nx restart-db-test prisma && dotenv -e .env.test -- nx e2e server-e2e
 \end{minted}
 
-This starts a local \gls{Blockchain} network, creates an \gls{Admin} and a voter wallet.
-After successfully starting the network, it will start a clean test database using our prisma module.
+This starts a local \gls{Blockchain} network and creates an \gls{Admin} as well as a voter wallet.
+After successfully starting the network, a clean test database will be started using our prisma module.
 Lastly, our \gls{E2E} application will run the tests.
 
-A complete overview of the tests and their results is provided in~\cref{ch:apx-server-e2e-tests}.
+A complete overview of the tests is provided in~\cref{ch:apx-server-e2e-tests} while its results will be discussed in~\cref{subsec:res-end-to-end-tests}.
 
 \section{Client}\label{sec:client}
 
@@ -441,11 +433,13 @@ We can achieve this by creating a \emph{middleware.ts} in the application's root
 
 \subsection{Pages}\label{subsec:pages}
 
+\codeFromFile{jsx}{../apps/client/pages/election/all/index.tsx}{Election page}{Election page}{lst:election-page}
+
 The client application consists of six pages, including pages for \glsplural{Admin} (see~\cref{tab:all-pages-accessible-on-the-client-side}).
 We use Next.js's internal routing system to create those pages by adding an \emph{index.tsx} file to the \emph{pages} directory for the landing page.
 Next.js treats folders within this directory as routes, so we create \emph{index.tsx} files for each page shown in~\cref{tab:all-pages-accessible-on-the-client-side} in their respective folders according to the routes we want to achieve.
 
-Since we are adhering to atomic design principles (see~\cref{subsec:atomic-design}), a page only fetches data on the server side from our backend services and renders organisms that contain most of our client-side logic.
+Since we are adhering to atomic design principles, a page only fetches data on the server side from our backend services and renders organisms that contain most of our client-side logic.
 Consequently, all pages are structured similarly (see listing~\ref{lst:election-page}).
 
 \begin{table}[h]
@@ -472,12 +466,3 @@ Consequently, all pages are structured similarly (see listing~\ref{lst:election-
     \caption{All pages accessible on the client side}
     \label{tab:all-pages-accessible-on-the-client-side}
 \end{table}
-
-\codeFromFile{jsx}{../apps/client/pages/election/all/index.tsx}{Election page}{Election page}{lst:election-page}
-
-
-
-
-
-
-

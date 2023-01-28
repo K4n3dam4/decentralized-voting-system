@@ -174,11 +174,16 @@ class TestScalability {
         try {
           const mnemonic = await this.registerVoter(voter, token);
           await this.vote(voter, token, mnemonic);
+          this.logger('');
+          this.logger('==========');
+          this.logger('has voted', voter);
+          this.logger('==========');
+          this.logger('');
         } catch {
           this.logger('could not vote.', voter);
           this.breaks = this.breaks + 1;
-          this.logger(`${this.tolerance}`);
-          this.logger(`${this.breaks}`);
+          this.logger(`Failed votes total: ${this.breaks}`);
+          this.logger('');
 
           if (this.breaks > this.tolerance) {
             throw new Error();
@@ -202,7 +207,15 @@ class TestScalability {
       } finally {
         if (!this.finished) {
           this.logger(`Scalability test completed.`);
-          this.logger(`${this.voters} voters voted in ${(Date.now() - this.startTimeStamp) / 1000} seconds`);
+          const seconds = (Date.now() - this.startTimeStamp) / 1000;
+          const minutes = seconds / 60;
+          const hours = minutes / 60;
+          const months = hours / 24 / 30;
+          this.logger(`${this.voters} voters voted in ${(Date.now() - this.startTimeStamp) / 1000} seconds.`);
+          this.logger(`This equates to:`);
+          this.logger(`- ${minutes} minutes`);
+          this.logger(`- ${hours} hours`);
+          this.logger(`- ${months} months`);
         }
       }
     } else {
