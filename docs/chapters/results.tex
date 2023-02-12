@@ -22,7 +22,7 @@ Thus, we could show that the contract would ensure a secure election process onc
 As seen in~\cref{fig:apx-e2e-tests-1}, we tested the initialization and services of the server's auth module.
 In order to prevent users from having multiple accounts, we check entered \glsplural{SSN} and email addresses against our database.
 Ultimately, governments would probably implement an \gls{API} in their backend services to validate voters' \glsplural{SSN}.
-Regardless of the implementation, our \gls{E2E} tests show that validating a voter's identity by his \gls{SSN} is a secure way for governments to ensure unique accounts, which is one aspect of providing a secure electronic voting system (see \cref{subsec:qualitative-objectives,sec:voting-systems}).
+Regardless of the implementation, our \gls{E2E} tests showed that validating a voter's identity by his \gls{SSN} is a secure way for governments to ensure unique accounts, which is one aspect of providing a secure electronic voting system (see \cref{subsec:qualitative-objectives,sec:voting-systems}).
 
 \begin{figure}[H]
     \centering
@@ -60,41 +60,88 @@ As mentioned in \cref{subsec:quantitative-objectives,sec:voting-systems}, scalab
 In this context, scalability refers to two aspects: processing time, i.e., how much time the system needs to process a number of voters, and the processing cost.
 Accordingly, we wrote additional tests that generated high network traffic by simulating a statistically significant number of voters.
 
+
 \subsubsection{Consecutive votes}\label{subsubsec:res-consecutive-votes}
 
-Simulating consecutive registrations and votes in an election resulted in a processing time of 15000 seconds or 1.5h hours for 1000 voters.
-Consequently, it would take 120,000 hours or 164.27 months to process a national election with 80,000,000 eligible voters consecutively.
-On the cost side, running the test on Polygon incurred costs of around two MATIC, roughly \$2.00 at the time of this writing.
-Moreover, the voting system itself proved to be very reliable when handling consecutive requests, with only five out of 1000 voters being unable to vote, making for a failure rate of .5\%.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{boehm-scalability-test-result}
+    \caption[Scalability test result]{Scalability test result. Screenshot taken by author}
+    \label{fig:scalability-test-result}
+\end{figure}
+
+Simulating consecutive registrations and votes in an election resulted in a processing time of 17386.98 seconds or 4.83h hours for 1000 voters (see \cref{fig:scalability-test-result}) with 1\% of votes not being processed with the first request.
+Consequently, it would take 134158.80 months to process a national election with 20,000,000 eligible online voters consecutively, which is not a feasible timeframe for an election.
+Ultimately, this means that any system employed in national elections would need to be capable of processing votes concurrently (see \cref{subsubsec:res-concurrent-votes}).
 
 \subsubsection{Concurrent votes}\label{subsubsec:res-concurrent-votes}
 
 Unfortunately, the scalability test recorded a 100\% failure rate in concurrent mode.
 This could be attributed to a design flaw in our backend services that made the system unable to commit concurrent transactions to the \gls{Blockchain} due to more than one transaction sharing the same transaction nonce.
-Consequently, the \gls{Blockchain} network registered those transactions as a single transaction, with the latter trying to modify the first transaction.
+As a result, the \gls{Blockchain} network registered those transactions as a single transaction, with the latter transactions trying to override the former ones.
 We will address this issue in \cref{sec:conclusion}.
 
 \subsection{Transaction analysis}\label{subsec:res-transaction-analysis}
 
-The scalability test generated transactions on the \gls{Blockchain}, enabling us to evaluate voter anonymity, auditability, and scalability regarding transaction costs (see \cref{subsec:qualitative-objectives,sec:voting-systems}).
+The scalability test generated transactions on the \gls{Blockchain}, enabling us to evaluate voter anonymity, auditability, and scalability regarding transaction costs by using a \gls{BlockExplorer} (see \cref{subsec:qualitative-objectives,sec:voting-systems}).
+The transaction history of the \gls{SmartContract} we used for testing can be independently verified on \href{https://mumbai.polygonscan.com/address/0x626aec8b9220bee641bc4098fa73f8cc55e50a8f}{Polygonscan}.
 
 \subsubsection{Anonymity}
 
-As shown in IMAGE, even though all transactions are publicly visible using a \gls{BlockExplorer}, no identifying information about voters is committed on the \gls{Blockchain} since all transactions are made by our system using a voter's wallet.
-Hence, the only information the public will have on an individual voter is his \gls{PBK} and the approximate transaction time.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{boehm-transaction-analysis}
+    \caption[Smart contract transaction history]{Smart contract transaction history on \href{https://mumbai.polygonscan.com/address/0x626aec8b9220bee641bc4098fa73f8cc55e50a8f}{Polygonscan}. Screenshot taken by author}
+    \label{fig:transaction-analysis}
+\end{figure}
+
+As shown in~\cref{fig:transaction-analysis}, even though all transactions are publicly visible using a \gls{BlockExplorer}, no identifying information about voters is committed to the \gls{Blockchain} as all transactions are made by our system using voters' wallets.
+Hence, the only information the public would have on an individual voter is his \gls{PBK} and the approximate transaction time.
 
 \subsubsection{Auditability}
 
-The public can independently audit (see \cref{subsec:qualitative-objectives,sec:voting-systems} the election in precisely the same manner, using a \gls{BlockExplorer} to analyze all transactions on the election’s \gls{SmartContract} and to call the contract’s result function to evaluate its internal state of the election result.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{boehm-audit}
+    \caption[Smart contract audit]{Smart contract audit on \href{https://mumbai.polygonscan.com/address/0x626aec8b9220bee641bc4098fa73f8cc55e50a8f}{Polygonscan}. Screenshot taken by author}
+    \label{fig:audit}
+\end{figure}
+
+The public can independently audit the election in precisely the same manner, using a \gls{BlockExplorer} to analyze all transactions on the election’s \gls{SmartContract} and to call the contract’s functions to evaluate its internal state of the election result (see \cref{fig:audit}).
 
 \subsubsection{Transaction costs}\label{subsubsec:res-transaction-costs}
+
+\begin{figure}[h]
+    \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{boehm-balance1}
+        \caption{Balance before scalability test}
+        \label{fig:balance-before}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{boehm-balance2}
+        \caption{Balance after scalability test}
+        \label{fig:balance-after}
+    \end{subfigure}
+    \caption{Transaction costs. Screenshots taken by author.}
+    \label{fig:transaction-costs}
+\end{figure}
+
+As seen in \cref{fig:transaction-analysis}, the \gls{E2E} process for a single vote in an election generates three transactions on the corresponding smart contract, each costing approximately 0.0000649 to 0.000166 MATIC in fees equalling \$0.000084 to \$0.000214 at the time of this writing.
+Additionally, a small amount of MATIC, calculated based on average network fees at the time of the transaction, is transferred to voters' wallets.
+Accordingly, as shown in \cref{fig:transaction-costs}, the administrating wallet's balance before running the scalability test was 31.959 MATIC (see \cref{fig:balance-before} and 31.2839 MATIC (see \cref{fig:balance-after}) after having processed 1000 voters.
+Innately, MATIC prices fluctuated while running the tests causing the lower balance in \cref{fig:balance-after} to have a higher exchange value when calculated in US dollars.
+Regardless, at this time, the difference between both balances equaled \$0.87.
+Hence, we can safely conclude that our system is undoubtedly scalable in terms of operational costs.
+In fact, it is much cheaper to operate than traditional analogous or centralized e-voting systems.
 
 
 \subsection{Quantitative Objectives}\label{subsec:res-quantitaive-objectives}
 
 We aimed to create user interfaces that would take a voter through the \gls{E2E} process of voting in an election while simultaneously providing authorized election officials to create an election without prior experience in \gls{SmartContract} programming (see \cref{subsec:quantitative-objectives}).
 As seen in \cref{subsec:pages} appendix video), we achieved all of those objectives.
-            The client application of our voting system enables officials to create new elections by filling out a form and registered users to visually identify an election they wish to vote in, register for the selected election and vote for a candidate.
+The client application of our voting system enables officials to create new elections by filling out a form and registered users to visually identify an election they wish to vote in, register for the selected election and vote for a candidate.
 
 \section{Evaluation}\label{sec:evalutaion}
 

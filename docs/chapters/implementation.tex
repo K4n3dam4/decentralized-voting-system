@@ -380,7 +380,7 @@ Next, we calculate current transaction fees on the \gls{Blockchain} network and 
 As shown in~\cref{subsec:contract-functions}, this will also transfer the funds specified in the function's parameter from the \gls{Admin} wallet to the voter wallet.
 Subsequently, we add voting weight to the now registered voter, update our database entries, and return the voter wallets \gls{PK} as a mnemonic passphrase.
 
-As the voter is registered for an election with his newly created wallet address in our database while the wallet's \gls{PK} is never saved on the server side, he has complete autonomy over the distribution of his voting weight while remaining entirely anonymous.
+Since the voter is registered in our database with a newly created wallet address while the wallet's \gls{PK} is never saved on the server side, he has complete autonomy over the distribution of his voting weight while remaining entirely anonymous.
 
 \codeFromFile{ts}{code_snippets/register-voter.ts}{Register voter service}{Register voter service}{lst:register-voter.ts}
 

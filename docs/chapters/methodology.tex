@@ -92,12 +92,13 @@ Most importantly, however, they provided valuable insights concerning the securi
 
 As shown in~\cref{sec:voting-systems}, whether digital or analogous, voting systems must be scalable.
 Therefore, we wrote scalability tests to evaluate how many voters the system we propose could handle.
-In addition, a scalability test generated enough transactions on the \gls{Blockchain} to calculate the estimated network costs of our system (see~\cref{subsec:res-transaction-analysis}).
+In addition, a scalability test generated enough transactions on the \gls{Blockchain} to calculate the estimated network costs of our system.
 
 \subsection{Transaction analysis}\label{subsec:transaction-analysis}
 
 We relied on a \gls{BlockExplorer} to analyze transactions committed to the \gls{Blockchain} network by election officials and voters.
 Consequently, we were able to evaluate transaction costs and whether voters remained anonymous (see \cref{sec:voting-systems}).
+Furthermore, we tested the auditability of the election result using \glsplural{BlockExplorer}'s built in features to read verified contracts' internal states.
 
 \subsection{Interview of an industry member}\label{subsec:interview-of-industry-member}
 
