@@ -157,7 +157,7 @@ Furthermore, scalability in terms of transaction speed remains to be one of the 
 The current state of the technology is that, even in theory, no protocol can process a high enough number of votes for a national election which would entail millions of transactions in a single day.
 
 To test our system, we chose Polygon as we concluded from our research that the network, while still not being fast enough in theory, could deliver the highest number of \gls{TPS} without sacrificing security.
-Unfortunately, as discussed in \cref{subsec:res-scalability-test}, a design flaw in our backend services made it impossible for our application to process concurrent votes.
+However, as discussed in \cref{subsec:res-scalability-test}, a design flaw in our backend services made it impossible for our application to process concurrent votes.
 Accordingly, further research should consider a server design that handles concurrent requests and transactions to the chosen network.
 In our estimation, this could be achieved by building a queuing system into the server’s service that assigns requests to several administrative wallets, which then process transactions by iterating on a nonce.
 Alternatively, possibilities to make all transactions on the client side could be explored, which would alleviate the problem while improving decentralization and, thereby, the system’s security.
