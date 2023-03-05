@@ -45,8 +45,9 @@ A Tex distribution needs to be installed on your system.
 # code snippets are generated with minted, so the following pip packages need to be installed
 # on your system:
 # - jsx-lexer
+# - pygments-lexer-solidity
 # - Pygments
-pip install jsx-lexer
+pip install jsx-lexer pygments-lexer-solidity
 
 # pip will install Pygments alongside jsx-lexer if it isn't installed, yet
 
