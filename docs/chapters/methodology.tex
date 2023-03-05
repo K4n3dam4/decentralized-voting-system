@@ -60,7 +60,7 @@ Furthermore, it enabled the analysis of code changes during our iterative proces
 
 The development methods displayed in \cref{fig:success-rates-development-methods} are sorted according to their success rates.
 As stated by~\textcite[10-12]{jones_software_2010}, projects with a size of less than 1000 function points are most likely to benefit from agile development methods.
-The median size of function points is defined as 53 lines of JavaScript code by~\textcite{qsm_function_2009}.
+The median size of function points is 53 lines of JavaScript code by~\textcite{qsm_function_2009}.
 Based on these findings, we applied agile development methods during the development process as the project's size was not anticipated to grow beyond the aforementioned dimensions.
 
 However, we departed from the recommended defect prevention methods shown in~\cref{fig:success-rates-development-methods} since embedded user reviews mainly test the application’s frontend functionality.
@@ -69,12 +69,12 @@ Instead, the same goal could be achieved by applying Scrum methods and \gls{E2E}
 \subsection{Personal Scrum}\label{subsec:personal-scrum}
 
 Despite this being a one-person project with different organizational requirements than projects developed by a team, we applied scrum methods (see \cref{fig:scrum-method}) during our development process.
-As stated by \textcites{andrews_scrum_2017}{pahuja_scrum_2015}, this meant adapting scrum methods for personal use, enabling us to establish iterative processes to track the development process, evaluate intermediate results and remove defects (see~\cref{fig:scrum-method}).
+As \textcites{andrews_scrum_2017}{pahuja_scrum_2015} state, this meant adapting scrum methods for personal use, enabling us to establish iterative processes to track the development process, evaluate intermediate results and remove defects (see~\cref{fig:scrum-method}).
 
 
 \section{Evaluation}\label{sec:evaluation}
 
-The primary objective of this thesis was the development of a decentralized voting system under the assumption that such a system would dramatically improve upon fundamental properties of analogous and centralized electronic systems.
+This thesis's primary objective was to develop a decentralized voting system under the assumption that such a system would dramatically improve upon fundamental properties of analogous and centralized electronic systems.
 We first identified objectives based on a qualitative analysis of relevant research data (see~\cref{sec:voting-systems}).
 We then translated the results into software features to mirror an analogous election process and evaluated them using the methodologies discussed in the following sections.
 
@@ -91,12 +91,12 @@ Most importantly, however, they provided valuable insights concerning the securi
 \subsection{Scalability test}\label{subsec:scalability-test}
 
 As shown in~\cref{sec:voting-systems}, whether digital or analogous, voting systems must be scalable.
-Therefore, we wrote scalability tests to evaluate how many voters the system we propose could handle.
+Therefore, we wrote scalability tests to evaluate how many voters the proposed system could handle.
 In addition, a scalability test generated enough transactions on the \gls{Blockchain} to calculate the estimated network costs of our system.
 
 \subsection{Transaction analysis}\label{subsec:transaction-analysis}
 
-We relied on a \gls{BlockExplorer} to analyze transactions committed to the \gls{Blockchain} network by election officials and voters.
+We relied on a \gls{BlockExplorer} to analyze transactions by election officials and voters committed to the blockchain network.
 Consequently, we were able to evaluate transaction costs and whether voters remained anonymous (see \cref{sec:voting-systems}).
 Furthermore, we tested the auditability of the election result using \glsplural{BlockExplorer}'s built in features to read verified contracts' internal states.
 

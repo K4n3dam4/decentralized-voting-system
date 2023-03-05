@@ -37,7 +37,7 @@ The properties shown in~\cref{tab:properties-of-voting-systems} are most commonl
 
 Even though the first blockchain-like protocol was proposed by \textcite{chaum_computer_1982}, the concept of modern \gls{Blockchain} technology was first introduced in 2008 by \textcite{nakamoto_bitcoin_2008} and with the subsequent launch of Bitcoin in 2009.
 Although Satoshi Nakamoto's real identity remains a mistery to this day, he alluded to his motivations with a message left in Bitcoin's \gls{GenesisBlock}.
-It reads \enquote{The Times 03/Jan/2009 Chancellor on brink of second bailout for banks}~\autocite{nakamoto_bitcoin_2009} and is a reference to the headline of an article that appeared in \emph{The Times} on January 3, 2009, in the midst of the \gls{GFC} (see listing~\ref{lst:genesis-block-message}).
+It reads \enquote{The Times 03/Jan/2009 Chancellor on brink of second bailout for banks}~\autocite{nakamoto_bitcoin_2009} and refers to the headline of an article that appeared in \emph{The Times} on January 3, 2009, in the midst of the \gls{GFC} (see listing~\ref{lst:genesis-block-message}).
 
 \codeFromFile{text}{code_snippets/genesis_block_message.sh}{Nakamoto's message in the Genesis Block}{Nakamoto's message in the Genesis Block}{lst:genesis-block-message}
 
@@ -45,7 +45,7 @@ A \gls{Blockchain} is a distributed ledger, meaning a decentrally updated data s
 \Gls{Blockchain} protocols secure data immutability in a trustless network without the need for a central authority~\autocites[3]{crosby_blockchain_2015}[4]{jafar_blockchain_2021}.
 These protocols reward nodes, also called miners, for validating and adding new data to the \gls{Blockchain} in the form of blocks that consist of bundled transactions propagated to the network by its users.
 More specifically, when a sender initiates a transaction, he first signs it, then all nodes in the network receive the transaction and add it to their local blocks.
-However, before they are permitted to add their block to the \gls{Blockchain}, they have to solve a hash calculation looking for a hashed output that begins with a number of zero bits (see~\cref{subsec:pow}).
+However, before they can add their block to the \gls{Blockchain}, they must solve a hash calculation looking for a hashed output that begins with a number of zero bits (see~\cref{subsec:pow}).
 This operation is called \gls{POW}, as it requires energy in the form of computing power~\autocite[3]{nakamoto_bitcoin_2008}.
 
 \subsection{Blocks}\label{subsec:blocks}
@@ -110,7 +110,7 @@ The Python script displayed in listing~\ref{lst:simple-example-of-sha256} yields
 \begingroup\small\emph{0x64ec88ca00b268e5ba1a35678a1b5316d212f4f366b2477232534a8aeca37f3c}\endgroup
 \smallskip
 
-Since SHA-256 can produce such a high number of unique digests, it is said to be collision-free, meaning it is improbable that two unique inputs will produce the same output~\autocite[8]{yaga_blockchain_2018}.
+Since SHA-256 can produce such a high number of unique digests, it is considered collision-free, meaning it is improbable that two unique inputs will produce the same output~\autocite[8]{yaga_blockchain_2018}.
 
 \subsection{Asymmetric key cryptography}\label{subsec:asymmetric-key-cryptography}
 
@@ -161,7 +161,7 @@ As shown in \cref{fig:elliptic-curve}, the third point is calculated geometrical
 
 With a defined addition rule, curve multiplication can be applied with $kP$ where $k$ is a positive integer and $P$ a point on the curve as the sum of $k$ times $P$~\autocite[5]{kapoor_elliptic_2008}.
 
-In consequence,~\textcites[65,68]{antonopoulos_mastering_2017}[5]{kapoor_elliptic_2008} state, that given an agreed-upon curve \emph{generator point} $P$ and a none-secret elliptic curve, one can select a secret random integer $k$ to derive a public curve point $K$ from it using elliptic curve multiplication
+In consequence,~\textcites[65,68]{antonopoulos_mastering_2017}[5]{kapoor_elliptic_2008} state that given an agreed-upon curve \emph{generator point} $P$ and a none-secret elliptic curve, one can select a secret random integer $k$ to derive a public curve point $K$ from it using elliptic curve multiplication
 
 \begin{align}\label{eq:curve-multiplication}
     K=k \cdot P
@@ -169,7 +169,7 @@ In consequence,~\textcites[65,68]{antonopoulos_mastering_2017}[5]{kapoor_ellipti
 
 Reversing the multiplication process by solving for $k$ would be an unfeasible operation since the multiplication is nonlinear, as the output point can be anywhere on the curve with respect to the input point~\autocite{price_bitcoins_2020}.
 Furthermore, going backward, i.e., solving for $P$ provided $kP$, where $k$ is a random integer, is more difficult due to the symmetry of elliptic curves.
-Meaning, there might exist multiple points $P$ whose tangent lines cross the negation of $kP$ for any number of additive iterations in the multiplication process (see \cref{fig:finding-point-p}).
+Meaning, multiple points $P$ might exist whose tangent lines cross the negation of $kP$ for any number of additive iterations in the multiplication process (see \cref{fig:finding-point-p}).
 Therefore, a sufficiently high curve order exponentially increases the computing power needed to solve for $k$, making $K$ sharable with untrusted third parties without having to sacrifice the privacy of $k$.
 
 \begin{figure}[H]
@@ -231,7 +231,7 @@ Since validators risk losing their staked deposit if the network rejects their b
 
 \section{Web3}\label{sec:web3}
 
-\Gls{Web3} commonly refers to the third version of the internet, signifying a move away from centralized to decentralized applications~\autocite[xxxv]{antonopoulos_mastering_2019}.
+\Gls{Web3} commonly refers to the third version of the internet, signifying a move from centralized to decentralized applications~\autocite[xxxv]{antonopoulos_mastering_2019}.
 A push towards decentralization of the internet is seen by many as the solution to problems associated with \gls{Web2}~\autocite{feiner_prominent_nodate}.
 
 \subsection{Ethereum}\label{subsec:ethereum}
@@ -295,8 +295,8 @@ However, it utilizes the concept of an event loop as a runtime construct rather 
 
 Nx is a build system that provides monorepo support, thus making it possible to manage code bases for several projects in a single repository.
 According to~\textcite[80]{potvin_why_2016}, this is a concept Google, whose monolith repository contains over two billion lines of code, has been embracing for over two decades.
-In doing so, Google has been able to unify versioning and simplify dependency management for its developers while encouraging code sharing across multiple applications and teams~\autocite[84]{potvin_why_2016}.
-However, whereas Google has developed its own tools for managing code bases of that size in one repository, smaller companies, and freelance developers can still leverage the advantages of monorepos while alleviating disadvantages with build systems like Nx or Turborepo.
+In doing so, Google has unified versioning and simplified dependency management for its developers while encouraging code sharing across multiple applications and teams~\autocite[84]{potvin_why_2016}.
+However, whereas Google has developed its own tools for managing code bases of that size in one repository, smaller companies and freelance developers can still leverage the advantages of monorepos while alleviating disadvantages with build systems like Nx or Turborepo.
 
 As seen in listing~\ref{lst:nx-workspace}, the folder structure of a nx workspace initiated with \emph{npx create-nx-workspace@latest} looks very similar to a single project repository.
 A noteworthy difference is the fact that applications and libraries have their respective root subdirectories in the \emph{libs/} and \emph{apps/} folders while still maintaining shared dependency information in the project root's package.json.

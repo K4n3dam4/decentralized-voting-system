@@ -71,8 +71,8 @@ Accordingly, we wrote additional tests that generated high network traffic by si
 \end{figure}
 
 Simulating consecutive registrations and votes in an election resulted in a processing time of 17386.98 seconds or 4.83h hours for 1000 voters (see \cref{fig:scalability-test-result}) with 1\% of votes not being processed with the first request.
-Consequently, it would take 134158.80 months to process a national election with 20,000,000 eligible online voters consecutively, which is not a feasible timeframe for an election.
-Ultimately, this means that any system employed in national elections would need to be capable of processing votes concurrently (see \cref{subsubsec:res-concurrent-votes}).
+Consequently, it would take 134158.80 months to process a national election with 20,000,000 eligible online voters consecutively, which is not feasible for an election.
+Ultimately, this means that any system employed in national elections must be capable of processing votes concurrently (see \cref{subsubsec:res-concurrent-votes}).
 
 \subsubsection{Concurrent votes}\label{subsubsec:res-concurrent-votes}
 
@@ -144,24 +144,36 @@ The client application of our voting system enables officials to create new elec
 
 \section{Evaluation}\label{sec:evalutaion}
 
+\subsection{Personal scrum}\label{subsec:res-personal-scrum}
 
+Our adherence to scrum methods (see \cref{subsec:personal-scrum}) kept the project on track during planning and development and significantly improved our ability to track and resolve issues.
+However, the personal scrum method is missing one of the most crucial incremental parts, code reviews.
+Instead, we relied upon \gls{E2E} testing and regular functional testing of the developed web client to substitute for this.
+Although this method proved effective for finding and fixing several bugs, detailed code reviews would have been preferable in a project like this.
+
+\subsection{Monorepo}\label{subsec:monorepo}
+
+We used nx (see \cref{subsec:nx,subsec:creating-a-monorepo-using-nx}) to develop all project applications in a single repository.
+This decision significantly improved development times since we could streamline and simplify project dependencies.
+Nevertheless, monorepos also come with challenges.
+For example, we did not implement continuous integration for this project which, in our experience, is a more demanding task in a monorepo.
 
 \section{Conclusion}\label{sec:conclusion}
 
 We successfully developed an electronic voting system prototype that processes votes decentrally on any blockchain network whose virtual machine can execute Solidity code.
 In summary, elections conducted with our system were highly transparent due to the ease of auditing transactions and election results using a \gls{BlockExplorer} (see \cref{subsec:res-transaction-analysis}).
-Additionally, we measured high levels of security and anonymity regarding operational costs (see \cref{subsec:res-end-to-end-tests,subsec:res-transaction-analysis}).
+Additionally, we measured high levels of security and anonymity as well as low operational costs (see \cref{subsec:res-end-to-end-tests,subsec:res-transaction-analysis}).
 
 Even so, due to the complexity of the technology, weighing certain accessibility features against security and anonymity proved to be very challenging.
 Furthermore, scalability in terms of transaction speed remains to be one of the most significant hurdles despite meaningful innovations in this area in recent years.
 The current state of the technology is that, even in theory, no protocol can process a high enough number of votes for a national election which would entail millions of transactions in a single day.
 
-To test our system, we chose Polygon as we concluded from our research that the network, while still not being fast enough in theory, could deliver the highest number of \gls{TPS} without sacrificing security.
+To test our system, we chose Polygon as we concluded from our research that the network, while still not being fast enough in theory, could deliver the highest number of \gls{TPS}.
 However, as discussed in \cref{subsec:res-scalability-test}, a design flaw in our backend services made it impossible for our application to process concurrent votes.
 Accordingly, further research should consider a server design that handles concurrent requests and transactions to the chosen network.
 In our estimation, this could be achieved by building a queuing system into the server’s service that assigns requests to several administrative wallets, which then process transactions by iterating on a nonce.
 Alternatively, possibilities to make all transactions on the client side could be explored, which would alleviate the problem while improving decentralization and, thereby, the system’s security.
 Although, it should be noted that during our research, complete decentralization proved challenging to achieve without sacrificing accessibility to a certain degree.
 
-Overall, taking into account areas of concern such as scalability and potential unforeseen security risks of decentralized voting systems, we recommend further research into the practical development of such systems to run local pilot programs.
+Overall, taking into account areas of concern such as scalability and potential unforeseen security risks of decentralized voting systems, we recommend further research into the practical development of such systems with the aim of rolling out local pilot programs.
 
