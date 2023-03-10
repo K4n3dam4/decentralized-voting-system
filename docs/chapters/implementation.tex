@@ -41,7 +41,7 @@ All four \gls{Blockchain} networks possess most of the necessary properties.
 Nevertheless, as shown in \cref{subsec:comparison-of-turing-complete-blockchains}, scalability is a major issue underlying \gls{Blockchain} technology in general.
 For instance, even though the Ethereum Foundation is looking to improve Ethereum's protocol further, theoretically enabling it to process up to 100,000 \gls{TPS} in the future, as of the time of this writing, it cannot process enough transactions to facilitate national elections.
 Conversely, other \glspl{Blockchain} compromise on similarly essential features to achieve a higher number of \gls{TPS}, e.g., security or network stability, the latter being an equally important scalability aspect.
-Therefore, based on our evaluation of the available options (see \cref{subsec:selection-of-blockchain-network}), we determined that Polygon provided the optimal trade-off between security and scalability, leading us to select it as our preferred blockchain network for this project.
+Therefore, based on our evaluation of the available options (see \cref{subsec:selection-of-blockchain-network}) and after confirming those findings with an industry expert, we come to the conclusion that Polygon provides the optimal trade-off between security and scalability, leading us to select it as our preferred blockchain network for this project.
 
 \subsection{Selecting the technology stack}\label{subsec:selection-of-tech-stack}
 
@@ -176,7 +176,7 @@ and chai matchers to enable local testing of our election contract, as well as t
     yarn add -D @nomicfoundation/hardhat-chai-matchers @types/chai @types/mocha typechain @types/typechain @ethersproject/providers
 \end{minted}
 
-After installing all necessary dependencies, we configure Hardhat and tell it to run within its directory in \emph{libs/smart-contracts} by creating a \emph{hardhat.config.ts} (see listing~\ref{lst:hardhat-config}) and adding nx commands for testing and compilation to the library's \emph{project.json} (see listing~\ref{lst:hardhat-project.json}).
+After installing all necessary dependencies, we configure Hardhat and tell it to run within its own directory in \emph{libs/smart-contracts} by creating a \emph{hardhat.config.ts} (see listing~\ref{lst:hardhat-config}) and adding nx commands for testing and compilation to the library's \emph{project.json} (see listing~\ref{lst:hardhat-project.json}).
 
 \codeFromFile{ts}{code_snippets/hardhat-config.ts}{Hardhat config}{Hardhat config}{lst:hardhat-config}
 \codeFromFile{json}{code_snippets/hardhat-project.json}{Hardhat project.json}{Hardhat project.json}{lst:hardhat-project.json}
@@ -239,7 +239,10 @@ Thus, the only possible way to prevent people from voting once an election has e
 \subsubsection{Constructor}
 
 As in other programming languages, a contract's constructor is called only once when a new contract instance is created on the \gls{Blockchain}.
-Hence, our constructor accepts three arguments, the election's name, its candidates and expiration timestamp, which will be parsed to the contract during deployment (see listing~\ref{lst:election-step2.sol}).
+At first, we did not write arguments for the constructor since we assumed we would only deploy a single contract that could handle the creation of multiple elections by \glsplural{Admin} through the contract's \gls{ABI}.
+However, we discussed this with an industry expert during our iterative process and were advised to rethink our concept as contracts can only hold a limited amount of data.
+Moreover, designing a contract that manages multiple elections would be more challenging due to Solidity's limitations regarding data structures.
+As a result, the final contract constructor accepts three arguments, the election's name, its candidates and expiration timestamp, which will be parsed to the contract during deployment (see listing~\ref{lst:election-step2.sol}).
 
 \subsubsection{Modifiers}
 
@@ -255,7 +258,7 @@ The \gls{Admin} wallet address will primarily perform transactions on our contra
 \subsubsection{registerVoter}
 
 As shown in listing~\ref{lst:election-step3.sol}, this function is only executable by the contract owner while the election has not expired.
-It takes a voter’s wallet address, which will be created in our Nest.js backend when a voter tries to register for an election (see~\cref{subsec:admin-service}), and adds it to the voters mapping.
+It takes a voter’s wallet address as an argument, which will be created in our Nest.js backend when a voter tries to register for an election (see~\cref{subsec:admin-service}), and adds it to the voters mapping.
 Lastly, it transfers a small number of funds from the \gls{Admin} wallet to the voter’s wallet to enable the latter to pay for transactions while interacting with the \gls{SmartContract}.
 We also considered fully decentralizing the registration process.
 However, we concluded that voters could not be expected to create their wallets as this remains unintuitive (see~\cref{subsec:election-service}).
@@ -273,8 +276,8 @@ The function then subtracts voting weight from the voter and adds one vote to th
 
 \subsubsection{closeElection}
 
-\glsplural{Admin} can close elections by calling this function.
-As seen in listing~\ref{lst:election-step3.sol}, it then sets the election's \emph{expires} state to the current block timestamp, preventing further transactions and calculates the election's result.
+\Glsplural{Admin} can close elections by calling this function.
+As seen in listing~\ref{lst:election-step3.sol}, the function sets the election's \emph{expires} state to the current block timestamp, preventing further transactions and calculates the election's result.
 
 \subsection{Testing the contract}\label{subsec:testing-the-contract}
 
@@ -282,6 +285,9 @@ After successfully debugging and testing our contract on Remix, we copy it to ou
 Having installed \emph{typechain} earlier, this should create a new \emph{typechain-types} folder containing typed interfaces of our contract and its \gls{ABI}.
 
 We now have everything we need to create a new \emph{test} directory and write tests for the contract (see listing~\ref{lst:election-tests.ts}).
+Running unit tests on the contract provides valuable information about its functionality.
+For example, initially, we checked the provided expiration timestamp in milliseconds against the global Solidity variable \emph{block.timestamp}, which is saved in seconds.
+As the expiration time is a core element of elections, we fix this by multiplying the block timestamp by 1000 before comparing it to the expiration state.
 
 \codeFromFile{ts}{../libs/smart-contracts/src/lib/test/Election.ts}{Testing the contract}{Testing the contract}{lst:election-tests.ts}
 
@@ -313,7 +319,6 @@ Even though elections will exist as \glsplural{SmartContract} on our chosen \gls
 
 \codeFromFile{java}{../libs/prisma/prisma/schema.prisma}{Prisma schema}{Prisma schema}{lst:schema-prisma}
 
-Next, we added a database using prisma.
 For this we install prisma into our project, create a prisma library and add a database schema (see listing~\ref{lst:schema-prisma}):
 
 \begin{enumerate}
@@ -322,6 +327,9 @@ For this we install prisma into our project, create a prisma library and add a d
     \item Eligible Voters
     \item Elections
 \end{enumerate}
+
+After speaking with an industry expert, we decided to implement a single schema for users instead of an \gls{Admin} and a voter schema.
+This enables us to handle all user requests with a single \gls{JWT} strategy using role guards (see \cref{subsec:security}).
 
 \subsection{Core module}\label{subsec:core-module}
 
@@ -346,8 +354,8 @@ In our case, we use Alchemy and deploy contracts to Polygon’s Mumbai test netw
 \subsection{Security}\label{subsec:security}
 
 To prevent unauthorized entities from accessing protected pages (see~\ref{subsec:middleware}) or making requests to \gls{API} endpoints, we need to implement authorization services using \glsplural{JWT}.
-We initially considered dispensing with user logins since voter registration will be specific to an election.
-However, we ultimately decided to limit requests made to our server.
+We initially considered dispensing with user accounts since voter registration will be specific to an election.
+However, we ultimately decided to implementing accounts to limit requests made to our server.
 
 Hence, we first run \mintinline[breaklines]{text}{yarn add passport-jwt} in our terminal.
 Then, we create three new files in \emph{libs/api/src/lib/guards} and \emph{libs/api/src/lib/strategies}, respectively.
@@ -429,7 +437,15 @@ This starts a local \gls{Blockchain} network and creates an \gls{Admin} as well 
 After successfully starting the network, a clean test database will be started using our prisma module.
 Lastly, our \gls{E2E} application will run the tests.
 
-A complete overview of the tests is provided in~\cref{ch:apx-server-e2e-tests} while its results will be discussed in~\cref{subsec:res-end-to-end-tests}.
+A comprehensive summary of the tests is available in~\cref{ch:apx-server-e2e-tests}, and the results will be analyzed and discussed in section~\cref{subsec:res-end-to-end-tests}.
+
+\subsection{Scalability tests}\label{subsec:scalability-tests}
+
+In order to evaluate the system's scalability, we create a Node.js application using nx.
+This application generates a simulated list of voters and performs the \gls{E2E} voting process for each individual, either concurrently or consecutively.
+By configuring a representative number of simulated voters, this test provides important insights into the system's operational costs and transaction speeds.
+
+A comprehensive summary of the tests is available in~\cref{ch:apx-server-scalability-tests}, and the results will be analyzed and discussed in section~\cref{subsec:res-scalability-test}.
 
 \section{Client}\label{sec:client}
 

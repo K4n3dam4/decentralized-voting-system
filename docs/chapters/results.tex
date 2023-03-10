@@ -58,8 +58,7 @@ In conclusion, the election's integrity (see \cref{subsec:qualitative-objectives
 
 As mentioned in \cref{subsec:quantitative-objectives,sec:voting-systems}, scalability is a crucial feature of any voting system employed in national elections.
 In this context, scalability refers to two aspects: processing time, i.e., how much time the system needs to process a number of voters, and the processing cost.
-Accordingly, we wrote additional tests that generated high network traffic by simulating a statistically significant number of voters.
-
+Accordingly, as mentioned in \cref{subsec:scalability-tests}, we wrote additional tests that generated high network traffic by simulating a statistically significant number of voters.
 
 \subsubsection{Consecutive votes}\label{subsubsec:res-consecutive-votes}
 
@@ -72,7 +71,7 @@ Accordingly, we wrote additional tests that generated high network traffic by si
 
 Simulating consecutive registrations and votes in an election resulted in a processing time of 17386.98 seconds or 4.83h hours for 1000 voters (see \cref{fig:scalability-test-result}) with 1\% of votes not being processed with the first request.
 Consequently, it would take 134158.80 months to process a national election with 20,000,000 eligible online voters consecutively, which is not feasible for an election.
-Ultimately, this means that any system employed in national elections must be capable of processing votes concurrently (see \cref{subsubsec:res-concurrent-votes}).
+Ultimately, this means that any system employed in national elections must be capable of processing votes concurrently.
 
 \subsubsection{Concurrent votes}\label{subsubsec:res-concurrent-votes}
 
@@ -82,7 +81,7 @@ As a result, the \gls{Blockchain} network registered those transactions as a sin
 
 \subsection{Transaction analysis}\label{subsec:res-transaction-analysis}
 
-The scalability test generated transactions on the \gls{Blockchain}, enabling us to evaluate voter anonymity, auditability, and scalability regarding transaction costs by using a \gls{BlockExplorer} (see \cref{subsec:qualitative-objectives,sec:voting-systems}).
+The scalability test generated transactions on the \gls{Blockchain}, enabling us to evaluate voter anonymity, auditability, and scalability in the context of operational costs by using a \gls{BlockExplorer} (see \cref{subsec:qualitative-objectives,sec:voting-systems}).
 The transaction history of the \gls{SmartContract} we used for testing can be independently verified on \href{https://mumbai.polygonscan.com/address/0x626aec8b9220bee641bc4098fa73f8cc55e50a8f}{Polygonscan}.
 
 \subsubsection{Anonymity}
@@ -94,7 +93,7 @@ The transaction history of the \gls{SmartContract} we used for testing can be in
     \label{fig:transaction-analysis}
 \end{figure}
 
-As shown in~\cref{fig:transaction-analysis}, even though all transactions are publicly visible using a \gls{BlockExplorer}, no identifying information about voters is committed to the \gls{Blockchain} as all transactions are made by our system using voters' wallets.
+As shown in~\cref{fig:transaction-analysis}, even though all transactions are publicly visible through the use of a \gls{BlockExplorer}, no identifying information about voters is committed to the \gls{Blockchain} as all transactions are made by our system using voters' wallets.
 Hence, the only information the public would have on an individual voter is his \gls{PBK} and the approximate transaction time.
 
 \subsubsection{Auditability}
@@ -131,9 +130,9 @@ As seen in \cref{fig:transaction-analysis}, the \gls{E2E} process for a single v
 Additionally, a small amount of MATIC, calculated based on average network fees at the time of the transaction, is transferred to voters' wallets.
 Accordingly, as shown in \cref{fig:transaction-costs}, the administrating wallet's balance before running the scalability test was 31.959 MATIC (see \cref{fig:balance-before} and 31.2839 MATIC (see \cref{fig:balance-after}) after having processed 1000 voters.
 Innately, MATIC prices fluctuated while running the tests causing the lower balance in \cref{fig:balance-after} to have a higher exchange value when calculated in US dollars.
-Regardless, at this time, the difference between both balances equaled \$0.87.
+Regardless, at the time of this writing, the difference between both balances equaled \$0.87.
 Hence, we can safely conclude that our system is undoubtedly scalable in terms of operational costs.
-In fact, it is much cheaper to operate than traditional analogous or centralized e-voting systems.
+In fact, it is much cheaper to operate than traditional analogous or centralized e-voting systems which cost around \$10/voter~\autocite{mohr_how_nodate}.
 
 
 \subsection{Quantitative Objectives}\label{subsec:res-quantitaive-objectives}
