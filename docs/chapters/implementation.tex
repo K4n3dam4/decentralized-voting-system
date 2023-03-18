@@ -240,7 +240,7 @@ Thus, the only possible way to prevent people from voting once an election has e
 
 As in other programming languages, a contract's constructor is called only once when a new contract instance is created on the \gls{Blockchain}.
 At first, we did not write arguments for the constructor since we assumed we would only deploy a single contract that could handle the creation of multiple elections by \glsplural{Admin} through the contract's \gls{ABI}.
-However, we discussed this with an industry expert during our iterative process and were advised to rethink our concept as contracts can only hold a limited amount of data.
+However, we discussed this with Brian Boehm during our iterative process and were advised to rethink our concept as contracts can only hold a limited amount of data.
 Moreover, designing a contract that manages multiple elections would be more challenging due to Solidity's limitations regarding data structures.
 As a result, the final contract constructor accepts three arguments, the election's name, its candidates and expiration timestamp, which will be parsed to the contract during deployment (see listing~\ref{lst:election-step2.sol}).
 
@@ -291,7 +291,7 @@ As the expiration time is a core element of elections, we fix this by multiplyin
 
 \codeFromFile{ts}{../libs/smart-contracts/src/lib/test/Election.ts}{Testing the contract}{Testing the contract}{lst:election-tests.ts}
 
-\section{Verifying the contract}\label{sec:verifying-the-contract}
+\subsection{Verifying the contract}\label{subsec:verifying-the-contract}
 
 We need to verify the \gls{SmartContract} to make elections fully transparent (\cref{subsec:qualitative-objectives,sec:voting-systems}).
 This will later enable anyone who wishes to audit an election to visit a \gls{BlockExplorer} and execute all non-administrative contract functions in a web interface.
@@ -307,9 +307,29 @@ We prepare the project to handle contract verifications through the use of \gls{
 
 to the \emph{libs/smart-contracts/hardhat.config} file.
 We then add a new run target to the library's \emph{project.json} and set its command key to \mintinline[breaklines]{text}{npx hardhat verify 0x{args.address} --constructor-args {args.constructor_args} --network testnet}.
-Subsequently, we are be able to verify a contract after its deployment by running the target from the project's root with the required arguments.
+Subsequently, we are able to verify a contract after its deployment by running the target from the project's root with the required arguments.
 It should be noted, that \glsplural{BlockExplorer} compare the bytecode of contracts in newly mined blocks to the bytecode of all verified contracts.
 No additional actions are required to make elections auditable when administrators create a new election using a contract version that has already been verified.
+
+\subsection{Smart contract interim evaluation}\label{subsec:smart-contract-interim-evaluation}
+
+Using the unit test results (see \cref{subsec:testing-the-contract}) and conclusions from our talks with Brian Boehm, we identified the following shortcomings and improve our \gls{SmartContract} related code as shown in~\cref{tab:smart-contract-interim-evaluation}.
+
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{XX}
+        \hline
+        \textbf{Identified shortcomings} & \textbf{Identified action to resolve the issue} \\
+        \hline
+        Non-parameterized constructor makes customizable contract deployments impossible & We add a parameterized constructor function to the smart contract, thereby enabling individual deployments of election contract \\
+        \hline
+        Wrong comparison between expired state and block timestamp & We multiply the block timestamp by 1000 to compare both values in milliseconds \\
+        \hline
+        \Gls{Admin} wallet is able to vote & To prevent election officials who might know the system \gls{PK} from casting double votes, we wrap the voting function in an if statement checking the transaction's address against the contract's owner \\
+        \hline
+    \end{tabularx}
+    \caption{Smart contract interim evaluation}
+    \label{tab:smart-contract-interim-evaluation}
+\end{table}
 
 \section{Server}\label{sec:server}
 
@@ -328,7 +348,7 @@ For this we install prisma into our project, create a prisma library and add a d
     \item Elections
 \end{enumerate}
 
-After speaking with an industry expert, we decided to implement a single schema for users instead of an \gls{Admin} and a voter schema.
+After speaking with Brian Boehm, we decided to implement a single schema for users instead of an \gls{Admin} and a voter schema.
 This enables us to handle all user requests with a single \gls{JWT} strategy using role guards (see \cref{subsec:security}).
 
 \subsection{Core module}\label{subsec:core-module}
@@ -355,7 +375,7 @@ In our case, we use Alchemy and deploy contracts to Polygon’s Mumbai test netw
 
 To prevent unauthorized entities from accessing protected pages (see~\ref{subsec:middleware}) or making requests to \gls{API} endpoints, we need to implement authorization services using \glsplural{JWT}.
 We initially considered dispensing with user accounts since voter registration will be specific to an election.
-However, we ultimately decided to implementing accounts to limit requests made to our server.
+However, we ultimately decided to implement accounts in order to limit requests made to our server.
 
 Hence, we first run \mintinline[breaklines]{text}{yarn add passport-jwt} in our terminal.
 Then, we create three new files in \emph{libs/api/src/lib/guards} and \emph{libs/api/src/lib/strategies}, respectively.
@@ -437,7 +457,8 @@ This starts a local \gls{Blockchain} network and creates an \gls{Admin} as well 
 After successfully starting the network, a clean test database will be started using our prisma module.
 Lastly, our \gls{E2E} application will run the tests.
 
-A comprehensive summary of the tests is available in~\cref{ch:apx-server-e2e-tests}, and the results will be analyzed and discussed in section~\cref{subsec:res-end-to-end-tests}.
+A comprehensive summary of the tests is available in~\cref{ch:apx-server-e2e-tests}.
+The final results will be analyzed and discussed in section~\cref{subsec:res-end-to-end-tests}.
 
 \subsection{Scalability tests}\label{subsec:scalability-tests}
 
@@ -445,7 +466,36 @@ In order to evaluate the system's scalability, we create a Node.js application u
 This application generates a simulated list of voters and performs the \gls{E2E} voting process for each individual, either concurrently or consecutively.
 By configuring a representative number of simulated voters, this test provides important insights into the system's operational costs and transaction speeds.
 
-A comprehensive summary of the tests is available in~\cref{ch:apx-server-scalability-tests}, and the results will be analyzed and discussed in section~\cref{subsec:res-scalability-test}.
+A comprehensive summary of the tests is available in~\cref{ch:apx-server-scalability-tests}.
+The final results will be analyzed and discussed in section~\cref{subsec:res-scalability-test}.
+
+\subsection{Server interim evaluation}\label{subsec:server-interim-evaluation}
+
+Through the evaluation of initial test results (see~\cref{subsec:e2e-tests,subsec:scalability-tests}) and interview protocols we identified the following shortcomings and improve our backend services as shown in~\cref{tab:server-interim-evaluation}.
+
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{XX}
+        \hline
+        \textbf{Identified shortcomings} & \textbf{Identified action to resolve the issue} \\
+        \hline
+        Separate schemas for \glsplural{Admin} and voters & Implement user roles in a single user schema and in our \gls{JWT} strategies.
+        We can then inject role guards into routes depending on who should be able to access them. \\
+        \hline
+        Voter \glsplural{SSN} are not hashed & Hash \glsplural{SSN} with the same package we use to hash passwords. \\
+        \hline
+        Multiple requests have slow response times & Improve response times by replacing JavaScript in favor of prisma functions that directly manipulate or fetch database objects using SQL commands. \\
+        \hline
+        Failing voter registration and voting requests & Use transaction object's wait function to await mining of the transaction on the \gls{Blockchain}. \\
+        \hline
+        Failing test suites & Some \gls{Blockchain} transactions may take longer than the testing framework's default timeout.
+        Thus, since transaction times are out of our control, we can only increase the test suite's timeout. \\
+        \hline
+        Failing concurrent requests & See \cref{subsubsec:res-concurrent-votes} \\
+        \hline
+    \end{tabularx}
+    \caption{Server interim evaluation}
+    \label{tab:server-interim-evaluation}
+\end{table}
 
 \section{Client}\label{sec:client}
 
@@ -461,7 +511,7 @@ We can do this by creating a \emph{proxy.conf.js} file in the project's root dir
 
 \subsection{Middleware}\label{subsec:middleware}
 
-To protect our application's pages on the server side we use our backend's jwt services to check the user's jwt token on each request of a protected route.
+To protect our application's pages on the server side we use our backend's \gls{JWT} services to check the user's token during each request of a protected route.
 We can achieve this by creating a \emph{middleware.ts} in the application's root directory (see listing~\ref{lst:next-middleware.ts}).
 
 \codeFromFile{ts}{../apps/client/middleware.ts}{Next middleware}{Next middleware}{lst:next-middleware.ts}
