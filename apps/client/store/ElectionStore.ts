@@ -72,7 +72,7 @@ const useElectionStore = create<State & Actions>()(
 
           const mnemonic = data.mnemonic.split(' ');
           set({ mnemonic });
-          await router.push(`/${Routes.Election}/${electionId}`);
+          await router.push(`/${Routes.Election}${electionId}`);
           useModalStore.getState().setOpen({
             type: 'mnemonic',
             payload: mnemonic,
@@ -113,7 +113,7 @@ const useElectionStore = create<State & Actions>()(
             data: dto,
           });
           useModalStore.getState().setClosed();
-          await router.push(`/${Routes.Election}/${electionId}`);
+          await router.push(`/${Routes.Election}${electionId}`);
         } catch (error) {
           console.log(error);
           showToast({ status: 'error', description: i18n.t(apiError(error)) });

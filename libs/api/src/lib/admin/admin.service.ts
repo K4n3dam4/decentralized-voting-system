@@ -136,9 +136,9 @@ export class AdminService {
         dataSets: [
           {
             data: [
-              latestElection.eligibleVoters.length,
-              latestElection.registeredVoters.length,
-              JSON.parse(JSON.stringify(latestElection.candidates)).length,
+              latestElection?.eligibleVoters?.length ?? 0,
+              latestElection?.registeredVoters?.length ?? 0,
+              latestElection?.candidates ? JSON.parse(JSON.stringify(latestElection.candidates)).length : 0,
             ],
           },
         ],
