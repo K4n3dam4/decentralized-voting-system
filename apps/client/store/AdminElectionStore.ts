@@ -76,12 +76,25 @@ const useAdminElectionStore = create<State & Actions>()(
           return;
         }
 
+        let splitEligibleVoters: string[];
+
+        if (values.eligibleVoters.includes(', ')) {
+          splitEligibleVoters = values.eligibleVoters.split(', ');
+        } else if (values.eligibleVoters.includes(',')) {
+          splitEligibleVoters = values.eligibleVoters.split(',');
+        } else if (values.eligibleVoters.includes(' ')) {
+          splitEligibleVoters = values.eligibleVoters.split(' ');
+        } else {
+          get().setError('eligibleVoters', i18n.t('error.validate.eligibleVoters'));
+          return;
+        }
+
         // create dto
         const dto = {
           ...values,
           // timestamp in seconds
           expires: new Date(values.expires).getTime() / 1000,
-          eligibleVoters: values.eligibleVoters.split(' '),
+          eligibleVoters: splitEligibleVoters,
         } as ElectionCreate;
 
         try {

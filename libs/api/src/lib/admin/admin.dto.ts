@@ -7,12 +7,13 @@ export class Candidates {
   name: string;
 
   @IsString()
-  @IsOptional()
-  image?: string;
+  image: string;
 
   @IsString()
-  @IsOptional()
-  party?: string;
+  party: string;
+
+  @IsString()
+  partyColor: string;
 }
 
 export class ElectionCreateDto {

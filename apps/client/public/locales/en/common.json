@@ -144,7 +144,8 @@
       "password": "Minimum eight characters, at least one letter, one number and one special, upper- as well as lower case character.",
       "passwordRepeat": "Passwords do not match.",
       "email": "Please enter a valid email.",
-      "mnemonic": "Please enter a valid mnemonic phrase."
+      "mnemonic": "Please enter a valid mnemonic phrase.",
+      "eligibleVoters": "Please make sure that the list is either seperated by a space, a comma or a comma and a space."
     },
     "api": {
       "auth": {

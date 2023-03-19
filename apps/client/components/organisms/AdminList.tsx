@@ -4,10 +4,9 @@ import DVSAdminDataDisplay from '../molecules/DVSAdminDataDisplay';
 import { config } from '../../config/config';
 import DVSExpiration from '../atoms/DVSExpiration';
 import { FaPersonBooth, FaUniversalAccess, FaLock } from 'react-icons/fa';
-import { IoMdCreate, IoIosStats } from 'react-icons/io';
+import { IoIosStats } from 'react-icons/io';
 import { Icon } from '@chakra-ui/icons';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import useModalStore from '../../store/ModalStore';
 import DVSLink from '../atoms/DVSLink';
 
@@ -15,15 +14,11 @@ export type AdminListProps = { type: 'election'; list: AdminElection[] } | { typ
 
 const AdminList: React.FC<AdminListProps> = ({ type, list }) => {
   const { t } = useTranslation();
-  const router = useRouter();
 
   const [showActions, setShowActions] = useState<number>(null);
   const openModal = useModalStore((s) => s.setOpen);
 
   const handleMouseEnter = (index: number) => setShowActions(index);
-  const handleEditElection = async (id: number) => {
-    await router.push(`/admin/election/edit/${id}`);
-  };
 
   const List = () => {
     switch (type) {
@@ -57,31 +52,15 @@ const AdminList: React.FC<AdminListProps> = ({ type, list }) => {
                   </Tooltip>
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                  {/*<IconButton*/}
-                  {/*  aria-label="Statistics"*/}
-                  {/*  variant="outline"*/}
-                  {/*  icon={<Icon as={IoIosStats} />}*/}
-                  {/*  colorScheme="blue"*/}
-                  {/*/>*/}
                   {!closed ? (
-                    <>
-                      <Button
-                        onClick={() => openModal({ type: 'closeElection', payload: { id, name } })}
-                        colorScheme="red"
-                        variant="outline"
-                        leftIcon={<Icon as={FaLock} />}
-                      >
-                        {t('admin.list.election.close')}
-                      </Button>
-                      <Button
-                        onClick={() => handleEditElection(id)}
-                        colorScheme="green"
-                        variant="outline"
-                        leftIcon={<Icon as={IoMdCreate} />}
-                      >
-                        {t('admin.list.election.edit')}
-                      </Button>
-                    </>
+                    <Button
+                      onClick={() => openModal({ type: 'closeElection', payload: { id, name } })}
+                      colorScheme="red"
+                      variant="outline"
+                      leftIcon={<Icon as={FaLock} />}
+                    >
+                      {t('admin.list.election.close')}
+                    </Button>
                   ) : (
                     <DVSLink
                       href={`/election/${id}`}
