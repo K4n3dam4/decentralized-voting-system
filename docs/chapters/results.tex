@@ -1,6 +1,6 @@
-\chapter{Results, evaluation and conclusion}\label{ch:results-evaluation-conclusion}
+\chapter{Results}\label{ch:results-evaluation-conclusion}
 
-\section{Results}\label{sec:results}
+\section{Summary}\label{sec:results}
 
 \subsection{Smart contract}\label{subsec:res-smart-contract}
 
@@ -15,7 +15,7 @@ We tested the Solidity code of our \gls{SmartContract} using a JavaScript test s
 The contract's functions are called in the order they would be called in during an election.
 As shown in~\cref{fig:smart-contract-test-results}, the contract's bytecode is deployable to any network that supports Solidity.
 Furthermore, all its functions made the expected changes to its internal state and rejected invalid transactions.
-Thus, we could show that the contract would ensure a secure election process once deployed (see \cref{subsec:qualitative-objectives,sec:voting-systems}).
+Thus, we could show that the contract would ensure a secure election process when deployed (see \cref{subsec:qualitative-objectives,sec:voting-systems}).
 
 \subsection{End-to-end tests}\label{subsec:res-end-to-end-tests}
 
@@ -69,14 +69,14 @@ Accordingly, as mentioned in \cref{subsec:scalability-tests}, we wrote additiona
     \label{fig:scalability-test-result}
 \end{figure}
 
-Simulating consecutive registrations and votes in an election resulted in a processing time of 17386.98 seconds or 4.83h hours for 1000 voters (see \cref{fig:scalability-test-result}) with 1\% of votes not being processed with the first request.
-Consequently, it would take 134158.80 months to process a national election with 20,000,000 eligible online voters consecutively, which is not feasible for an election.
+Simulating consecutive registrations and votes in an election resulted in a processing time of 17,386.98 seconds or 4.83h hours for 1,000 voters (see \cref{fig:scalability-test-result}) with 1\% of votes not being processed with the first request.
+Consequently, it would take 13,4158.80 months to process a national election with 20,000,000 eligible online voters consecutively, which is not feasible for an election.
 Ultimately, this means that any system employed in national elections must be capable of processing votes concurrently.
 
 \subsubsection{Concurrent votes}\label{subsubsec:res-concurrent-votes}
 
 Unfortunately, the scalability test recorded a 100\% failure rate in concurrent mode.
-This could be attributed to a design flaw in our backend services that made the system unable to commit concurrent transactions to the \gls{Blockchain} due to more than one transaction sharing the same transaction nonce.
+This could be attributed to a design flaw in our backend services that made the system unable to commit concurrent transactions to the \gls{Blockchain} due to transactions sharing the same transaction nonce.
 As a result, the \gls{Blockchain} network registered those transactions as a single transaction, with the latter transactions trying to override the former ones.
 
 \subsection{Transaction analysis}\label{subsec:res-transaction-analysis}
@@ -128,10 +128,10 @@ The public can independently audit the election in precisely the same manner, us
 
 As seen in \cref{fig:transaction-analysis}, the \gls{E2E} process for a single vote in an election generates three transactions on the corresponding smart contract, each costing approximately 0.0000649 to 0.000166 MATIC in fees equalling \$0.000084 to \$0.000214 at the time of this writing.
 Additionally, a small amount of MATIC, calculated based on average network fees at the time of the transaction, is transferred to voters' wallets.
-Accordingly, as shown in \cref{fig:transaction-costs}, the administrating wallet's balance before running the scalability test was 31.959 MATIC (see \cref{fig:balance-before} and 31.2839 MATIC (see \cref{fig:balance-after}) after having processed 1000 voters.
+Accordingly, as shown in \cref{fig:transaction-costs}, the administrating wallet's balance before running the scalability test was 31.959 MATIC (see \cref{fig:balance-before}) and 31.2839 MATIC (see \cref{fig:balance-after}) after having processed 1000 voters.
 Innately, MATIC prices fluctuated while running the tests causing the lower balance in \cref{fig:balance-after} to have a higher exchange value when calculated in US dollars.
 Regardless, at the time of this writing, the difference between both balances equaled \$0.87.
-Hence, we can safely conclude that our system is undoubtedly scalable in terms of operational costs.
+Hence, we can safely conclude that our system is scalable in terms of operational costs.
 In fact, it is much cheaper to operate than traditional analogous or centralized e-voting systems which cost around \$10/voter~\autocite{mohr_how_nodate}.
 
 
@@ -148,7 +148,7 @@ The client application of our voting system enables officials to create new elec
 Our adherence to scrum methods (see \cref{subsec:personal-scrum}) kept the project on track during planning and development and significantly improved our ability to track and resolve issues.
 However, the personal scrum method is missing one of the most crucial incremental parts, code reviews.
 Instead, we relied on \gls{E2E} testing and regular functional testing of the developed web client to substitute for this.
-Although this method proved effective for finding and fixing several bugs, detailed code reviews would have been preferable in a project like this.
+Although this method proved effective for finding and fixing several bugs, detailed code reviews would have been a preferable addition to the evaluation process of this project.
 
 \subsection{Monorepo}\label{subsec:monorepo}
 
@@ -171,8 +171,7 @@ To test our system, we chose Polygon as we concluded from our research that the 
 However, as discussed in \cref{subsec:res-scalability-test}, a design flaw in our backend services made it impossible for our application to process concurrent votes.
 Accordingly, further research should consider a server design that handles concurrent requests and transactions to the chosen network.
 In our estimation, this could be achieved by building a queuing system into the server’s service that assigns requests to several administrative wallets, which then process transactions by iterating on a nonce.
-Alternatively, possibilities to make all transactions on the client side could be explored, which would alleviate the problem while improving decentralization and, thereby, the system’s security.
+Alternatively, possibilities to make all transactions on the client side could be explored, which would alleviate the problem while improving decentralization and thereby the system’s security.
 Although, it should be noted that during our research, complete decentralization proved challenging to achieve without sacrificing accessibility to a certain degree.
 
 Overall, taking into account areas of concern such as scalability and potential unforeseen security risks of decentralized voting systems, we recommend further research into the practical development of such systems with the aim of rolling out local pilot programs.
-

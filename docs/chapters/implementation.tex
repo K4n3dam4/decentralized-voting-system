@@ -316,15 +316,15 @@ No additional actions are required to make elections auditable when administrato
 Using the unit test results (see \cref{subsec:testing-the-contract}) and conclusions from our talks with Brian Boehm, we identified the following shortcomings and improve our \gls{SmartContract} related code as shown in~\cref{tab:smart-contract-interim-evaluation}.
 
 \begin{table}[h]
-    \begin{tabularx}{\textwidth}{XX}
+    \begin{tabularx}{\textwidth}{XX>{\centering\arraybackslash}p{2cm}}
         \hline
-        \textbf{Identified shortcomings} & \textbf{Identified action to resolve the issue} \\
+        \textbf{Issues} & \textbf{Actions} & \textbf{Resolved} \\
         \hline
-        Non-parameterized constructor makes customizable contract deployments impossible & We add a parameterized constructor function to the smart contract, thereby enabling individual deployments of election contract \\
+        Non-parameterized constructor makes customizable contract deployments impossible & We add a parameterized constructor function to the smart contract, thereby enabling individual deployments of election contract & \cmark \\
         \hline
-        Wrong comparison between expired state and block timestamp & We multiply the block timestamp by 1000 to compare both values in milliseconds \\
+        Wrong comparison between expired state and block timestamp & We multiply the block timestamp by 1000 to compare both values in milliseconds & \cmark \\
         \hline
-        \Gls{Admin} wallet is able to vote & To prevent election officials who might know the system \gls{PK} from casting double votes, we wrap the voting function in an if statement checking the transaction's address against the contract's owner \\
+        \Gls{Admin} wallet is able to vote & To prevent election officials who might know the system \gls{PK} from casting double votes, we wrap the voting function in an if statement checking the transaction's address against the contract's owner & \cmark \\
         \hline
     \end{tabularx}
     \caption{Smart contract interim evaluation}
@@ -474,23 +474,23 @@ The final results will be analyzed and discussed in section~\cref{subsec:res-sca
 Through the evaluation of initial test results (see~\cref{subsec:e2e-tests,subsec:scalability-tests}) and interview protocols we identified the following shortcomings and improve our backend services as shown in~\cref{tab:server-interim-evaluation}.
 
 \begin{table}[h]
-    \begin{tabularx}{\textwidth}{XX}
+    \begin{tabularx}{\textwidth}{XX>{\centering\arraybackslash}p{2cm}}
         \hline
-        \textbf{Identified shortcomings} & \textbf{Identified action to resolve the issue} \\
+        \textbf{Issues} & \textbf{Actions} & \textbf{Resolved} \\
         \hline
         Separate schemas for \glsplural{Admin} and voters & Implement user roles in a single user schema and in our \gls{JWT} strategies.
-        We can then inject role guards into routes depending on who should be able to access them. \\
+        We can then inject role guards into routes depending on who should be able to access them & \cmark \\
         \hline
-        Voter \glsplural{SSN} are not hashed & Hash \glsplural{SSN} with the same package we use to hash passwords. \\
+        Voter \glsplural{SSN} are not hashed & Hash \glsplural{SSN} with the same package we use to hash passwords & \cmark \\
         \hline
-        Multiple requests have slow response times & Improve response times by replacing JavaScript in favor of prisma functions that directly manipulate or fetch database objects using SQL commands. \\
+        Multiple requests have slow response times & Improve response times by replacing JavaScript in favor of prisma functions that directly manipulate or fetch database objects using SQL commands & \cmark \\
         \hline
-        Failing voter registration and voting requests & Use transaction object's wait function to await mining of the transaction on the \gls{Blockchain}. \\
+        Failing voter registration and voting requests & Use transaction object's wait function to await mining of the transaction on the \gls{Blockchain} & \cmark \\
         \hline
         Failing test suites & Some \gls{Blockchain} transactions may take longer than the testing framework's default timeout.
-        Thus, since transaction times are out of our control, we can only increase the test suite's timeout. \\
+        Thus, since transaction times are out of our control, we can only increase the test suite's timeout & \cmark \\
         \hline
-        Failing concurrent requests & See \cref{subsubsec:res-concurrent-votes} \\
+        Failing concurrent requests & See \cref{subsubsec:res-concurrent-votes} & \xmark \\
         \hline
     \end{tabularx}
     \caption{Server interim evaluation}

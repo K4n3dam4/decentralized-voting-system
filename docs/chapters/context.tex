@@ -2,7 +2,7 @@
 
 \section{Voting systems}\label{sec:voting-systems}
 
-A qualitative analysis of relevant research data reveals several critical properties of voting systems, specifically electronic ones.
+An analysis of relevant research data reveals several critical properties of voting systems, specifically electronic ones.
 For example, \textcite[section 2]{lowry_desirable_2009} name auditability, ballot secrecy, usability, incoercibility, and accessibility, while~\textcite[11-12]{jafar_blockchain_2021} add that transparency, data integrity, and participation verifiability are essential features as well.
 
 The properties shown in~\cref{tab:properties-of-voting-systems} are most commonly mentioned in research on electronic voting systems~\autocites{agora_agora_nodate}{diaz-santiso_e-voting_2021}{jafar_blockchain_2021}{lowry_desirable_2009}{committee_of_ministers_council_of_europe_recommendation_2017}{national_democratic_institute_transparency_2013}{tas_systematic_2020}.
@@ -35,7 +35,7 @@ The properties shown in~\cref{tab:properties-of-voting-systems} are most commonl
 
 \section{Blockchain}\label{sec:blockchain}
 
-Even though the first blockchain-like protocol was proposed by \textcite{chaum_computer_1982}, the concept of modern \gls{Blockchain} technology was first introduced in 2008 by \textcite{nakamoto_bitcoin_2008} and with the subsequent launch of Bitcoin in 2009.
+Even though the first blockchain-like protocol was proposed by \textcite{chaum_computer_1982}, the concept of modern \gls{Blockchain} technology was first introduced by \textcite{nakamoto_bitcoin_2008} and with the subsequent launch of Bitcoin in 2009.
 Although Satoshi Nakamoto's real identity remains a mistery to this day, he alluded to his motivations with a message left in Bitcoin's \gls{GenesisBlock}.
 It reads \enquote{The Times 03/Jan/2009 Chancellor on brink of second bailout for banks}~\autocite{nakamoto_bitcoin_2009} and refers to the headline of an article that appeared in \emph{The Times} on January 3, 2009, in the midst of the \gls{GFC} (see listing~\ref{lst:genesis-block-message}).
 
@@ -89,18 +89,26 @@ Aside from the previous block's hash value, a block header contains the current 
 \end{figure}
 
 As \textcite[2-3]{nakamoto_bitcoin_2008} states, the inclusion of the previous block hash and the timestamp in a block's header serve a security purpose where protection grows stronger with every subsequent block added to the chain.
-This is because a bad actor propagating an altered block to the network cannot do so without changing its hashed value, which would also change the next block's value as it includes the hash of its predecessor.
-Thus, an attacker would first have to change the target block and then redo the \gls{POW} for all blocks that followed while outrunning the mining efforts of every honest node in the network.
+The reason for this is that if a bad actor intends to propagate an altered block to the network, they must change its hashed value, which in turn would modify the value of the next block, as it includes the hash of its predecessor.
+Consequently, to carry out such an attack, the attacker would need to modify the target block and redo the \gls{POW} for all subsequent blocks while simultaneously outpacing the mining efforts of all honest nodes in the network.
 
 \subsection{Hash algorithms}\label{subsec:hash-algorithms}
 
-In cryptography, hashing functions are used to calculate a relatively unique fixed-length deterministic output, also called digest, from an arbitrary-length input value, as stated by~\textcite[188]{antonopoulos_mastering_2017}.
+In cryptography, hashing functions are used to calculate a relatively unique fixed-length deterministic output, also called digest, from an arbitrary-length input value~\autocite[188]{antonopoulos_mastering_2017}.
 The digest acts as a digital fingerprint of the given value, meaning that individuals can verify data with hash functions independently and would immediately recognize changes to already existing data since these would produce an entirely different digest when hashed~\autocites[188-189]{antonopoulos_mastering_2017}[7]{yaga_blockchain_2018}.
 
 \subsubsection{SHA-256}
 Many \glspl{Blockchain} utilize the \gls{SHA} hash function with an output of 256 bits.
 SHA-256 outputs a 32-byte hexadecimal value equaling 256 bits.
-Hence, SHA-256 can produce \begin{math}2\textsuperscript{256}\approx10\textsuperscript{77}\end{math} unique digest values.
+Hence, SHA-256 can produce
+
+\begin{align}\label{eq:unique-digest-values}
+    2^{256}\approx10^{77}
+\end{align}
+
+unique digest values.
+As a reference, this number is one to five orders of magnitude smaller than the number of atoms in the observable universe which is estimated to be between \begin{math}10\textsuperscript{78}\end{math} and \begin{math}10\textsuperscript{82}\end{math}~\autocite{villanueva_how_2009}.
+Therefore, SHA-256 is considered collision-free, meaning it is improbable that two unique inputs will produce the same output~\autocite[8]{yaga_blockchain_2018}.
 
 \codeFromFile{python}{code_snippets/hash.py}{Simple example of a SHA-256 hashing script in Python}{Simple example of a SHA-256 hashing script in Python}{lst:simple-example-of-sha256}
 
@@ -109,8 +117,6 @@ The Python script displayed in listing~\ref{lst:simple-example-of-sha256} yields
 \smallskip
 \begingroup\small\emph{0x64ec88ca00b268e5ba1a35678a1b5316d212f4f366b2477232534a8aeca37f3c}\endgroup
 \smallskip
-
-Since SHA-256 can produce such a high number of unique digests, it is considered collision-free, meaning it is improbable that two unique inputs will produce the same output~\autocite[8]{yaga_blockchain_2018}.
 
 \subsection{Asymmetric key cryptography}\label{subsec:asymmetric-key-cryptography}
 

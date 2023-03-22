@@ -13,8 +13,8 @@ This has become evident in recent years during presidential elections in the \Gl
 In the case of the \Gls{USA}, it could be argued that the distrust was partly caused by the fact that even though regular citizens can personally audit paper ballots, they usually do not possess the necessary skills to make statistical assessments.
 At the same time, the voting process consists of several steps involving election officials or centralized software, which might be opaque for a broad part of the population, thus providing critics with ample ground for speculation about election fraud.
 Once such theories have gained traction, experience has shown that their spread is not easy to stop, regardless of whether they are untrue.
-Therefore, many Democrats in the \Gls{USA} still believe that the 2016 election was manipulated~\autocite{sinclair_its_2018} even though the Mueller investigation has found no evidence of Russian interference~\autocite{mueller_report_2019}.
-Similarly, many Republicans believe widespread voter fraud is the reason Donald.\ J. Trump lost the 2020 election, despite the fact that statistical analysis of voter ballots does not confirm that theory~\autocite{eggers_no_2021}.
+Therefore, many Democrat voters in the \Gls{USA} still believe that the 2016 election was manipulated~\autocite{sinclair_its_2018} even though the Mueller investigation has found no evidence of Russian interference~\autocite{mueller_report_2019}.
+Whereas many Republican voters believe widespread voter fraud is the reason, Donald.\ J. Trump lost the 2020 election, despite statistical analysis of voter ballots not confirming that theory~\autocite{eggers_no_2021}.
 
 A \Gls{Web3} application using \gls{Blockchain} technology could solve those problems while at the same time being considerably less vulnerable to cyberattacks than currently employed centralized e-voting systems.
 According to~\textcite{yaga_blockchain_2018}, \glspl{Blockchain} are decentralized digital ledgers that enable a community of users to record transactions publicly.
@@ -24,8 +24,8 @@ Provided governments will either run their respective voting systems on their ow
 
 \section{Objectives}\label{sec:objectives}
 
-This thesis will discuss the operational features of \gls{Blockchain} technology and describe the development process of a decentralized electronic voting system that has this technology at its core.
-The resulting prototype will then be evaluated, and its feasibility discussed in~\cref{ch:results-evaluation-conclusion}.
+This thesis aims to examine the operational features of \gls{Blockchain} technology and its application in the development of a decentralized electronic voting system.
+The development process of the aforementioned voting system will be described in detail in \cref{ch:implementation} while its feasibility will be evaluated and discussed in~\cref{ch:results-evaluation-conclusion}.
 
 \subsection{Qualitative objectives}\label{subsec:qualitative-objectives}
 
@@ -34,15 +34,13 @@ Consequently, they will be critical considerations in the following chapters.
 
 \subsection{Quantitative objectives}\label{subsec:quantitative-objectives}
 
-In order to demonstrate that modern technology, specifically \gls{Blockchain} technology, can be used to develop a secure electronic voting system, the project must include the following features.
-These are essential to simulate an end-to-end voting process.
+In order to demonstrate that modern technology, specifically \gls{Blockchain} technology, can be used to develop a secure electronic voting system, the project must include the following features:
 
 \begin{enumerate}
     \item Voter registration
     \begin{itemize}
         \item Registration mask (client)
-        \item Matching of voter data with database entries of registered voters (server)
-        \item Creation of voter wallet that connects to anonymous voter login data (server)
+        \item Login mask (client)
     \end{itemize}
     \item Voting booth
     \begin{itemize}
@@ -50,7 +48,8 @@ These are essential to simulate an end-to-end voting process.
         \item Display election information and candidates (client)
         \item A user interface to facilitate voting (client)
         \item Display election results (client)
-        \item Execution of submitted votes as \gls{SmartContract} (server)
+        \item Voter registration (client, server)
+        \item Voting (client, server)
         \item Fetching election results from the corresponding \gls{SmartContract} and transforming them into readable data for the client (server)
     \end{itemize}
     \item Administration
