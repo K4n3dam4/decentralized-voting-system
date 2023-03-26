@@ -45,13 +45,13 @@ Therefore, based on our evaluation of the available options (see \cref{subsec:se
 
 \subsection{Selecting the technology stack}\label{subsec:selection-of-tech-stack}
 
-Many frameworks could be used to develop the server- and client-side of a decentralized electronic voting system.
+Many frameworks could be used to develop the server and client side of a decentralized electronic voting system.
 However, we rely on a full Node.js integration due to its non-blocking \gls{IO} to ensure high scalability (see~\cref{subsec:node.js}).
 Similarly, given the scalability advantages of monorepos (see~\cref{subsec:nx}), we utilize nx to manage the project's repository.
 Additionally, keeping transparency in mind (see~\cref{sec:voting-systems}), an open-source project built with nx is more accessible to other developers as a resource for future research.
 
-We use Next.js as a framework on the client side as it allows for server-side rendering, increasing the application's overall security (see~\cref{subsec:next.js}) and making it \glstext{SEO}-friendly.
-Alternatively, we could have chosen to develop the client-side with Nuxt.js, which mimics most of Next.js's server-side and static rendering methods, while using Vue.js instead of React.js.
+We use Next.js as a framework on the client side as it allows for server side rendering, increasing the application's overall security (see~\cref{subsec:next.js}) and making it \glstext{SEO}-friendly.
+Alternatively, we could have chosen to develop the client side with Nuxt.js, which mimics most of Next.js's server side and static rendering methods, while using Vue.js instead of React.js.
 Nevertheless, Nuxt.js has a smaller community, arguably making React.js the preferable choice.
 
 Although Next.js comes with its own routing framework for API calls, it is reasonable to use a separate framework for requests that handle database and \gls{SmartContract} actions.
@@ -122,7 +122,7 @@ Hence, all future applications that might be added to the project will also be a
 
 We create a new Nest.js module, \emph{prisma}, in the \emph{libs/api} folder, to handle database entries.
 Then, we install Prisma as a devDependency with \mintinline[breaklines]{text}{yarn add -D prisma}, which provides basic tooling for databases, such as creating type-safe schemas, a built-in migration system, and a \gls{GUI} to display and edit database entries.
-Following installation, we create a docker-compose.yml, enabling the application to run dockerized PostgreSQL databases during development, test, and production builds (see listing~\ref{lst:docker-compose.yml}).
+Following the installation, we create a docker-compose.yml, enabling the application to run dockerized PostgreSQL databases during development, test, and production builds (see listing~\ref{lst:docker-compose.yml}).
 
 \codeFromFile{yaml}{code_snippets/docker-compose.yml}{Docker-compose.yml used in the prisma module}{Docker-compose.yml used in the prisma module}{lst:docker-compose.yml}
 
@@ -164,7 +164,7 @@ So after deleting those, we create a new file in the \emph{contracts} folder cal
 
 Since our backend will depend on the \gls{ABI} of our written contract, we still need to set up a local project.
 First, we use the nx command \mintinline[breaklines]{text}{nx g lib smart-contracts} to create a new nx library.
-Afterward, we need to install the necessary Hardhat dependencies in our project's root directory
+Afterwards, we need to install the necessary Hardhat dependencies in our project's root directory
 
 \begin{minted}[breaklines]{shell-session}
     yarn add -D hardhat @nomicfoundation/hardhat-toolbox
@@ -183,7 +183,7 @@ After installing all necessary dependencies, we configure Hardhat and tell it to
 
 \section{Smart contract}\label{sec:smart-contract}
 
-To begin writing the \gls{SmartContract}, we will later deploy when \glsplural{Admin} create an election; we switch to Remix \gls{IDE} and open the \emph{Election.sol} file we created earlier.
+To begin writing the \gls{SmartContract}, we will later deploy when \glsplural{Admin} create an election, we switch to Remix \gls{IDE} and open the \emph{Election.sol} file we created earlier.
 
 \subsection{Selecting a Solidity compiler and language version}\label{subsec:selecting-a-solidity-compiler-and-language-version}
 
@@ -240,7 +240,7 @@ Thus, the only possible way to prevent people from voting once an election has e
 
 As in other programming languages, a contract's constructor is called only once when a new contract instance is created on the \gls{Blockchain}.
 At first, we did not write arguments for the constructor since we assumed we would only deploy a single contract that could handle the creation of multiple elections by \glsplural{Admin} through the contract's \gls{ABI}.
-However, we discussed this with Brian Boehm during our iterative process and were advised to rethink our concept as contracts can only hold a limited amount of data.
+However, we discussed this with industry peers during our iterative process and were advised to rethink our concept as contracts can only hold a limited amount of data.
 Moreover, designing a contract that manages multiple elections would be more challenging due to Solidity's limitations regarding data structures.
 As a result, the final contract constructor accepts three arguments, the election's name, its candidates and expiration timestamp, which will be parsed to the contract during deployment (see listing~\ref{lst:election-step2.sol}).
 
@@ -267,7 +267,7 @@ However, we concluded that voters could not be expected to create their wallets 
 
 This function (see listing~\ref{lst:election-step3.sol}) enables \glsplural{Admin} to add voting weight to a registered voter.
 When a voter has no voting weight left, he is not eligible to vote.
-This function may seem unnecessary in elections where voters only have one vote, but it could be used in later versions of the systems to create more complex elections.
+This function may seem unnecessary in elections where voters only have one vote, but it could be used in later versions of the system to create more complex elections.
 
 \subsubsection{vote}
 
@@ -285,7 +285,7 @@ After successfully debugging and testing our contract on Remix, we copy it to ou
 Having installed \emph{typechain} earlier, this should create a new \emph{typechain-types} folder containing typed interfaces of our contract and its \gls{ABI}.
 
 We now have everything we need to create a new \emph{test} directory and write tests for the contract (see listing~\ref{lst:election-tests.ts}).
-Running unit tests on the contract provides valuable information about its functionality.
+Running unit tests on the contract provides valuable insights into its functionality.
 For example, initially, we checked the provided expiration timestamp in milliseconds against the global Solidity variable \emph{block.timestamp}, which is saved in seconds.
 As the expiration time is a core element of elections, we fix this by multiplying the block timestamp by 1000 before comparing it to the expiration state.
 
@@ -307,13 +307,13 @@ We prepare the project to handle contract verifications through the use of \gls{
 
 to the \emph{libs/smart-contracts/hardhat.config} file.
 We then add a new run target to the library's \emph{project.json} and set its command key to \mintinline[breaklines]{text}{npx hardhat verify 0x{args.address} --constructor-args {args.constructor_args} --network testnet}.
-Subsequently, we are able to verify a contract after its deployment by running the target from the project's root with the required arguments.
-It should be noted, that \glsplural{BlockExplorer} compare the bytecode of contracts in newly mined blocks to the bytecode of all verified contracts.
-No additional actions are required to make elections auditable when administrators create a new election using a contract version that has already been verified.
+Subsequently, we are able to verify a contract after its deployment by running the target from the project root with the required arguments.
+\Glsplural{BlockExplorer} compare the bytecode of contracts in newly mined blocks to the bytecode of all verified contracts.
+Therefore, no additional actions are required to make elections auditable when \glsplural{Admin} create a new election using a contract version that has already been verified.
 
 \subsection{Smart contract interim evaluation}\label{subsec:smart-contract-interim-evaluation}
 
-Using the unit test results (see \cref{subsec:testing-the-contract}) and conclusions from our talks with Brian Boehm, we identified the following shortcomings and improve our \gls{SmartContract} related code as shown in~\cref{tab:smart-contract-interim-evaluation}.
+Using the unit test results (see \cref{subsec:testing-the-contract}) and conclusions from our talks with industry related peers, we identified the following issues and improve our \gls{SmartContract} related code as shown in~\cref{tab:smart-contract-interim-evaluation}.
 
 \begin{table}[h]
     \begin{tabularx}{\textwidth}{XX>{\centering\arraybackslash}p{2cm}}
@@ -348,7 +348,7 @@ For this we install prisma into our project, create a prisma library and add a d
     \item Elections
 \end{enumerate}
 
-After speaking with Brian Boehm, we decided to implement a single schema for users instead of an \gls{Admin} and a voter schema.
+After speaking with a peer in the industry, we decided to implement a single schema for users instead of an \gls{Admin} and a voter schema.
 This enables us to handle all user requests with a single \gls{JWT} strategy using role guards (see \cref{subsec:security}).
 
 \subsection{Core module}\label{subsec:core-module}
@@ -524,7 +524,7 @@ The client application consists of six pages, including pages for \glsplural{Adm
 We use Next.js's internal routing system to create those pages by adding an \emph{index.tsx} file to the \emph{pages} directory for the landing page.
 Next.js treats folders within this directory as routes, so we create \emph{index.tsx} files for each page shown in~\cref{tab:all-pages-accessible-on-the-client-side} in their respective folders according to the routes we want to achieve.
 
-Since we are adhering to atomic design principles, a page only fetches data on the server side from our backend services and renders organisms that contain most of our client-side logic.
+Since we are adhering to atomic design principles, a page only fetches data on the server side from our backend services and renders organisms that contain most of our client side logic.
 Consequently, all pages are structured similarly (see listing~\ref{lst:election-page}).
 
 \begin{table}[h]
