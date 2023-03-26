@@ -33,7 +33,7 @@ interface Actions {
 
   setErrors: (errors: Record<string, any>) => void;
   setError: (field?: string, error?: string) => void;
-  reset: VoidFunction;
+  reset: (resetMnemonic?: boolean) => void;
 }
 
 const initialState: State = {
@@ -63,6 +63,7 @@ const useElectionStore = create<State & Actions>()(
         }
 
         try {
+          useModalStore.getState().setOpen({ type: 'loading', payload: 'Registering...' });
           const { data } = await makeRequest<Registered, ElectionRegister>({
             url: `election/register/${electionId}`,
             method: 'POST',
@@ -78,6 +79,7 @@ const useElectionStore = create<State & Actions>()(
             payload: mnemonic,
           });
         } catch (error) {
+          useModalStore.getState().setClosed();
           showToast({ status: 'error', description: i18n.t(apiError(error)) });
         }
       },
@@ -106,6 +108,7 @@ const useElectionStore = create<State & Actions>()(
         }
 
         try {
+          useModalStore.getState().setOpen({ type: 'loading', payload: 'Voting...' });
           await makeRequest({
             url: `election/vote/${electionId}`,
             headers: createBearer(useUserStore.getState().access_token),
@@ -114,8 +117,10 @@ const useElectionStore = create<State & Actions>()(
           });
           useModalStore.getState().setClosed();
           await router.push(`/${Routes.Election}${electionId}`);
+          get().reset(true);
         } catch (error) {
           console.log(error);
+          useModalStore.getState().setClosed();
           showToast({ status: 'error', description: i18n.t(apiError(error)) });
         }
       },
@@ -130,7 +135,11 @@ const useElectionStore = create<State & Actions>()(
         }
         set({ errors });
       },
-      reset: () => set(initialState),
+      reset: (resetMnemonic = false) => {
+        const resetState = { ...initialState };
+        if (!resetMnemonic) delete resetState.mnemonic;
+        set(resetState);
+      },
     }),
     { name: 'DVS-ElectionStore' },
   ),

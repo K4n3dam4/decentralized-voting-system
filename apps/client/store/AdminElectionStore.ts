@@ -6,6 +6,7 @@ import validate, { validationFactory } from '../utils/validate';
 import { i18n } from 'next-i18next';
 import makeRequest, { apiError, createBearer } from '../utils/makeRequest';
 import useUserStore from './UserStore';
+import useModalStore from './ModalStore';
 
 interface State {
   name: string;
@@ -98,6 +99,7 @@ const useAdminElectionStore = create<State & Actions>()(
         } as ElectionCreate;
 
         try {
+          useModalStore.getState().setOpen({ type: 'loading', payload: 'Creating election...' });
           await makeRequest<any, ElectionCreate>({
             url: 'admin/election/create',
             headers: createBearer(useUserStore.getState().access_token),
@@ -105,9 +107,11 @@ const useAdminElectionStore = create<State & Actions>()(
             data: dto,
           });
 
+          useModalStore.getState().setClosed();
           showToast({ status: 'success', description: i18n.t('success.admin.election.create', { name: values.name }) });
           get().reset();
         } catch (error) {
+          useModalStore.getState().setClosed();
           showToast({ status: 'error', description: i18n.t(apiError(error)) });
         }
       },

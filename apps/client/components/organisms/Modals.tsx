@@ -11,13 +11,14 @@ import DVSAlert from '../molecules/DVSAlert';
 import { DVSToast } from '../atoms/DVSToast';
 import makeRequest, { apiError, createBearer } from '../../utils/makeRequest';
 import useUserStore from '../../store/UserStore';
+import DVSLoadingSpinner from '../molecules/DVSLoadingSpinner';
 
 const Modals = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { showToast } = DVSToast();
 
-  const [isOpen, modal, setClosed] = useModalStore((s) => [s.isOpen, s.modal, s.setClosed]);
+  const [isOpen, modal, setClosed, setOpen] = useModalStore((s) => [s.isOpen, s.modal, s.setClosed, s.setOpen]);
   const token = useUserStore((s) => s.access_token);
   const [mnemonic, errors, setSSN, registerVoter, setMnemonic, vote, resetElectionStore, setElectionError] =
     useElectionStore((s) => [
@@ -44,6 +45,11 @@ const Modals = () => {
     let textArgs: Record<string, any>;
 
     switch (modal?.type) {
+      case 'loading':
+        {
+          children = <DVSLoadingSpinner>{modal?.payload}</DVSLoadingSpinner>;
+        }
+        break;
       case 'registerVoter':
         {
           inputs = [
@@ -119,11 +125,14 @@ const Modals = () => {
 
         const handleCloseElection = async () => {
           try {
+            setOpen({ type: 'loading', payload: 'Closing election...' });
             await makeRequest({ url: `admin/election/close/${id}`, method: 'PUT', headers: createBearer(token) });
             const { asPath } = router;
             await router.push(asPath);
+            setClosed();
             showToast({ status: 'success', description: t('success.admin.election.close', { name }) });
           } catch (error) {
+            setClosed();
             showToast({ status: 'error', description: t(apiError(error)) });
           }
         };

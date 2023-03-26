@@ -97,6 +97,10 @@
     }
   },
   "modals": {
+    "loading": {
+      "header": "",
+      "text": ""
+    },
     "registerVoter": {
       "header": "Voter registration",
       "text": "Please enter your social security number to register as a voter. Your social security number is used to determine your eligibility to vote in this election. If you have already registered, you can also enter the mnemonic you received during the registration process by clicking on the button below.",

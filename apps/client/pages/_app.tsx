@@ -5,6 +5,7 @@ import DVS from '../config/DVS';
 import { appWithTranslation } from 'next-i18next';
 import Navbar from '../components/organisms/Navbar';
 import React from 'react';
+import '../config/theme/spinner.css';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (

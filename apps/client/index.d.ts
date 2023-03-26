@@ -26,6 +26,7 @@ interface validationFactoryParams {
 type buttonType = 'primary' | 'secondary';
 
 type Modal =
+  | { type: 'loading'; payload: string }
   | { type: 'registerVoter'; payload: Election }
   | { type: 'mnemonic'; payload: string[] }
   | { type: 'vote'; payload: { index: number; electionId: number; candidate: Candidate } }
