@@ -70,14 +70,14 @@ Accordingly, as mentioned in \cref{subsec:scalability-tests}, we wrote additiona
 \end{figure}
 
 Simulating consecutive registrations and votes in an election resulted in a processing time of 17,386.98 seconds or 4.83h hours for 1,000 voters (see \cref{fig:scalability-test-result}) with 1\% of votes not being processed with the first request.
-Consequently, it would take 13,4158.80 months to process a national election with 20,000,000 eligible online voters consecutively, which is not feasible for an election.
+Consequently, it would take \approx134,159 months to process a national election with 20,000,000 eligible online voters consecutively, which is not feasible for an election.
 Ultimately, this means that any system employed in national elections must be capable of processing votes concurrently.
 
 \subsubsection{Concurrent votes}\label{subsubsec:res-concurrent-votes}
 
 Unfortunately, the scalability test recorded a 100\% failure rate in concurrent mode.
 This could be attributed to a design flaw in our backend services that made the system unable to commit concurrent transactions to the \gls{Blockchain} due to transactions sharing the same transaction nonce.
-As a result, the \gls{Blockchain} network registered those transactions as a single transaction, with the latter transactions trying to override the former ones.
+As a result, the \gls{Blockchain} network registered those transactions as a single transaction, with latter transactions trying overriding former ones.
 
 \subsection{Transaction analysis}\label{subsec:res-transaction-analysis}
 
@@ -105,7 +105,7 @@ Hence, the only information the public would have on an individual voter is his 
     \label{fig:audit}
 \end{figure}
 
-The public can independently audit the election in precisely the same manner, using a \gls{BlockExplorer} to analyze all transactions on the election’s \gls{SmartContract} and to call the contract’s functions to evaluate its internal state of the election result (see \cref{fig:audit}).
+The public can independently audit the election in precisely the same manner, using a \gls{BlockExplorer} to analyze all transactions on the election’s \gls{SmartContract} and calling the contract’s functions to evaluate its internal state of the election result (see \cref{fig:audit}).
 
 \subsubsection{Transaction costs}\label{subsubsec:res-transaction-costs}
 
@@ -131,8 +131,8 @@ Additionally, a small amount of MATIC, calculated based on average network fees 
 Accordingly, as shown in \cref{fig:transaction-costs}, the administrating wallet's balance before running the scalability test was 31.959 MATIC (see \cref{fig:balance-before}) and 31.2839 MATIC (see \cref{fig:balance-after}) after having processed 1000 voters.
 Innately, MATIC prices fluctuated while running the tests causing the lower balance in \cref{fig:balance-after} to have a higher exchange value when calculated in US dollars.
 Regardless, at the time of this writing, the difference between both balances equaled \$0.87.
-Hence, we can safely conclude that our system is scalable in terms of operational costs.
-In fact, it is much cheaper to operate than traditional analogous or centralized e-voting systems which cost around \$10/voter~\autocite{mohr_how_nodate}.
+Hence, we can conclude that our system is scalable in terms of operational costs.
+In fact, even when considering additional costs such as expanses for infrastructure and support, it is much cheaper to operate than traditional analogous or centralized e-voting systems which cost around \$10/voter~\autocite{mohr_how_nodate}.
 
 
 \subsection{Quantitative Objectives}\label{subsec:res-quantitaive-objectives}

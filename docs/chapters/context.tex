@@ -35,7 +35,7 @@ The properties shown in~\cref{tab:properties-of-voting-systems} are most commonl
 
 \section{Blockchain}\label{sec:blockchain}
 
-Even though the first blockchain-like protocol was proposed by \textcite{chaum_computer_1982}, the concept of modern \gls{Blockchain} technology was first introduced by \textcite{nakamoto_bitcoin_2008} and with the subsequent launch of Bitcoin in 2009.
+Even though the first blockchain-like protocol was proposed by \textcite{chaum_computer_1982}, the concept of modern \gls{Blockchain} technology was first introduced by \textcite{nakamoto_bitcoin_2008} and the subsequent launch of Bitcoin in 2009.
 Although Satoshi Nakamoto's real identity remains a mistery to this day, he alluded to his motivations with a message left in Bitcoin's \gls{GenesisBlock}.
 It reads \enquote{The Times 03/Jan/2009 Chancellor on brink of second bailout for banks}~\autocite{nakamoto_bitcoin_2009} and refers to the headline of an article that appeared in \emph{The Times} on January 3, 2009, in the midst of the \gls{GFC} (see listing~\ref{lst:genesis-block-message}).
 
@@ -78,7 +78,7 @@ Depending on the \gls{Blockchain}, block structures might vary, though, accordin
 
 \subsubsection{Block header}\label{subsubsec:block-header}
 
-The block header contains metadata about the block itself and a reference to the previous block hash (see~\cref{fig:prev-block-hash}), establishing a chain link~\autocites[160]{antonopoulos_mastering_2017}[3]{nakamoto_bitcoin_2008}[15]{yaga_blockchain_2018}.
+The block header contains metadata about the block itself and a reference to the previous block hash (see~\cref{fig:prev-block-hash}), thereby establishing a link between all blocks~\autocites[160]{antonopoulos_mastering_2017}[3]{nakamoto_bitcoin_2008}[15]{yaga_blockchain_2018}.
 Nodes always work on bundling transactions in a new block using the latest accepted block's hash value in the block header~\autocite[3]{nakamoto_bitcoin_2008}.
 Aside from the previous block's hash value, a block header contains the current timestamp, \gls{POW} difficulty target for the current block and the nonce (see~\cref{subsec:pow}), as well as the \gls{MerkleTree} root, a data structure summarizing all transactions in the block~\autocites[160-161]{antonopoulos_mastering_2017}[15-16]{yaga_blockchain_2018}.
 
@@ -174,7 +174,7 @@ In consequence,~\textcites[65,68]{antonopoulos_mastering_2017}[5]{kapoor_ellipti
 \end{align}
 
 Reversing the multiplication process by solving for $k$ would be an unfeasible operation since the multiplication is nonlinear, as the output point can be anywhere on the curve with respect to the input point~\autocite{price_bitcoins_2020}.
-Furthermore, going backward, i.e., solving for $P$ provided $kP$, where $k$ is a random integer, is more difficult due to the symmetry of elliptic curves.
+Furthermore, reversing the calculation, i.e., solving for $P$ provided $kP$, where $k$ is a random integer, is more difficult due to the symmetry of elliptic curves.
 Meaning, multiple points $P$ might exist whose tangent lines cross the negation of $kP$ for any number of additive iterations in the multiplication process (see \cref{fig:finding-point-p}).
 Therefore, a sufficiently high curve order exponentially increases the computing power needed to solve for $k$, making $K$ sharable with untrusted third parties without having to sacrifice the privacy of $k$.
 
@@ -218,7 +218,7 @@ For instance, if the difficulty target is given as
 \begingroup\small\emph{0x0010000000000000000000000000000000000000000000000000000000000000}\endgroup
 \smallskip
 
-a smaller hash would need to start with three zero bytes.
+a smaller hash would need to start with three zero bits.
 The winning \gls{Nonce} in this example would then be 11 (see listing~\ref{lst:output-of-hashing-script}).
 Hence, the act of finding the winning \gls{Nonce} would be \gls{POW} equivalent to the computing power needed to run this script 12 times.
 
@@ -252,7 +252,7 @@ It was the first \gls{Blockchain} offering a built-in Turing-complete programmin
 
 The term is a reference to Alan Turing who defined a mathematical model of a computational system that manipulates states by reading and writing on sequential memory.
 In computability theory Turing's model is the basis for answering questions about universal computability, where a system is said to be Turing-complete if it can simulate any Turing machine~\autocite[8]{antonopoulos_mastering_2019}.
-The Ethereum Virtual Machine is such a Turing-complete system, which means \glsplural{SmartContract} deployed on Ethereum can solve any computational problem regular computers can, making Ethereum a \enquote{world-computer operating under consensus}~\autocite[6]{antonopoulos_mastering_2019}.
+The Ethereum Virtual Machine is such a Turing-complete system, which means \glsplural{SmartContract} deployed on Ethereum can solve any computational problem regular computers can, thus making Ethereum a \enquote{world-computer operating under consensus}~\autocite[6]{antonopoulos_mastering_2019}.
 
 \subsection{Comparison of Turing-complete blockchains}\label{subsec:comparison-of-turing-complete-blockchains}
 
