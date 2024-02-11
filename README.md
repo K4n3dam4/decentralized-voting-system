@@ -28,10 +28,7 @@
 
 ## Introduction
 
-The main goal of this project is the development of a decentralized electronic voting system to
-further the research into voting systems based on blockchain technology, which nations could ultimately refer to should they
-want to explore possibilities to ensure more secure, transparent, and cost-efficient elections without having to sacrifice the anonymity of voters.
-The research is carried out within the scope of a bachelor's dissertation.
+The primary objective of this project is to create a decentralized electronic voting system, advancing the study of blockchain-based voting mechanisms. This system could serve as a reference for countries interested in adopting technologies that offer enhanced security, transparency, and cost efficiency for elections, while preserving voter anonymity. The research is conducted as part of a bachelor's dissertation.
 
 ## Thesis
 
@@ -80,14 +77,11 @@ This chapter provides a quick overview over the project's architecture.
 
 ### Workspace
 
-The workspace is a [nx monorepo](https://nx.dev/), which means that the project is split into modular applications that share code
-among themselves. This approach was chosen in order to make this project easily extendable in the future.
-Nx provides a growing ecosystem of plugins and its cli makes creating new applications within the repo easy due to its vast
-collection of boilerplate code.
+The workspace utilizes a [nx monorepo](https://nx.dev/) structure, dividing the project into modular applications that share code with each other. This modular design was selected to facilitate future expansions of the project. Nx offers an expanding ecosystem of plugins, and its command-line interface simplifies the creation of new applications within the repository by providing a comprehensive selection of boilerplate code.
 
 #### Dependency Graph
 
-The dependency graph can be called with `nx graph` in the project root and provides a quick overview of all applications in the repository and their relation to each other.
+The dependency graph can be opened in the browser by executing nx graph at the project's root. This command offers a concise visualization of all the applications within the repository and illustrates their interconnections.
 
 #### NX Documentation
 
@@ -98,7 +92,6 @@ The dependency graph can be called with `nx graph` in the project root and provi
 #### Next.js
 
 [Next.js](https://nextjs.org) was chosen as a frontend framework mainly for its hybrid static and server rendering capabilities.
-Since this means that only static html is being served to the client, a Next.js frontend is one part of ensuring the security of elections carried out using this application.
 
 #### Next.js Documentation
 
@@ -121,8 +114,7 @@ made it easier to follow best practices for backend development. Additionally, b
 
 ### Polygon
 
-[Polygon](https://polygon.technology/) was chosen to deploy smart contracts mainly due to its higher transaction throughput. Since Polygon is a Layer 2 protocol running on top of Ethereum, this seemed like the most balanced option when looking at security vs. scalability.
-Furthermore, migrating the voting system from MATIC Mainnet to Ethereum, once the implementation of Sharding has boosted Ethereum's scalability, will be a matter of simply changing network configurations and redeploying all developed contracts on Ethereum's Mainnet.
+[Polygon](https://polygon.technology/) was selected for deploying smart contracts primarily because of its superior transaction throughput. As a Layer 2 protocol that operates atop Ethereum, Polygon represents a well-balanced choice in terms of security versus scalability. Moreover, transitioning the voting system from the MATIC Mainnet to Ethereum will be straightforward once Sharding enhances Ethereum's scalability. A migration will involve merely adjusting network settings and redeploying all the developed contracts on Ethereum's Mainnet.
 
 #### Polygon Documentation
 

@@ -5,7 +5,7 @@
 \subsection{Selecting a blockchain network}\label{subsec:selection-of-blockchain-network}
 
 As seen in \cref{tab:selection-of-blockchain-network}, the findings in~\cref{sec:voting-systems} can be applied as selection criteria for relevant \gls{Blockchain} networks (see \cref{subsec:comparison-of-turing-complete-blockchains}).
-However, some properties mentioned in~\cref{sec:voting-systems} depend entirely on decisions relating to frontend design and code governance rather than the selected \gls{Blockchain}, e.g., whether the software is open-source.
+However, some properties mentioned in~\cref{sec:voting-systems} depend entirely on decisions relating to frontend design rather than the selected \gls{Blockchain}, e.g., whether the client application is accessible.
 These are displayed in gray in~\cref{tab:selection-of-blockchain-network}.
 
 \begin{table}[H]
@@ -27,8 +27,7 @@ These are displayed in gray in~\cref{tab:selection-of-blockchain-network}.
         \hline
         Scalability & \xmark & \cmark & \cmark & \cmark  \\
         \hline
-        \rowcolor{lightgray}
-        Transparency & - & - & - & - \\
+        Transparency & \dblcmark & \cmark & \dblcmark & \dblcmark \\
         \hline
         Incoercibility & \xmark & \xmark & \xmark & \xmark  \\
         \hline
@@ -277,23 +276,23 @@ The function then subtracts voting weight from the voter and adds one vote to th
 \subsubsection{closeElection}
 
 \Glsplural{Admin} can close elections by calling this function.
-As seen in listing~\ref{lst:election-step3.sol}, the function sets the election's \emph{expires} state to the current block timestamp, preventing further transactions and calculates the election's result.
+As seen in listing~\ref{lst:election-step3.sol}, the function sets the election's \emph{expires} state to the current block timestamp, preventing further transactions, and then calculates the election's result.
 
 \subsection{Testing the contract}\label{subsec:testing-the-contract}
 
-After successfully debugging and testing our contract on Remix, we copy it to our local \emph{libs/smart-contracts/src/lib/contracts} directory and try to compile it by running \mintinline[breaklines]{text}{nx compile smart-contracts} in our terminal.
-Having installed \emph{typechain} earlier, this should create a new \emph{typechain-types} folder containing typed interfaces of our contract and its \gls{ABI}.
+After successfully debugging and testing our contract on Remix, we copy it to our local \emph{libs/smart-contracts/src/lib/contracts} directory and compile it by running \mintinline[breaklines]{text}{nx compile smart-contracts} in our terminal.
+Having installed \emph{typechain} earlier, this creates a new \emph{typechain-types} folder containing typed interfaces of our contract and its \gls{ABI}.
 
 We now have everything we need to create a new \emph{test} directory and write tests for the contract (see listing~\ref{lst:election-tests.ts}).
 Running unit tests on the contract provides valuable insights into its functionality.
 For example, initially, we checked the provided expiration timestamp in milliseconds against the global Solidity variable \emph{block.timestamp}, which is saved in seconds.
-As the expiration time is a core element of elections, we fix this by multiplying the block timestamp by 1000 before comparing it to the expiration state.
+As the expiration time is a core element of elections, we fix this by making sure to divide the expiration timestamp by 1000 before deploying the contract.
 
 \codeFromFile{ts}{../libs/smart-contracts/src/lib/test/Election.ts}{Testing the contract}{Testing the contract}{lst:election-tests.ts}
 
 \subsection{Verifying the contract}\label{subsec:verifying-the-contract}
 
-We need to verify the \gls{SmartContract} to make elections fully transparent (\cref{subsec:qualitative-objectives,sec:voting-systems}).
+We need to verify the \gls{SmartContract} to make elections fully transparent (see \cref{subsec:qualitative-objectives,sec:voting-systems}).
 This will later enable anyone who wishes to audit an election to visit a \gls{BlockExplorer} and execute all non-administrative contract functions in a web interface.
 
 We prepare the project to handle contract verifications through the use of \gls{CLI} commands by adding
@@ -355,11 +354,11 @@ This enables us to handle all user requests with a single \gls{JWT} strategy usi
 
 \subsubsection{Configuration}
 
-As seen in listing~\ref{lst:core-config}, to enable certain features within our backend services, we first need to add a configuration file to the application's core which then parses information from our \emph{env} files to their relative configuration keys.
+As seen in listing~\ref{lst:core-config}, to enable certain features within our backend services, we first need to add a configuration file to the application's core which then parses information from our env files to their relative configuration keys.
 
 \codeFromFile{java}{../libs/api/src/lib/core/configuration.ts}{Core configuration}{Core configuration}{lst:core-config}
 
-We use Alchemy as a provider for transactions on the \gls{Blockchain}, hence we need to add an Alchemy \gls{API} key to our env, which our configuration file processes.
+We use Alchemy as a provider for transactions on the \gls{Blockchain}, hence we need to add an Alchemy \gls{API} key to our env, which is then processed by our configuration file.
 
 \subsubsection{Ethers for Nest.js}
 
@@ -380,7 +379,7 @@ However, we ultimately decided to implement accounts in order to limit requests 
 Hence, we first run \mintinline[breaklines]{text}{yarn add passport-jwt} in our terminal.
 Then, we create three new files in \emph{libs/api/src/lib/guards} and \emph{libs/api/src/lib/strategies}, respectively.
 
-As seen in listing~\ref{lst:jwt.guard.ts}, the \gls{JWT} guard intercepts each request to a route that injected with this guard and checks whether our \gls{JWT} strategy (see listing~\ref{lst:jwt.strategy.ts}) could validate the token in the request header.
+As seen in listing~\ref{lst:jwt.guard.ts}, the \gls{JWT} guard intercepts each request to a route that is injected with this guard and checks whether our \gls{JWT} strategy (see listing~\ref{lst:jwt.strategy.ts}) could validate the token in the request header.
 
 \codeFromFile{ts}{../libs/api/src/lib/guards/jwt.guard.ts}{JWT guard}{JWT guard}{lst:jwt.guard.ts}
 \codeFromFile{ts}{../libs/api/src/lib/strategies/jwt.strategy.ts}{JWT strategy}{JWT strategy}{lst:jwt.strategy.ts}
@@ -424,7 +423,7 @@ Suppose the \gls{SSN} entered by the voter matches the hashed \gls{SSN} in his a
 In that case, we create a signer from a newly created wallet and instantiate the election's contract interface.
 Next, we calculate current transaction fees on the \gls{Blockchain} network and use the election contracts' registerVoter function to register the voter's wallet address in the contract.
 As shown in~\cref{subsec:contract-functions}, this will also transfer the funds specified in the function's parameter from the \gls{Admin} wallet to the voter wallet.
-Subsequently, we add voting weight to the now registered voter, update our database entries, and return the voter wallets \gls{PK} as a mnemonic passphrase.
+Subsequently, we add voting weight to the now registered voter, update our database entries, and return the voter wallet's \gls{PK} as a mnemonic passphrase.
 
 Since the voter is registered in our database with a newly created wallet address while the wallet's \gls{PK} is never saved on the server side, he has complete autonomy over the distribution of his voting weight while remaining entirely anonymous.
 
@@ -436,7 +435,7 @@ To test our backend services, we use the \emph{server-e2e} application, which sh
 
 \subsubsection{Ganache}
 
-Since running \gls{E2E} tests of our backend services require transactions on a \gls{Blockchain} network, we install Ganache to run a local test network by typing \mintinline[breaklines]{text}{yarn add -D ganache} in our terminal.
+Since running \gls{E2E} tests of our backend services requires transactions on a \gls{Blockchain} network, we install Ganache to run a local test network by typing \mintinline[breaklines]{text}{yarn add -D ganache} in our terminal.
 
 \subsubsection{Tests}
 
@@ -446,7 +445,7 @@ As seen in listing~\ref{lst:server-e2e-tests}, aside from testing whether our se
 
 \subsubsection{Running the tests}
 
-After writing \gls{E2E} tests for all backend services we can run our tests by using the following commands
+After writing \gls{E2E} tests for all backend services we can run them by using the following commands
 
 
 \begin{minted}[linenos,breaklines]{shell-session}
@@ -458,7 +457,7 @@ After successfully starting the network, a clean test database will be started u
 Lastly, our \gls{E2E} application will run the tests.
 
 A comprehensive summary of the tests is available in~\cref{ch:apx-server-e2e-tests}.
-The final results will be analyzed and discussed in section~\cref{subsec:res-end-to-end-tests}.
+The final results will be analyzed and discussed in~\cref{subsec:res-end-to-end-tests}.
 
 \subsection{Scalability tests}\label{subsec:scalability-tests}
 
@@ -466,8 +465,8 @@ In order to evaluate the system's scalability, we create a Node.js application u
 This application generates a simulated list of voters and performs the \gls{E2E} voting process for each individual, either concurrently or consecutively.
 By configuring a representative number of simulated voters, this test provides important insights into the system's operational costs and transaction speeds.
 
-A comprehensive summary of the tests is available in~\cref{ch:apx-server-scalability-tests}.
-The final results will be analyzed and discussed in section~\cref{subsec:res-scalability-test}.
+A comprehensive summary of the test is available in~\cref{ch:apx-server-scalability-tests}.
+The final results will be analyzed and discussed in~\cref{subsec:res-scalability-test}.
 
 \subsection{Server interim evaluation}\label{subsec:server-interim-evaluation}
 

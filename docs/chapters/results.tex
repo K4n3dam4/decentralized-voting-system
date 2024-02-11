@@ -77,7 +77,7 @@ Ultimately, this means that any system employed in national elections must be ca
 
 Unfortunately, the scalability test recorded a 100\% failure rate in concurrent mode.
 This could be attributed to a design flaw in our backend services that made the system unable to commit concurrent transactions to the \gls{Blockchain} due to transactions sharing the same transaction nonce.
-As a result, the \gls{Blockchain} network registered those transactions as a single transaction, with latter transactions trying overriding former ones.
+As a result, the \gls{Blockchain} network registered those transactions as a single transaction, with latter transactions overriding former ones.
 
 \subsection{Transaction analysis}\label{subsec:res-transaction-analysis}
 
